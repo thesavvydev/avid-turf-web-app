@@ -1,4 +1,4 @@
-import { AgAreaSeriesOptions, AgChartOptions } from "ag-charts-community";
+import { AgBarSeriesOptions, AgChartOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 
 const defaultOptions: AgChartOptions = {
@@ -16,7 +16,6 @@ const defaultOptions: AgChartOptions = {
       },
       type: "number",
       position: "left",
-      title: { enabled: false },
     },
     {
       type: "category",
@@ -24,18 +23,22 @@ const defaultOptions: AgChartOptions = {
       label: {
         enabled: false,
       },
+      title: { enabled: false },
     },
   ],
   background: {
     fill: "transparent",
   },
+  legend: {
+    enabled: false,
+  },
 };
 
-export default function AreaChart<T>({
+export default function BarChart<T>({
   series,
   data,
 }: {
-  series: AgAreaSeriesOptions[];
+  series: AgBarSeriesOptions[];
   data: T[];
 }) {
   return (

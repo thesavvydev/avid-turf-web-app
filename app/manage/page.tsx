@@ -4,6 +4,7 @@ import { Card } from "flowbite-react";
 import CommissionsCard from "./commissions-card";
 import DashboardHeader from "./dashboard-header";
 import JobStatusCard from "./job-status-card";
+import JobActivityCard from "./job-activity-card";
 
 export default function ManagePage() {
   return (
@@ -13,11 +14,15 @@ export default function ManagePage() {
         <div className="md:col-span-3">
           <CommissionsCard />
         </div>
-        <Card className="md:col-span-3">3 oldest open job summary</Card>
-        <div className="md:col-span-4">
+        <div className="md:col-span-3">
+          <JobActivityCard />
+        </div>
+        <Card className="md:col-span-6 lg:col-span-2">
+          <h3 className="text-xl font-semibold">Upcoming Appointments</h3>
+        </Card>
+        <div className="md:col-span-6 lg:col-span-4">
           <JobStatusCard />
         </div>
-        <Card className="md:col-span-2">upcoming appointment list</Card>
       </div>
     </>
   );
