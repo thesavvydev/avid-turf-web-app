@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 
 export const signUpAction = async (
   _prevState: { error?: string },
-  formData: FormData
+  formData: FormData,
 ) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
@@ -32,6 +32,6 @@ export const signUpAction = async (
   return encodedRedirect(
     "success",
     "/sign-up",
-    "Thanks for signing up! Please check your email for a verification link."
+    "Thanks for signing up! Please check your email for a verification link.",
   );
 };

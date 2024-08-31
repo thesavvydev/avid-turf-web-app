@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 
 const Brand = () => (
   <p>
-    <span className="font-black text-inherit text-green-600">AVID</span>
-    <span className="text-zinc-600 font-semibold">TURF</span>
+    <span className="font-black text-green-600 text-inherit">AVID</span>
+    <span className="font-semibold text-zinc-600">TURF</span>
   </p>
 );
 
@@ -40,7 +40,7 @@ export default function ManageNav() {
       <Navbar.Brand href="https://flowbite-react.com">
         <Brand />
       </Navbar.Brand>
-      <div className="flex md:order-2 md:gap-4 gap-2">
+      <div className="flex gap-2 md:order-2 md:gap-4">
         <Dropdown
           arrowIcon={false}
           inline

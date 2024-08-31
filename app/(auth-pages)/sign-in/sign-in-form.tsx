@@ -27,7 +27,7 @@ const PasswordInput = () => {
         name="password"
         type="password"
         startContent={
-          <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+          <LockIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
         }
         onValueChange={setValue}
         validationBehavior="native"
@@ -60,7 +60,7 @@ const EmailInput = () => {
       name="email"
       type="email"
       startContent={
-        <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+        <MailIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
       }
       onValueChange={setValue}
       value={value}
@@ -75,7 +75,7 @@ export default function SignInForm() {
   return (
     <form action={dispatch} className="flex flex-col gap-4">
       {state?.error && (
-        <div className="bg-red-200 text-red-600 text-xs p-2 rounded border border-red-300">
+        <div className="rounded border border-red-300 bg-red-200 p-2 text-xs text-red-600">
           {state.error}
         </div>
       )}

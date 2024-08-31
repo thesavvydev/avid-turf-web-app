@@ -1,6 +1,6 @@
 export function formatAsPercentage(
   value: number,
-  options?: Intl.NumberFormatOptions
+  options?: Intl.NumberFormatOptions,
 ) {
   return Number(value).toLocaleString(undefined, {
     minimumFractionDigits: 2,
@@ -11,7 +11,7 @@ export function formatAsPercentage(
 
 export function formatAsCompactNumber(
   value: number,
-  options?: Intl.NumberFormatOptions
+  options?: Intl.NumberFormatOptions,
 ) {
   return Number(value).toLocaleString(undefined, { notation: "compact" });
 }

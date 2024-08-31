@@ -7,16 +7,16 @@ import Image from "next/image";
 
 export default function Error(props: { error: Error }) {
   return (
-    <div className="mx-auto flex h-screen flex-col items-center justify-center px-6 xl:px-0 dark:bg-gray-900">
+    <div className="mx-auto flex h-screen flex-col items-center justify-center px-6 dark:bg-gray-900 xl:px-0">
       <div className="block md:max-w-lg">
         <Image alt="" height={550} src="/images/500.svg" width={550} />
       </div>
       <div className="text-center xl:max-w-4xl">
-        <h1 className="mb-3 text-2xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl dark:text-white">
+        <h1 className="mb-3 text-2xl font-bold leading-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
           Something has gone seriously wrong
         </h1>
         {props.error?.message && (
-          <div className="my-4 bg-red-100 text-red-600 mx-auto p-4 rounded text-left font-mono text-sm">
+          <div className="mx-auto my-4 rounded bg-red-100 p-4 text-left font-mono text-sm text-red-600">
             {`Error message: ${props.error.message}`}
           </div>
         )}

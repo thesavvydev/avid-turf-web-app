@@ -29,7 +29,7 @@ const tiles = [
 export default function Page() {
   return (
     <div className="grid gap-4 lg:gap-8">
-      <section className="grid grid-rows-2 grid-cols-2 gap-4 lg:grid-cols-4 lg:grid-rows-1 lg:gap-8">
+      <section className="grid grid-cols-2 grid-rows-2 gap-4 lg:grid-cols-4 lg:grid-rows-1 lg:gap-8">
         {tiles.map((tile) => (
           <Card
             key={tile.name}
@@ -40,19 +40,19 @@ export default function Page() {
               },
             }}
           >
-            <h6 className="text-xs uppercase sm:capitalize sm:text-xl font-medium text-gray-600 dark:text-gray-400">
+            <h6 className="text-xs font-medium uppercase text-gray-600 dark:text-gray-400 sm:text-xl sm:capitalize">
               {tile.name}
             </h6>
-            <p className="text-2xl sm:text-5xl font-black text-center text-gray-500 dark:text-gray-300">
+            <p className="text-center text-2xl font-black text-gray-500 dark:text-gray-300 sm:text-5xl">
               {formatAsCompactNumber(tile.value)}
             </p>
-            <p className="text-xs text-gray-500 text-center dark:text-gray-300">
+            <p className="text-center text-xs text-gray-500 dark:text-gray-300">
               Weekly Change{" "}
               <span
                 className={twMerge(
                   tile.weekly_change > 0
                     ? "text-green-500 dark:text-green-300"
-                    : "text-red-500 dark:text-red-300"
+                    : "text-red-500 dark:text-red-300",
                 )}
               >
                 {formatAsPercentage(tile.weekly_change)}

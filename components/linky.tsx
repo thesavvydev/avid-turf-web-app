@@ -7,7 +7,7 @@ export default function Linky({ children, ...linkProps }: TLinkProps) {
   return (
     <Link
       {...linkProps}
-      className="text-primary-600 underline cursor-pointer dark:text-primary-400"
+      className="cursor-pointer text-primary-600 underline dark:text-primary-400"
     >
       {children}
     </Link>

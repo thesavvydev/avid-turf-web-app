@@ -6,7 +6,7 @@ export default function SignUpPage() {
     <>
       <hgroup>
         <h1 className="text-4xl font-bold">Sign up</h1>
-        <p className="text-sm text-foreground">
+        <p className="text-foreground text-sm">
           Already have an account?{" "}
           <NextLink
             href="/sign-in"
