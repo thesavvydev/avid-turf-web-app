@@ -1,8 +1,13 @@
 "use client";
 
+import { Tables } from "@/types/supabase";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
-const UserProviderContext = createContext({ user: {} });
+const UserProviderContext = createContext<{
+  user: Partial<Tables<"profiles">>;
+}>({
+  user: {},
+});
 
 export function useUserContext() {
   const context = useContext(UserProviderContext);
@@ -14,7 +19,7 @@ export function useUserContext() {
 }
 
 type UserProviderContextProps = PropsWithChildren & {
-  user: {};
+  user: Partial<Tables<"profiles">>;
 };
 
 export default function UserContextProvider({

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUserContext } from "@/contexts/user";
 import {
   Avatar,
   Dropdown,
@@ -28,6 +29,9 @@ const Brand = () => (
 export default function ManageNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const {
+    user: { full_name },
+  } = useUserContext();
 
   const desktopMenuItems = [
     {
@@ -92,7 +96,7 @@ export default function ManageNav() {
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="h-14 gap-2">
               <p className="font-semibold">Signed in as</p>
-              <p className="font-semibold">zoey@example.com</p>
+              <p className="font-semibold">{full_name}</p>
             </DropdownItem>
             <DropdownItem key="settings">My Settings</DropdownItem>
             <DropdownItem key="team_settings">Team Settings</DropdownItem>
