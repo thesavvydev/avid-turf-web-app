@@ -27,7 +27,7 @@ export function ConfirmModal({
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
               {description}
             </h3>
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col justify-center gap-2 sm:flex-row sm:gap-4">
               <Button
                 color="failure"
                 onClick={() => {

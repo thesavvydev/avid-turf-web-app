@@ -101,14 +101,14 @@ const columns = [
     name: "",
     render: (row: (typeof jobs)[0]) => (
       <>
-        <div className="relative sm:flex items-center gap-2 hidden">
+        <div className="relative hidden items-center gap-2 sm:flex">
           <Tooltip content="Details">
-            <span className="text-lg text-gray-500 dark:text-gray-300 cursor-pointer active:opacity-50">
+            <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
               <EyeIcon />
             </span>
           </Tooltip>
           <Tooltip content="Settings">
-            <span className="text-lg text-gray-500 dark:text-gray-300 cursor-pointer active:opacity-50">
+            <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
               <SettingsIcon />
             </span>
           </Tooltip>
@@ -118,7 +118,7 @@ const columns = [
               onConfirmClick={console.log}
               trigger={(toggle) => (
                 <span
-                  className="text-lg text-red-500 cursor-pointer active:opacity-50"
+                  className="cursor-pointer text-lg text-red-500 active:opacity-50"
                   onClick={toggle}
                 >
                   <Trash2Icon />
@@ -130,12 +130,19 @@ const columns = [
         <div className="w-2 sm:hidden">
           <Dropdown
             label=""
-            size="sm"
             renderTrigger={() => <EllipsisVertical />}
+            size="sm"
+            dismissOnClick={false}
           >
             <Dropdown.Item>Details</Dropdown.Item>
             <Dropdown.Item>Settings</Dropdown.Item>
-            <Dropdown.Item>Delete</Dropdown.Item>
+            <ConfirmModal
+              description={`Are you sure you want to remove this job for ${row.address}?`}
+              onConfirmClick={console.log}
+              trigger={(toggle) => (
+                <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
+              )}
+            />
           </Dropdown>
         </div>
       </>
