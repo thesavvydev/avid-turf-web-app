@@ -1,7 +1,7 @@
 "use client";
 
 import SubmitButton from "@/components/submit-button";
-import { Input } from "@nextui-org/react";
+
 import { LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { useFormState } from "react-dom";
@@ -73,8 +73,8 @@ export default function SignUpForm() {
           {state.error}
         </div>
       )}
-      <EmailInput />
-      <PasswordInput />
+      {/* <EmailInput />
+      <PasswordInput /> */}
       <SubmitButton pendingText="Signing up...">Sign Up</SubmitButton>
     </form>
   );

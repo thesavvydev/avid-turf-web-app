@@ -7,12 +7,12 @@
     "update-types": "npx --yes supabase gen types --lang=typescript --project-id bdmpyubevevsghjbmfkf --schema public > types/supabase.d.ts"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.4.6",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "flowbite-react": "^0.10.1",
     "framer-motion": "^11.3.31",
     "geist": "^1.2.1",
     "lucide-react": "^0.436.0",

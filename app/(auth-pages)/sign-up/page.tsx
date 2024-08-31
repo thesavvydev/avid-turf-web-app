@@ -1,4 +1,3 @@
-import { Link } from "@nextui-org/react";
 import SignUpForm from "./sign-up-form";
 import NextLink from "next/link";
 
@@ -9,12 +8,12 @@ export default function SignUpPage() {
         <h1 className="text-4xl font-bold">Sign up</h1>
         <p className="text-sm text-foreground">
           Already have an account?{" "}
-          <Link
+          <NextLink
             href="/sign-in"
             className="text-foreground font-medium underline"
           >
             Sign in
-          </Link>
+          </NextLink>
         </p>
       </hgroup>
       <SignUpForm />

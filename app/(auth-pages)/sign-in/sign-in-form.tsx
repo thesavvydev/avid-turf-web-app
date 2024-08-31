@@ -1,6 +1,5 @@
 "use client";
 
-import { Checkbox, Divider, Input, Link, Spacer } from "@nextui-org/react";
 import { LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { useFormState } from "react-dom";
@@ -80,8 +79,8 @@ export default function SignInForm() {
           {state.error}
         </div>
       )}
-      <EmailInput />
-      <PasswordInput />
+      {/* <EmailInput />
+      <PasswordInput /> */}
       <SubmitButton pendingText="Signing in...">Sign In</SubmitButton>
     </form>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "flowbite-react";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 

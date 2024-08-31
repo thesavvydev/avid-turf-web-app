@@ -27,7 +27,7 @@ export default async function ManageLayout({ children }: PropsWithChildren) {
   return (
     <UserContextProvider user={data}>
       <ManageNav />
-      {children}
+      <main>{children}</main>
     </UserContextProvider>
   );
 }

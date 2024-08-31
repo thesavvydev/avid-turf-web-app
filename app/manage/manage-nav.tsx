@@ -1,23 +1,8 @@
 "use client";
 
 import { useUserContext } from "@/contexts/user";
-import {
-  Avatar,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Link,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenu,
-  NavbarMenuItem,
-  NavbarMenuToggle,
-} from "@nextui-org/react";
+import { Avatar, DarkThemeToggle, Dropdown, Navbar } from "flowbite-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 const Brand = () => (
   <p>
@@ -27,109 +12,70 @@ const Brand = () => (
 );
 
 export default function ManageNav() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const {
     user: { full_name },
   } = useUserContext();
 
-  const desktopMenuItems = [
+  const menuItems = [
     {
       name: "Dashboard",
       href: "/manage",
+      isActive: pathname === "/manage",
     },
     {
       name: "Jobs",
       href: "/manage/jobs",
+      isActive: pathname.startsWith("/manage/jobs"),
     },
     {
       name: "Appointments",
       href: "/manage/appointments",
+      isActive: pathname.startsWith("/manage/appointments"),
     },
   ];
 
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Jobs",
-    "Appointments",
-    "Help & Feedback",
-    "Log Out",
-  ];
-
   return (
-    <Navbar
-      className="bg-zinc-100 border-b"
-      shouldHideOnScroll
-      onMenuOpenChange={setIsMenuOpen}
-    >
-      <NavbarContent>
-        <NavbarBrand>
-          <Brand />
-        </NavbarBrand>
-      </NavbarContent>
-      <NavbarContent justify="end" className="hidden md:flex">
-        {desktopMenuItems.map((menuItem) => (
-          <NavbarItem
-            key={menuItem.name}
-            isActive={pathname.startsWith(menuItem.href)}
-          >
-            <Link color="foreground" href="#">
-              {menuItem.name}
-            </Link>
-          </NavbarItem>
-        ))}
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
+    <Navbar fluid>
+      <Navbar.Brand href="https://flowbite-react.com">
+        <Brand />
+      </Navbar.Brand>
+      <div className="flex md:order-2 md:gap-4 gap-2">
+        <Dropdown
+          arrowIcon={false}
+          inline
+          label={
             <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              color="secondary"
-              size="sm"
+              alt="User settings"
+              img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+              rounded
             />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Profile Actions" variant="flat">
-            <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-semibold">Signed in as</p>
-              <p className="font-semibold">{full_name}</p>
-            </DropdownItem>
-            <DropdownItem key="settings">My Settings</DropdownItem>
-            <DropdownItem key="team_settings">Team Settings</DropdownItem>
-            <DropdownItem key="analytics">Analytics</DropdownItem>
-            <DropdownItem key="system">System</DropdownItem>
-            <DropdownItem key="configurations">Configurations</DropdownItem>
-            <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-            <DropdownItem key="logout" color="danger" href="/auth/signout">
-              Log Out
-            </DropdownItem>
-          </DropdownMenu>
+          }
+        >
+          <Dropdown.Header>
+            <span className="block text-sm">{full_name}</span>
+          </Dropdown.Header>
+          <Dropdown.Item>Dashboard</Dropdown.Item>
+          <Dropdown.Item>Settings</Dropdown.Item>
+          <Dropdown.Item>Earnings</Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item>Sign out</Dropdown.Item>
         </Dropdown>
-      </NavbarContent>
-      <NavbarMenuToggle
-        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        className="sm:hidden"
-      />
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-              }
-              className="w-full"
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
+        <Navbar.Toggle />
+        <DarkThemeToggle className="hidden md:block" />
+      </div>
+      <Navbar.Collapse>
+        {menuItems.map((menuItem) => (
+          <Navbar.Link
+            key={menuItem.name}
+            href={menuItem.href}
+            active={menuItem.isActive}
+            theme={{ active: { on: "text-primary-400" } }}
+          >
+            {menuItem.name}
+          </Navbar.Link>
         ))}
-      </NavbarMenu>
+      </Navbar.Collapse>
     </Navbar>
   );
 }
