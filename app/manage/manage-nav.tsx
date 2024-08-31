@@ -36,7 +36,7 @@ export default function ManageNav() {
   ];
 
   return (
-    <Navbar fluid>
+    <Navbar border>
       <Navbar.Brand href="https://flowbite-react.com">
         <Brand />
       </Navbar.Brand>

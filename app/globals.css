@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root[data-dark-mode="true"] {
+  background: #192232;
+  color: white;
+
+  --button-text-color: #f8f9fa;
+  --button-color-border-primary: rgba(255, 255, 255, 0.2);
+  --button-hover-background-color: #2a343e;
+}
+
+:root {
+  --button-background-color: transparent;
+  --button-text-color: #212529;
+  --button-color-border-primary: #d0d5dd;
+  --button-hover-background-color: rgba(0, 0, 0, 0.1);
+}

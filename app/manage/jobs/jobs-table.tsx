@@ -66,7 +66,9 @@ const columns = [
     cellClassNames: "hidden md:table-cell",
     field: "start_date",
     name: "Start Date",
-    render: (row: (typeof jobs)[0]) => <div>{row.start_date}</div>,
+    render: (row: (typeof jobs)[0]) => (
+      <div className="w-28">{row.start_date}</div>
+    ),
   },
   {
     cellClassNames: "hidden md:table-cell",
