@@ -19,6 +19,12 @@ export default function useAdminNavItems() {
       icon: HomeIcon,
     },
     {
+      name: "Locations",
+      href: "/admin/locations",
+      isActive: pathname.startsWith("/admin/location"),
+      icon: MapPinIcon,
+    },
+    {
       name: "Jobs",
       href: "/admin/jobs",
       isActive: pathname.startsWith("/admin/job"),
@@ -35,12 +41,6 @@ export default function useAdminNavItems() {
       href: "/admin/users",
       isActive: pathname.startsWith("/admin/user"),
       icon: UserIcon,
-    },
-    {
-      name: "Locations",
-      href: "/admin/locations",
-      isActive: pathname.startsWith("/admin/location"),
-      icon: MapPinIcon,
     },
   ];
 }
