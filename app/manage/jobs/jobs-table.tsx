@@ -58,7 +58,7 @@ const columns = [
     name: "Address",
     render: (row: (typeof jobs)[0]) => (
       <div className="w-full text-wrap">
-        <Linky href="/">{row.address}</Linky>
+        <Linky href={`/manage/job/${row.id}`}>{row.address}</Linky>
       </div>
     ),
   },

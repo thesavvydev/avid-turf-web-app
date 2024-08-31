@@ -1,21 +1,14 @@
 "use client";
 
+import PageHeaderWithActions from "@/components/page-header-with-actions";
 import { Button } from "flowbite-react";
 
 export default function JobsHeader() {
   return (
-    <header className="bg-gray-100 dark:bg-gray-800">
-      <div className="container p-8">
-        <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
-          <hgroup>
-            <h1 className="text-3xl font-semibold">Jobs</h1>
-            <span className="text-sm font-light">
-              View and manage all of your jobs.
-            </span>
-          </hgroup>
-          <Button color="primary">New Job</Button>
-        </div>
-      </div>
-    </header>
+    <PageHeaderWithActions
+      title="Jobs"
+      subtitle="View and manage all of your jobs."
+      renderActions={() => <Button color="primary">New Job</Button>}
+    />
   );
 }

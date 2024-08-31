@@ -1,39 +1,29 @@
 "use client";
 
 import { useUserContext } from "@/contexts/user";
-import { Avatar, DarkThemeToggle, Dropdown, Navbar } from "flowbite-react";
-import { usePathname } from "next/navigation";
+import {
+  Avatar,
+  DarkThemeToggle,
+  Dropdown,
+  Navbar,
+  theme,
+} from "flowbite-react";
+import useAdminNavItems from "./use-admin-nav-items";
+import { twMerge } from "tailwind-merge";
 
 const Brand = () => (
   <p>
     <span className="font-black text-gray-500 text-inherit">AVID</span>
     <span className="font-semibold text-primary-400">TURF</span>
+    <span className="font-black text-red-400"> ADMIN</span>
   </p>
 );
 
-export default function ManageNav() {
-  const pathname = usePathname();
+export default function AdminNav() {
+  const menuItems = useAdminNavItems();
   const {
     user: { full_name },
   } = useUserContext();
-
-  const menuItems = [
-    {
-      name: "Dashboard",
-      href: "/manage",
-      isActive: pathname === "/manage",
-    },
-    {
-      name: "Jobs",
-      href: "/manage/jobs",
-      isActive: pathname.startsWith("/manage/job"),
-    },
-    {
-      name: "Appointments",
-      href: "/manage/appointments",
-      isActive: pathname.startsWith("/manage/appointment"),
-    },
-  ];
 
   return (
     <Navbar border>
@@ -59,20 +49,24 @@ export default function ManageNav() {
           <Dropdown.Item>Settings</Dropdown.Item>
           <Dropdown.Item>Earnings</Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item href="/admin">Admin</Dropdown.Item>
+          <Dropdown.Item href="/manage">Manage</Dropdown.Item>
           <Dropdown.Item href="/auth/signout">Sign out</Dropdown.Item>
         </Dropdown>
         <Navbar.Toggle />
         <DarkThemeToggle className="hidden md:block" />
       </div>
-      <Navbar.Collapse>
+      <Navbar.Collapse
+        theme={{ base: twMerge(theme.navbar.collapse.base, "md:hidden") }}
+      >
         {menuItems.map((menuItem) => (
           <Navbar.Link
+            className="flex items-center gap-2"
             key={menuItem.name}
             href={menuItem.href}
             active={menuItem.isActive}
             theme={{ active: { on: "text-primary-400" } }}
           >
+            <menuItem.icon />
             {menuItem.name}
           </Navbar.Link>
         ))}
