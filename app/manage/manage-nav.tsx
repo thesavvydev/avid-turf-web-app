@@ -35,6 +35,10 @@ export default function ManageNav() {
 
   const desktopMenuItems = [
     {
+      name: "Dashboard",
+      href: "/manage",
+    },
+    {
       name: "Jobs",
       href: "/manage/jobs",
     },
@@ -47,12 +51,8 @@ export default function ManageNav() {
   const menuItems = [
     "Profile",
     "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
+    "Jobs",
+    "Appointments",
     "Help & Feedback",
     "Log Out",
   ];
@@ -64,15 +64,11 @@ export default function ManageNav() {
       onMenuOpenChange={setIsMenuOpen}
     >
       <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
         <NavbarBrand>
           <Brand />
         </NavbarBrand>
       </NavbarContent>
-      <NavbarContent justify="end">
+      <NavbarContent justify="end" className="hidden md:flex">
         {desktopMenuItems.map((menuItem) => (
           <NavbarItem
             key={menuItem.name}
@@ -110,6 +106,10 @@ export default function ManageNav() {
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>
+      <NavbarMenuToggle
+        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        className="sm:hidden"
+      />
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
