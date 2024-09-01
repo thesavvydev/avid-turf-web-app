@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useFormState } from "react-dom";
 import { signInAction } from "./actions";
 import SubmitButton from "@/components/submit-button";
+import { TextInput } from "flowbite-react";
+import Linky from "@/components/linky";
 
 const initialFormState: { error?: string } = {};
 
@@ -18,25 +20,14 @@ const PasswordInput = () => {
 
   return (
     <>
-      <Input
+      <TextInput
         className="max-w-xs"
-        isInvalid={isInvalid()}
-        isRequired
-        label="Password"
-        labelPlacement="outside"
+        required
         name="password"
         type="password"
-        startContent={
-          <LockIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
-        }
-        onValueChange={setValue}
-        validationBehavior="native"
-        value={value}
       />
       <span className="self-end">
-        <Link color="primary" href="/forgot-password" size="sm">
-          Forgot password?
-        </Link>
+        <Linky href="/forgot-password">Forgot password?</Linky>
       </span>
     </>
   );
@@ -50,23 +41,7 @@ const EmailInput = () => {
     return !value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
   };
 
-  return (
-    <Input
-      className="max-w-xs"
-      isInvalid={isInvalid()}
-      isRequired
-      label="Email"
-      labelPlacement="outside"
-      name="email"
-      type="email"
-      startContent={
-        <MailIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
-      }
-      onValueChange={setValue}
-      value={value}
-      validationBehavior="native"
-    />
-  );
+  return <TextInput className="max-w-xs" required name="email" type="email" />;
 };
 
 export default function SignInForm() {

@@ -6,6 +6,7 @@ import { LockIcon, MailIcon } from "lucide-react";
 import { useState } from "react";
 import { useFormState } from "react-dom";
 import { signUpAction } from "./actions";
+import { TextInput } from "flowbite-react";
 
 const initialFormState: { error?: string } = {};
 
@@ -18,21 +19,7 @@ const PasswordInput = () => {
   };
 
   return (
-    <Input
-      className="max-w-xs"
-      isInvalid={isInvalid()}
-      isRequired
-      label="Password"
-      labelPlacement="outside"
-      name="password"
-      type="password"
-      startContent={
-        <LockIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
-      }
-      onValueChange={setValue}
-      validationBehavior="native"
-      value={value}
-    />
+    <TextInput className="max-w-xs" required name="password" type="password" />
   );
 };
 
@@ -44,23 +31,7 @@ const EmailInput = () => {
     return !value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
   };
 
-  return (
-    <Input
-      className="max-w-xs"
-      isInvalid={isInvalid()}
-      isRequired
-      label="Email"
-      labelPlacement="outside"
-      name="email"
-      type="email"
-      startContent={
-        <MailIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
-      }
-      onValueChange={setValue}
-      value={value}
-      validationBehavior="native"
-    />
-  );
+  return <TextInput className="max-w-xs" required name="email" type="email" />;
 };
 
 export default function SignUpForm() {
