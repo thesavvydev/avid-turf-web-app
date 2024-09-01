@@ -9,7 +9,7 @@ export default function AdminSideBar() {
   return (
     <Sidebar
       aria-label="Default sidebar example"
-      className="sticky top-4 hidden sm:block"
+      className="sticky top-4 hidden md:block"
     >
       <Sidebar.Items>
         <Sidebar.ItemGroup>

@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react";
 
 type TPageHeaderWithActions = PropsWithChildren & {
+  isAdmin?: boolean;
   title: string;
   subtitle?: string;
   renderActions?: () => ReactNode;
@@ -9,14 +10,15 @@ type TPageHeaderWithActions = PropsWithChildren & {
 
 export default function PageHeaderWithActions({
   children,
+  isAdmin = false,
   title,
   subtitle,
   renderActions,
   renderBreadcrumbs,
 }: TPageHeaderWithActions) {
   return (
-    <header className="bg-gray-100 dark:bg-gray-800">
-      <div className="container p-8">
+    <header className={isAdmin ? "" : "bg-gray-100 dark:bg-gray-800"}>
+      <div className={isAdmin ? "" : "container p-8"}>
         {renderBreadcrumbs && (
           <div className="mb-4 lg:mb-8">{renderBreadcrumbs()}</div>
         )}

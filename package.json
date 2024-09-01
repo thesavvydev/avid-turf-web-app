@@ -4,7 +4,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "update-types": "npx --yes supabase gen types --lang=typescript --project-id bdmpyubevevsghjbmfkf --schema public > types/supabase.d.ts"
+    "update-types": "npx --yes supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" --schema public > types/supabase.d.ts",
+    "update-local-types": "npx --yes supabase gen types --lang=typescript --local > types/supabase.d.ts"
   },
   "dependencies": {
     "@supabase/ssr": "latest",
