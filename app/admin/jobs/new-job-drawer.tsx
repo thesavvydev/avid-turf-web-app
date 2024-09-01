@@ -11,7 +11,7 @@ import {
   TextInput,
   Tooltip,
 } from "flowbite-react";
-import { MapPinIcon } from "lucide-react";
+import { WorkflowIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type TUsers = Pick<Tables<"profiles">, "id" | "full_name" | "avatar_url">[];
@@ -44,7 +44,7 @@ const useUsers = () => {
   };
 };
 
-export default function NewLocationDrawer() {
+export default function NewJobDrawer() {
   const { data: users } = useUsers();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -60,12 +60,12 @@ export default function NewLocationDrawer() {
   return (
     <>
       <Button color="primary" onClick={() => setIsOpen(true)}>
-        New Location
+        New Job
       </Button>
       <Drawer open={isOpen} onClose={handleClose}>
         <Drawer.Header
-          title="NEW LOCATION"
-          titleIcon={() => <MapPinIcon className="mr-2" />}
+          title="NEW JOB"
+          titleIcon={() => <WorkflowIcon className="mr-2" />}
         />
         <Drawer.Items>
           <form action="#" className="grid gap-4 lg:gap-8">
@@ -101,8 +101,8 @@ export default function NewLocationDrawer() {
               </div>
             </div>
             <Button className="w-full" color="primary">
-              <MapPinIcon className="mr-2" />
-              Create location
+              <WorkflowIcon className="mr-2" />
+              Create job
             </Button>
           </form>
         </Drawer.Items>

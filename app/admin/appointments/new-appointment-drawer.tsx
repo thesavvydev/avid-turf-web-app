@@ -11,7 +11,7 @@ import {
   TextInput,
   Tooltip,
 } from "flowbite-react";
-import { MapPinIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type TUsers = Pick<Tables<"profiles">, "id" | "full_name" | "avatar_url">[];
@@ -44,7 +44,7 @@ const useUsers = () => {
   };
 };
 
-export default function NewLocationDrawer() {
+export default function NewAppointmentDrawer() {
   const { data: users } = useUsers();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -60,12 +60,12 @@ export default function NewLocationDrawer() {
   return (
     <>
       <Button color="primary" onClick={() => setIsOpen(true)}>
-        New Location
+        New Appointment
       </Button>
       <Drawer open={isOpen} onClose={handleClose}>
         <Drawer.Header
-          title="NEW LOCATION"
-          titleIcon={() => <MapPinIcon className="mr-2" />}
+          title="NEW APPOINTMENT"
+          titleIcon={() => <CalendarIcon className="mr-2" />}
         />
         <Drawer.Items>
           <form action="#" className="grid gap-4 lg:gap-8">
@@ -101,8 +101,8 @@ export default function NewLocationDrawer() {
               </div>
             </div>
             <Button className="w-full" color="primary">
-              <MapPinIcon className="mr-2" />
-              Create location
+              <CalendarIcon className="mr-2" />
+              Create Appointment
             </Button>
           </form>
         </Drawer.Items>
