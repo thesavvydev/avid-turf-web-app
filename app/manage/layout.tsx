@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 import ManageNav from "./manage-nav";
+import ManageSidebar from "./manage-sidebar";
 
 export default async function ManageLayout({ children }: PropsWithChildren) {
   const supabase = createClient();
@@ -22,12 +23,17 @@ export default async function ManageLayout({ children }: PropsWithChildren) {
     .single();
 
   if (!data) redirect("/sign-in");
-  if (fetchProfileError) throw new Error(fetchProfileError.message);
+  if (fetchProfileError) throw new Error(fetchProfileError);
 
   return (
     <UserContextProvider user={data}>
-      <ManageNav />
-      <main>{children}</main>
+      <main className="relative md:flex">
+        <ManageSidebar />
+        <div className="flex-1">
+          <ManageNav />
+          {children}
+        </div>
+      </main>
     </UserContextProvider>
   );
 }

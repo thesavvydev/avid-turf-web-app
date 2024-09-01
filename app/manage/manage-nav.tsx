@@ -1,46 +1,30 @@
 "use client";
 
 import { useUserContext } from "@/contexts/user";
-import { Avatar, DarkThemeToggle, Dropdown, Navbar } from "flowbite-react";
-import { usePathname } from "next/navigation";
-
-const Brand = () => (
-  <p>
-    <span className="font-black text-gray-500 text-inherit">AVID</span>
-    <span className="font-semibold text-primary-400">TURF</span>
-  </p>
-);
+import {
+  Avatar,
+  DarkThemeToggle,
+  Dropdown,
+  Navbar,
+  theme,
+} from "flowbite-react";
+import useManageMenuItems from "./use-manage-menu-items";
+import { twMerge } from "tailwind-merge";
 
 export default function ManageNav() {
-  const pathname = usePathname();
+  const menuItems = useManageMenuItems();
   const {
     user: { full_name },
   } = useUserContext();
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      href: "/manage",
-      isActive: pathname === "/manage",
-    },
-    {
-      name: "Jobs",
-      href: "/manage/jobs",
-      isActive: pathname.startsWith("/manage/job"),
-    },
-    {
-      name: "Appointments",
-      href: "/manage/appointments",
-      isActive: pathname.startsWith("/manage/appointment"),
-    },
-  ];
-
   return (
-    <Navbar border>
-      <Navbar.Brand href="https://flowbite-react.com">
-        <Brand />
-      </Navbar.Brand>
-      <div className="flex gap-2 md:order-2 md:gap-4">
+    <Navbar fluid>
+      <Dropdown label="St George" size="sm" color="light">
+        <Dropdown.Header>Select a Location</Dropdown.Header>
+        <Dropdown.Item>St. George, Utah</Dropdown.Item>
+        <Dropdown.Item>Salt Lake City, Utah</Dropdown.Item>
+      </Dropdown>
+      <div className="ml-auto flex gap-2 md:order-2 md:ml-0 md:gap-4">
         <Dropdown
           arrowIcon={false}
           inline
@@ -65,7 +49,9 @@ export default function ManageNav() {
         <Navbar.Toggle />
         <DarkThemeToggle className="hidden md:block" />
       </div>
-      <Navbar.Collapse>
+      <Navbar.Collapse
+        theme={{ base: twMerge(theme.navbar.collapse.base, "lg:hidden") }}
+      >
         {menuItems.map((menuItem) => (
           <Navbar.Link
             key={menuItem.name}

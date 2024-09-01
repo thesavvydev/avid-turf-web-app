@@ -17,10 +17,10 @@ export default function PageHeaderWithActions({
   renderBreadcrumbs,
 }: TPageHeaderWithActions) {
   return (
-    <header className={isAdmin ? "" : "bg-gray-100 dark:bg-gray-800"}>
-      <div className={isAdmin ? "" : "container p-8"}>
+    <header>
+      <div className={isAdmin ? "" : "container p-4 lg:p-6 lg:pb-0"}>
         {renderBreadcrumbs && (
-          <div className="mb-4 lg:mb-8">{renderBreadcrumbs()}</div>
+          <div className="mb-4 lg:mb-6">{renderBreadcrumbs()}</div>
         )}
         <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
           <hgroup>

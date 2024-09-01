@@ -12,18 +12,18 @@ export default function ManagePage() {
         title="Dashboard"
         subtitle="Get a summary of whats going on in the business."
       />
-      <div className="container grid grid-cols-1 gap-4 p-4 md:grid-cols-6 md:items-start md:gap-8 md:p-8">
-        <div className="md:col-span-3">
+      <div className="container grid grid-cols-1 gap-4 p-4 md:gap-6 md:p-6 xl:grid-cols-6 xl:items-start xl:gap-8">
+        <div className="xl:col-span-3">
           <CommissionsCard />
         </div>
-        <div className="md:col-span-3">
+        <div className="xl:col-span-3">
           <JobStatusCard />
         </div>
-        <Card className="md:col-span-2">stat</Card>
-        <Card className="md:col-span-2">stat</Card>
-        <Card className="md:col-span-2">stat</Card>
-        <Card className="md:col-span-4">stat</Card>
-        <Card className="md:col-span-2">stat</Card>
+        <Card className="xl:col-span-2">stat</Card>
+        <Card className="xl:col-span-2">stat</Card>
+        <Card className="xl:col-span-2">stat</Card>
+        <Card className="xl:col-span-4">stat</Card>
+        <Card className="xl:col-span-2">stat</Card>
       </div>
     </>
   );
