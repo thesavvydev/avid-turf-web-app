@@ -9,7 +9,7 @@ export const customTheme: CustomFlowbiteTheme = {
   },
   card: {
     root: {
-      base: "shadow-sm shadow-gray-100 dark:shadow-gray-950 dark:border-gray-700 border border-gray-100 rounded-2xl dark:bg-gray-800",
+      base: "rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900",
     },
   },
 };

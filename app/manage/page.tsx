@@ -32,7 +32,7 @@ export default function ManagePage() {
         title="Dashboard"
         subtitle="Get a summary of whats going on in the business."
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:gap-6">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:gap-6 xl:gap-8">
         <Card
           className="relative z-10 overflow-hidden lg:col-span-2"
           theme={{
@@ -130,7 +130,7 @@ export default function ManagePage() {
           </div>
         </Card>
       </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6 xl:gap-8">
         <Card>
           <div className="grid grid-cols-3 items-center">
             <div className="col-span-2 grid gap-4">
@@ -282,7 +282,7 @@ export default function ManagePage() {
                   />
                 </div>
               </Card>
-              <div className="grid items-center gap-4 p-4 lg:gap-6 lg:p-6">
+              <div className="grid items-center gap-4 p-4 lg:gap-6 lg:p-6 xl:gap-8">
                 <h6 className="text-lg font-semibold tracking-tighter">Jobs</h6>
                 <div className="grid gap-2">
                   <div className="flex items-center justify-between gap-2">
@@ -318,7 +318,7 @@ export default function ManagePage() {
               </div>
             </div>
             <div className="grid divide-x-0 divide-y-2 divide-gray-100 rounded-xl bg-white dark:divide-gray-700 dark:bg-gray-900 lg:grid-cols-2 lg:divide-x-2 lg:divide-y-0">
-              <div className="flex items-center justify-center gap-2 p-4 lg:gap-6 lg:p-6">
+              <div className="flex items-center justify-center gap-2 p-4 lg:gap-6 lg:p-6 xl:gap-8">
                 <div className="relative size-28">
                   <Tooltip style="auto" content="35% close rate">
                     <svg
@@ -363,7 +363,7 @@ export default function ManagePage() {
                   </h6>
                 </div>
               </div>
-              <div className="flex items-center justify-center gap-2 p-4 lg:gap-6 lg:p-6">
+              <div className="flex items-center justify-center gap-2 p-4 lg:gap-6 lg:p-6 xl:gap-8">
                 <div className="relative size-28">
                   <Tooltip style="auto" content="15% missed">
                     <svg
