@@ -29,9 +29,11 @@ export default async function ManageLayout({ children }: PropsWithChildren) {
     <UserContextProvider user={data}>
       <main className="relative md:flex">
         <ManageSidebar />
-        <div className="flex-1">
+        <div className="max-w-full flex-1 overflow-x-hidden">
           <ManageNav />
-          {children}
+          <div className="container flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+            {children}
+          </div>
         </div>
       </main>
     </UserContextProvider>

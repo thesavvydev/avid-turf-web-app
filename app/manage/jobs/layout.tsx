@@ -10,7 +10,7 @@ export default function Layout({ children }: PropsWithChildren) {
   return (
     <>
       <JobsHeader />
-      <div className="container p-4 sm:p-8">{children}</div>
+      {children}
     </>
   );
 }

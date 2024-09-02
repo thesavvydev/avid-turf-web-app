@@ -31,7 +31,7 @@ export default function ManageSidebar() {
         root: {
           base: twMerge(
             theme.sidebar.root.base,
-            "h-screen hidden lg:block sticky top-0 border-r dark:border-gray-700 relative",
+            "h-screen hidden lg:block top-0 border-r dark:border-gray-700 relative sticky",
           ),
         },
       }}

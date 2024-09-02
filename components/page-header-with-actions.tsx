@@ -18,7 +18,7 @@ export default function PageHeaderWithActions({
 }: TPageHeaderWithActions) {
   return (
     <header>
-      <div className={isAdmin ? "" : "container p-4 lg:p-6 lg:pb-0"}>
+      <div>
         {renderBreadcrumbs && (
           <div className="mb-4 lg:mb-6">{renderBreadcrumbs()}</div>
         )}

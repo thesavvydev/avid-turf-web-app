@@ -35,6 +35,7 @@ export default function ManageNav() {
               rounded
             />
           }
+          theme={{ content: twMerge(theme.dropdown.content, "z-50") }}
         >
           <Dropdown.Header>
             <span className="block text-sm">{full_name}</span>

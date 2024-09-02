@@ -14,7 +14,7 @@ export default function useManageMenuItems() {
   return [
     {
       name: "Dashboard",
-      href: "/admin",
+      href: "/manage",
       isActive: pathname === "/manage",
       icon: HomeIcon,
     },
