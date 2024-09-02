@@ -19,13 +19,13 @@ export default function Page() {
               <h6 className="text-lg font-semibold tracking-tighter">
                 Proposal
               </h6>
-              <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:bg-gray-700">
+              <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <PencilIcon className="fill-gray-200" />
               </div>
             </div>
           </Card>
         </div>
-        <div className="row-span-3">
+        <div className="row-span-2">
           <Card>
             <div className="grid gap-4 lg:gap-6">
               <div className="grid gap-4 border-b border-dashed border-gray-200 pb-4 dark:border-gray-700 lg:gap-6 lg:pb-6">
@@ -33,7 +33,7 @@ export default function Page() {
                   <h6 className="text-lg font-semibold tracking-tighter">
                     Customer info
                   </h6>
-                  <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:bg-gray-700">
+                  <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                     <PencilIcon className="fill-gray-200" />
                   </div>
                 </div>
@@ -58,7 +58,7 @@ export default function Page() {
                   <h6 className="text-lg font-semibold tracking-tighter">
                     Location
                   </h6>
-                  <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:bg-gray-700">
+                  <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                     <PencilIcon className="fill-gray-200" />
                   </div>
                 </div>
@@ -89,10 +89,10 @@ export default function Page() {
                     Employees
                   </h6>
                   <div className="flex items-center gap-2">
-                    <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:bg-gray-700">
+                    <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                       <PlusCircleIcon />
                     </div>
-                    <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:bg-gray-700">
+                    <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                       <PencilIcon className="fill-gray-200" />
                     </div>
                   </div>
@@ -118,12 +118,39 @@ export default function Page() {
             </div>
           </Card>
         </div>
+
         <div className="col-span-2">
           <Card>
             <h6 className="mb-6 text-lg font-semibold tracking-tighter">
               History
             </h6>
             <JobHistoryTimeline />
+          </Card>
+        </div>
+        <div className="col-span-2">
+          <Card>
+            <div className="flex items-center justify-between gap-2">
+              <h6 className="text-lg font-semibold tracking-tighter">Media</h6>
+              <div className="flex items-center gap-2">
+                <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <PlusCircleIcon />
+                </div>
+                <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <PencilIcon className="fill-gray-200" />
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+        <div>
+          <Card>
+            <h6 className="mb-6 text-lg font-semibold tracking-tighter">
+              Schedule
+            </h6>
+            <div className="grid lg:grid-cols-2">
+              <div>calendar</div>
+              <div>scedule on selected day</div>
+            </div>
           </Card>
         </div>
       </div>
