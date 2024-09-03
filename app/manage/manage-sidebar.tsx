@@ -31,7 +31,7 @@ export default function ManageSidebar() {
         root: {
           base: twMerge(
             theme.sidebar.root.base,
-            "h-screen hidden lg:block top-0 border-r dark:border-gray-700 relative sticky",
+            "h-screen hidden lg:block top-0 border-r dark:border-gray-700 relative sticky z-50",
           ),
         },
       }}
@@ -54,13 +54,7 @@ export default function ManageSidebar() {
               key={menuItem.name}
               active={menuItem.isActive}
             >
-              {isCollapsed ? (
-                <Tooltip placement="right" style="auto" content={menuItem.name}>
-                  {menuItem.name}
-                </Tooltip>
-              ) : (
-                menuItem.name
-              )}
+              {menuItem.name}
             </Sidebar.Item>
           ))}
         </Sidebar.ItemGroup>
