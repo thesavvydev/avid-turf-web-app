@@ -34,7 +34,7 @@ export default function ManagePage() {
       />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:gap-6 xl:gap-8">
         <Card
-          className="relative z-10 overflow-hidden lg:col-span-2"
+          className="relative overflow-hidden lg:col-span-2"
           theme={{
             root: {
               base: twMerge(
@@ -48,7 +48,6 @@ export default function ManagePage() {
             leftControl="&nbsp;"
             rightControl="&nbsp;"
             theme={{
-              root: { base: twMerge(theme.carousel.root.base, "z-10") },
               indicators: {
                 base: "size-3 rounded-full",
                 active: { on: "bg-white", off: "bg-gray-500" },

@@ -1,6 +1,6 @@
 import { Badge } from "flowbite-react";
 
-const statuses = {
+export const JOB_STATUSES = {
   lead: {
     color: "indigo",
     name: "Lead",
@@ -19,14 +19,15 @@ const statuses = {
   },
 };
 
-export type TStatusesBadgeProps = typeof statuses;
+export type TStatusesBadgeProps = typeof JOB_STATUSES;
 
 export default function StatusBadge({
   status,
 }: {
   status: keyof TStatusesBadgeProps;
 }) {
-  console.log({ statuses, status });
-  const { color, name } = statuses[status] ? statuses[status] : statuses.lead;
+  const { color, name } = JOB_STATUSES[status]
+    ? JOB_STATUSES[status]
+    : JOB_STATUSES.lead;
   return <Badge color={color}>{name}</Badge>;
 }
