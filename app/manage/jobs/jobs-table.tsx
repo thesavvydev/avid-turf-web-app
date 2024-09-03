@@ -418,7 +418,9 @@ function Content() {
         }}
       >
         {columns.map((column) => (
-          <Table.HeadCell key={column.name}>{column.name}</Table.HeadCell>
+          <Table.HeadCell key={column.name} className={column.cellClassNames}>
+            {column.name}
+          </Table.HeadCell>
         ))}
       </Table.Head>
       <Table.Body>
