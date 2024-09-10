@@ -3,10 +3,9 @@
 import DynamicTable from "@/components/dynamic-table";
 import Linky from "@/components/linky";
 import { Tables } from "@/types/supabase";
-import { Alert, Button, Dropdown, Tooltip } from "flowbite-react";
+import { Button, Dropdown, Tooltip } from "flowbite-react";
 import {
   EllipsisVerticalIcon,
-  InfoIcon,
   SettingsIcon,
   Trash2Icon,
   VenetianMaskIcon,
