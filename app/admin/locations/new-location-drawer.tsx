@@ -1,114 +1,105 @@
 "use client";
 
-import pluralize from "@/utils/pluralize";
-import { Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/client";
-import {
-  Avatar,
-  Button,
-  Drawer,
-  Label,
-  TextInput,
-  Tooltip,
-} from "flowbite-react";
+import initialFormState, {
+  TInitialFormState,
+} from "@/constants/initial-form-state";
+import { US_STATES } from "@/constants/us-states";
+import { Button, Drawer, Label, Select, TextInput } from "flowbite-react";
 import { MapPinIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-type TUsers = Pick<Tables<"profiles">, "id" | "full_name" | "avatar_url">[];
-
-const useUsers = () => {
-  const supabase = createClient();
-  const [data, setData] = useState<TUsers>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setIsLoading(true);
-      await supabase
-        .from("profiles")
-        .select("id,full_name,avatar_url")
-        .then((response) => {
-          if (response.error) return;
-          setData(response.data);
-        });
-
-      setIsLoading(false);
-    };
-
-    if (isLoading) fetchUsers();
-  }, [isLoading, supabase]);
-
-  return {
-    isLoading,
-    data,
-  };
-};
+import { useFormState } from "react-dom";
+import { AddLocation } from "./actions";
+import SubmitButton from "@/components/submit-button";
 
 export default function NewLocationDrawer() {
-  const { data: users } = useUsers();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
   const handleClose = () => setIsOpen(false);
-  const handleToggleUser = (id: string) =>
-    setSelectedUsers((prevState) =>
-      prevState.includes(id)
-        ? prevState.filter((item) => item !== id)
-        : [...prevState, id],
-    );
+  const [state, action] = useFormState(
+    AddLocation<TInitialFormState>,
+    initialFormState,
+  );
+
+  useEffect(() => {
+    if (state.success) {
+      router.refresh();
+      state.dismiss && setIsOpen(() => false);
+    }
+  }, [state.success, state.dismiss, router]);
 
   return (
     <>
       <Button color="primary" onClick={() => setIsOpen(true)}>
         New Location
       </Button>
-      <Drawer open={isOpen} onClose={handleClose}>
-        <Drawer.Header
-          title="NEW LOCATION"
-          titleIcon={() => <MapPinIcon className="mr-2" />}
-        />
-        <Drawer.Items>
-          <form action="#" className="grid gap-4 lg:gap-8">
-            <div>
-              <Label htmlFor="title" className="mb-2 block">
-                Title
-              </Label>
-              <TextInput id="title" name="title" placeholder="Apple Keynote" />
-            </div>
-            <div>
-              <Label className="mb-2 block">{`Employees ${selectedUsers.length > 0 ? `(${selectedUsers.length} ${pluralize("user", "users", selectedUsers.length)})` : ``}`}</Label>
-              <div className="flex flex-wrap items-center gap-2">
-                {users.map((user) => {
-                  const selectedUser = selectedUsers.includes(user.id);
-                  return (
-                    <Tooltip content={user.full_name} key={user.full_name}>
-                      <Avatar
-                        onClick={() => handleToggleUser(user.id)}
-                        color={selectedUser ? "success" : "light"}
-                        status={selectedUser ? "online" : "offline"}
-                        bordered
-                        rounded
-                        placeholderInitials={
-                          user.full_name
-                            ? user.full_name
-                                .split(" ")
-                                .map((chars) => chars[0])
-                                .join("")
-                            : undefined
-                        }
-                      />
-                    </Tooltip>
-                  );
-                })}
+      {isOpen && (
+        <Drawer open={isOpen} onClose={handleClose}>
+          <Drawer.Header
+            title="New Location"
+            titleIcon={() => <MapPinIcon className="mr-2" />}
+          />
+          <Drawer.Items>
+            <form action={action} className="grid gap-2 md:gap-4 lg:gap-6">
+              <div>
+                <Label htmlFor="name" className="mb-2 block">
+                  Name
+                </Label>
+                <TextInput
+                  id="name"
+                  name="name"
+                  placeholder="Southern Utah"
+                  required
+                />
               </div>
-            </div>
-            <Button className="w-full" color="primary">
-              <MapPinIcon className="mr-2" />
-              Create location
-            </Button>
-          </form>
-        </Drawer.Items>
-      </Drawer>
+              <h4 className="border-b text-lg font-medium">Office</h4>
+              <div>
+                <Label htmlFor="address" className="mb-2 block">
+                  Address
+                </Label>
+                <TextInput
+                  id="address"
+                  name="address"
+                  placeholder="1234 Apple Street"
+                />
+              </div>
+              <div>
+                <Label htmlFor="city" className="mb-2 block">
+                  City
+                </Label>
+                <TextInput id="city" name="city" placeholder="Sydney" />
+              </div>
+              <div>
+                <Label htmlFor="state" className="mb-2 block">
+                  State
+                </Label>
+                <Select name="state">
+                  <option value="">Select a state</option>
+                  {Object.entries(US_STATES).map(([abbr, name]) => (
+                    <option key={abbr} value={abbr}>
+                      {name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="postal_code" className="mb-2 block">
+                  Postal Code
+                </Label>
+                <TextInput
+                  id="postal_code"
+                  name="postal_code"
+                  placeholder="02321-2342"
+                />
+              </div>
+              <SubmitButton>
+                <MapPinIcon className="mr-2" />
+                Create location
+              </SubmitButton>
+            </form>
+          </Drawer.Items>
+        </Drawer>
+      )}
     </>
   );
 }

@@ -6,7 +6,8 @@ export default async function Page() {
   const supabase = createClient();
   const { data: locations, error } = await supabase
     .from("locations")
-    .select("*");
+    .select("*")
+    .order("state");
 
   if (error) throw new Error(error.message);
 

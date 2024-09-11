@@ -108,6 +108,7 @@ export default function UsersTable({ data }: { data: Tables<"profiles">[] }) {
       renderCell: () => "Location A, Location B",
     },
     {
+      cellClassNames: "w-0",
       field: "actions",
       renderCell: (profile: Tables<"profiles">) => (
         <UserActionCell profile={profile} />
