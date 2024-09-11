@@ -26,8 +26,8 @@ export default function AdminNav() {
   } = useUserContext();
 
   return (
-    <Navbar border>
-      <Navbar.Brand href="https://flowbite-react.com">
+    <Navbar border fluid>
+      <Navbar.Brand href="/">
         <Brand />
       </Navbar.Brand>
       <div className="flex gap-2 md:order-2 md:gap-4">

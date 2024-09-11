@@ -1,6 +1,6 @@
 "use client";
 
-import pluralize from "@/lib/pluralize";
+import pluralize from "@/utils/pluralize";
 import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import {

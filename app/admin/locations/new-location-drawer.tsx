@@ -1,6 +1,6 @@
 "use client";
 
-import pluralize from "@/lib/pluralize";
+import pluralize from "@/utils/pluralize";
 import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import {
@@ -78,26 +78,28 @@ export default function NewLocationDrawer() {
             <div>
               <Label className="mb-2 block">{`Employees ${selectedUsers.length > 0 ? `(${selectedUsers.length} ${pluralize("user", "users", selectedUsers.length)})` : ``}`}</Label>
               <div className="flex flex-wrap items-center gap-2">
-                {users.map((user) => (
-                  <Tooltip content={user.full_name} key={user.full_name}>
-                    <Avatar
-                      onClick={() => handleToggleUser(user.id)}
-                      color={
-                        selectedUsers.includes(user.id) ? "primary" : "light"
-                      }
-                      bordered
-                      rounded
-                      placeholderInitials={
-                        user.full_name
-                          ? user.full_name
-                              .split(" ")
-                              .map((chars) => chars[0])
-                              .join("")
-                          : undefined
-                      }
-                    />
-                  </Tooltip>
-                ))}
+                {users.map((user) => {
+                  const selectedUser = selectedUsers.includes(user.id);
+                  return (
+                    <Tooltip content={user.full_name} key={user.full_name}>
+                      <Avatar
+                        onClick={() => handleToggleUser(user.id)}
+                        color={selectedUser ? "success" : "light"}
+                        status={selectedUser ? "online" : "offline"}
+                        bordered
+                        rounded
+                        placeholderInitials={
+                          user.full_name
+                            ? user.full_name
+                                .split(" ")
+                                .map((chars) => chars[0])
+                                .join("")
+                            : undefined
+                        }
+                      />
+                    </Tooltip>
+                  );
+                })}
               </div>
             </div>
             <Button className="w-full" color="primary">
