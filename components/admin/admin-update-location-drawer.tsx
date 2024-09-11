@@ -11,7 +11,7 @@ import { MapPinIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { UpdateLocation } from "./actions";
+import { UpdateLocation } from "../../app/admin/locations/actions";
 import { US_STATES } from "@/constants/us-states";
 
 const FormFields = ({
@@ -91,17 +91,17 @@ const FormFields = ({
   );
 };
 
-type UpdateLocationDrawerType = {
+type AdminUpdateLocationDrawerType = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   location: Tables<"locations">;
 };
 
-export default function UpdateLocationDrawer({
+export default function AdminUpdateLocationDrawer({
   isOpen,
   setIsOpen,
   location,
-}: UpdateLocationDrawerType) {
+}: AdminUpdateLocationDrawerType) {
   const router = useRouter();
   const handleClose = () => setIsOpen(false);
   const [state, action] = useFormState(

@@ -8,7 +8,7 @@ import { Button, Dropdown, Tooltip } from "flowbite-react";
 import { EllipsisVerticalIcon, SettingsIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import UpdateLocationDrawer from "./update-location-drawer";
+import AdminUpdateLocationDrawer from "@/components/admin/admin-update-location-drawer";
 import { DeleteLocation } from "./actions";
 
 type TLocationsTableProps = {
@@ -23,7 +23,7 @@ function LocationActionCell({ location }: { location: Tables<"locations"> }) {
   return (
     <>
       {isUpdateLocationDrawerOpen && (
-        <UpdateLocationDrawer
+        <AdminUpdateLocationDrawer
           isOpen={isUpdateLocationDrawerOpen}
           setIsOpen={setIsUpdateLocationDrawerOpen}
           location={location}
