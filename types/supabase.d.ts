@@ -108,6 +108,32 @@ export type Database = {
           },
         ]
       }
+      global_admins: {
+        Row: {
+          created_at: string
+          id: number
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_admins_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_employees: {
         Row: {
           commission_percentage: number
@@ -220,6 +246,44 @@ export type Database = {
           },
         ]
       }
+      job_reviews: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: number
+          job_id: number
+          message: string | null
+          rating: number
+          status: Database["public"]["Enums"]["Record Status"]
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: number
+          job_id: number
+          message?: string | null
+          rating?: number
+          status?: Database["public"]["Enums"]["Record Status"]
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: number
+          job_id?: number
+          message?: string | null
+          rating?: number
+          status?: Database["public"]["Enums"]["Record Status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_reviews_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           city: string
@@ -314,19 +378,31 @@ export type Database = {
       }
       locations: {
         Row: {
+          address: string | null
+          city: string | null
           created_at: string
           id: number
           name: string
+          postal_code: string | null
+          state: string | null
         }
         Insert: {
+          address?: string | null
+          city?: string | null
           created_at?: string
           id?: number
           name: string
+          postal_code?: string | null
+          state?: string | null
         }
         Update: {
+          address?: string | null
+          city?: string | null
           created_at?: string
           id?: number
           name?: string
+          postal_code?: string | null
+          state?: string | null
         }
         Relationships: []
       }
@@ -373,13 +449,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_global_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       "Job Employee Roles": "setter" | "closer" | "installer"
       "Job Media Types": "pdf" | "photo" | "video"
       "Job Statuses": "new" | "in_progress" | "complete"
       "Location Employee Roles": "admin" | "manager" | "employee"
+      "Record Status": "draft" | "published" | "needs_review" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
