@@ -15,14 +15,16 @@ interface IColumn<RowData> {
 type TDynamicTableProps<RowData> = {
   columns: IColumn<RowData>[];
   rows: RowData[];
+  striped?: boolean;
 };
 
 export default function DynamicTable<RowData>({
   columns,
   rows,
+  striped,
 }: TDynamicTableProps<RowData & { id: string | number }>) {
   return rows.length ? (
-    <Table theme={{ root: { shadow: "" } }}>
+    <Table theme={{ root: { shadow: "" } }} striped={striped}>
       <Table.Head>
         {columns.map((column) => (
           <Table.HeadCell
