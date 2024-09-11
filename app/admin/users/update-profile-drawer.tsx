@@ -69,7 +69,7 @@ export default function UpdateProfileDrawer({
       router.refresh();
       state.dismiss && setIsOpen(() => false);
     }
-  }, [state.success, state.dismiss]);
+  }, [state.success, state.dismiss, router, setIsOpen]);
 
   return (
     <Drawer open={isOpen} onClose={handleClose}>

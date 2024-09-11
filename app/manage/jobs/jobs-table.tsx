@@ -35,6 +35,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useMemo,
   useState,
@@ -227,23 +228,29 @@ function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const handleUpdateSearchParam = (param: string, value: string) => {
-    setIsProcessing(true);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set(param, value);
+  const handleUpdateSearchParam = useCallback(
+    (param: string, value: string) => {
+      setIsProcessing(true);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(param, value);
 
-    router.push(`${pathname}?${params.toString()}`);
-    setIsProcessing(false);
-  };
+      router.push(`${pathname}?${params.toString()}`);
+      setIsProcessing(false);
+    },
+    [pathname, router, searchParams],
+  );
 
-  const handleRemoveSearchParam = (param: string, value: string) => {
-    setIsProcessing(true);
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete(param, value);
+  const handleRemoveSearchParam = useCallback(
+    (param: string, value: string) => {
+      setIsProcessing(true);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete(param, value);
 
-    router.push(`${pathname}?${params.toString()}`);
-    setIsProcessing(false);
-  };
+      router.push(`${pathname}?${params.toString()}`);
+      setIsProcessing(false);
+    },
+    [pathname, router, searchParams],
+  );
 
   const value = useMemo(
     () => ({

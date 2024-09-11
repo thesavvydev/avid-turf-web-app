@@ -55,7 +55,7 @@ export default function NewUserDrawer() {
       router.refresh();
       state.dismiss && setIsOpen(() => false);
     }
-  }, [state.success, state.dismiss]);
+  }, [state.success, state.dismiss, router]);
 
   return (
     <>

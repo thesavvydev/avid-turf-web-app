@@ -36,7 +36,7 @@ const useUsers = () => {
     };
 
     if (isLoading) fetchUsers();
-  }, []);
+  }, [isLoading, supabase]);
 
   return {
     isLoading,
