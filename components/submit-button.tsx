@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import { PropsWithChildren } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -16,7 +16,14 @@ export default function SubmitButton({
 
   return (
     <Button disabled={pending} type="submit" color="primary" size="lg">
-      {pending && pendingText ? pendingText : children}
+      {pending && pendingText ? (
+        <>
+          <Spinner aria-label="Form submitted" size="md" />
+          {pendingText}
+        </>
+      ) : (
+        children
+      )}
     </Button>
   );
 }
