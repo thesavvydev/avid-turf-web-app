@@ -15,7 +15,7 @@ export async function AddNewUser<T>(...args: ServerActionWithState<T>) {
   if (!isValidEmailInput(email as string))
     return { ...state, success: false, error: "Invalid email format" };
 
-  const { data, error } = await supabase.auth.admin.inviteUserByEmail(
+  const { error } = await supabase.auth.admin.inviteUserByEmail(
     email as string,
     {
       data: { full_name, avatar_url },

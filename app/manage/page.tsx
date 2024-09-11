@@ -1,7 +1,5 @@
 "use client";
 
-import AreaChart from "@/components/area-chart";
-import DonutChart from "@/components/donut-chart";
 import LineChart from "@/components/line-chart";
 import PageHeaderWithActions from "@/components/page-header-with-actions";
 import {

@@ -6,11 +6,10 @@ import StatusBadge, {
   JOB_STATUSES,
   TStatusesBadgeProps,
 } from "@/components/status-badge";
-import { formatAsCompactCurrency, formatAsCurrency } from "@/utils/formatter";
+import { formatAsCurrency } from "@/utils/formatter";
 import {
   Badge,
   Button,
-  Checkbox,
   Datepicker,
   Dropdown,
   Select,
@@ -258,8 +257,15 @@ function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
+      setData,
     }),
-    [data, handleUpdateSearchParam, handleRemoveSearchParam, isProcessing],
+    [
+      data,
+      handleUpdateSearchParam,
+      handleRemoveSearchParam,
+      isProcessing,
+      setData,
+    ],
   );
 
   return (

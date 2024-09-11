@@ -10,7 +10,6 @@ type TPageHeaderWithActions = PropsWithChildren & {
 
 export default function PageHeaderWithActions({
   children,
-  isAdmin = false,
   title,
   subtitle,
   renderActions,

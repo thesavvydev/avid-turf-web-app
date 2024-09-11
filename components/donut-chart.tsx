@@ -1,8 +1,4 @@
-import {
-  AgAreaSeriesOptions,
-  AgChartOptions,
-  AgDonutSeriesOptions,
-} from "ag-charts-community";
+import { AgChartOptions, AgDonutSeriesOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 import { CSSProperties } from "react";
 

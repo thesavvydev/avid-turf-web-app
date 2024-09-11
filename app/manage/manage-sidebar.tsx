@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar, theme, Tooltip } from "flowbite-react";
+import { Sidebar, theme } from "flowbite-react";
 import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";

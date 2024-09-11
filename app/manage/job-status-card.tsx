@@ -1,6 +1,5 @@
 "use client";
 
-import AreaChart from "@/components/area-chart";
 import BarChart from "@/components/bar-chart";
 import { Button, Card } from "flowbite-react";
 import { useState } from "react";

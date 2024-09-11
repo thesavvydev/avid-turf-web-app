@@ -2,7 +2,6 @@
 import {
   CalendarDaysIcon,
   HomeIcon,
-  MapPinIcon,
   UserIcon,
   WorkflowIcon,
 } from "lucide-react";

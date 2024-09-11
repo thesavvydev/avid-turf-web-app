@@ -1,12 +1,5 @@
-import { Avatar, Button, Card, Label, Timeline } from "flowbite-react";
-import {
-  ArrowRightIcon,
-  Edit2Icon,
-  MailIcon,
-  PencilIcon,
-  PhoneIcon,
-  PlusCircleIcon,
-} from "lucide-react";
+import { Avatar, Button, Card, Label } from "flowbite-react";
+import { MailIcon, PencilIcon, PhoneIcon, PlusCircleIcon } from "lucide-react";
 import JobHistoryTimeline from "./job-history-timeline";
 
 export default function Page() {

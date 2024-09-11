@@ -15,7 +15,7 @@ const columns = [
   {
     field: "employees",
     header: "# Employees",
-    renderCell: (location: Tables<"locations">) => 5,
+    renderCell: () => 5,
   },
 ];
 

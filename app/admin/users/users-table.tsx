@@ -105,7 +105,7 @@ export default function UsersTable({ data }: { data: Tables<"profiles">[] }) {
       cellClassNames: "whitespace-nowrap hidden lg:table-cell",
       field: "locations",
       header: "Locations",
-      renderCell: (profile: Tables<"profiles">) => "Location A, Location B",
+      renderCell: () => "Location A, Location B",
     },
     {
       field: "actions",

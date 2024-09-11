@@ -1,15 +1,13 @@
 import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
-import { Card, theme, Tooltip } from "flowbite-react";
-import { twMerge } from "tailwind-merge";
-import JobsTable from "./jobs-table";
 import {
   ArchiveIcon,
   CaptionsOffIcon,
-  ChartPieIcon,
   LandmarkIcon,
   SignpostIcon,
   WorkflowIcon,
 } from "lucide-react";
+import { twMerge } from "tailwind-merge";
+import JobsTable from "./jobs-table";
 
 const tiles = [
   {
