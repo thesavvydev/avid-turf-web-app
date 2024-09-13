@@ -141,7 +141,7 @@ export type Database = {
           id: number
           job_id: number
           profile_id: string
-          role: Database["public"]["Enums"]["Job Employee Roles"]
+          role: Database["public"]["Enums"]["job_employee_roles"]
         }
         Insert: {
           commission_percentage?: number
@@ -149,7 +149,7 @@ export type Database = {
           id?: number
           job_id: number
           profile_id: string
-          role?: Database["public"]["Enums"]["Job Employee Roles"]
+          role?: Database["public"]["Enums"]["job_employee_roles"]
         }
         Update: {
           commission_percentage?: number
@@ -157,7 +157,7 @@ export type Database = {
           id?: number
           job_id?: number
           profile_id?: string
-          role?: Database["public"]["Enums"]["Job Employee Roles"]
+          role?: Database["public"]["Enums"]["job_employee_roles"]
         }
         Relationships: [
           {
@@ -182,7 +182,7 @@ export type Database = {
           id: number
           job_id: number
           name: string
-          type: Database["public"]["Enums"]["Job Media Types"]
+          type: Database["public"]["Enums"]["job_media_types"]
           url: string
         }
         Insert: {
@@ -190,7 +190,7 @@ export type Database = {
           id?: number
           job_id: number
           name: string
-          type: Database["public"]["Enums"]["Job Media Types"]
+          type: Database["public"]["Enums"]["job_media_types"]
           url: string
         }
         Update: {
@@ -198,7 +198,7 @@ export type Database = {
           id?: number
           job_id?: number
           name?: string
-          type?: Database["public"]["Enums"]["Job Media Types"]
+          type?: Database["public"]["Enums"]["job_media_types"]
           url?: string
         }
         Relationships: [
@@ -254,7 +254,7 @@ export type Database = {
           job_id: number
           message: string | null
           rating: number
-          status: Database["public"]["Enums"]["Record Status"]
+          status: Database["public"]["Enums"]["record_status"]
         }
         Insert: {
           created_at?: string
@@ -263,7 +263,7 @@ export type Database = {
           job_id: number
           message?: string | null
           rating?: number
-          status?: Database["public"]["Enums"]["Record Status"]
+          status?: Database["public"]["Enums"]["record_status"]
         }
         Update: {
           created_at?: string
@@ -272,7 +272,7 @@ export type Database = {
           job_id?: number
           message?: string | null
           rating?: number
-          status?: Database["public"]["Enums"]["Record Status"]
+          status?: Database["public"]["Enums"]["record_status"]
         }
         Relationships: [
           {
@@ -295,7 +295,7 @@ export type Database = {
           location_id: number | null
           notes: string | null
           state: string
-          status: Database["public"]["Enums"]["Job Statuses"]
+          status: Database["public"]["Enums"]["job_statuses"]
           street_address: string
         }
         Insert: {
@@ -308,7 +308,7 @@ export type Database = {
           location_id?: number | null
           notes?: string | null
           state: string
-          status?: Database["public"]["Enums"]["Job Statuses"]
+          status?: Database["public"]["Enums"]["job_statuses"]
           street_address: string
         }
         Update: {
@@ -321,7 +321,7 @@ export type Database = {
           location_id?: number | null
           notes?: string | null
           state?: string
-          status?: Database["public"]["Enums"]["Job Statuses"]
+          status?: Database["public"]["Enums"]["job_statuses"]
           street_address?: string
         }
         Relationships: [
@@ -338,26 +338,23 @@ export type Database = {
         Row: {
           created_at: string
           default_commission_rate: number | null
-          id: number
           location_id: number
           profile_id: string
-          role: Database["public"]["Enums"]["Location Employee Roles"]
+          role: Database["public"]["Enums"]["location_employee_roles"]
         }
         Insert: {
           created_at?: string
           default_commission_rate?: number | null
-          id?: number
           location_id: number
           profile_id: string
-          role?: Database["public"]["Enums"]["Location Employee Roles"]
+          role?: Database["public"]["Enums"]["location_employee_roles"]
         }
         Update: {
           created_at?: string
           default_commission_rate?: number | null
-          id?: number
           location_id?: number
           profile_id?: string
-          role?: Database["public"]["Enums"]["Location Employee Roles"]
+          role?: Database["public"]["Enums"]["location_employee_roles"]
         }
         Relationships: [
           {
@@ -385,6 +382,7 @@ export type Database = {
           name: string
           postal_code: string | null
           state: string | null
+          status: Database["public"]["Enums"]["record_status"]
         }
         Insert: {
           address?: string | null
@@ -394,6 +392,7 @@ export type Database = {
           name: string
           postal_code?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
         }
         Update: {
           address?: string | null
@@ -403,6 +402,7 @@ export type Database = {
           name?: string
           postal_code?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
         }
         Relationships: []
       }
@@ -449,17 +449,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_user_id_by_email: {
+        Args: {
+          email: string
+        }
+        Returns: {
+          id: string
+        }[]
+      }
       is_global_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
     }
     Enums: {
-      "Job Employee Roles": "setter" | "closer" | "installer"
-      "Job Media Types": "pdf" | "photo" | "video"
-      "Job Statuses": "new" | "in_progress" | "complete"
-      "Location Employee Roles": "admin" | "manager" | "employee"
-      "Record Status": "draft" | "published" | "needs_review" | "archived"
+      job_employee_roles: "setter" | "closer" | "installer"
+      job_media_types: "pdf" | "photo" | "video"
+      job_statuses: "new" | "in_progress" | "complete"
+      location_employee_roles: "admin" | "manager" | "employee"
+      record_status: "draft" | "published" | "needs_review" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
