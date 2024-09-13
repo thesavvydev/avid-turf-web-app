@@ -1,6 +1,6 @@
 "use server";
 
-import initialFormState from "@/constants/initial-form-state";
+import { initialFormState } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { createClient } from "@/utils/supabase/server";
 import { isValidEmailInput } from "@/utils/validate-email-input";

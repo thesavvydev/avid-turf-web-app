@@ -2,7 +2,7 @@
 
 import ErrorAlert from "@/components/error-alert";
 import SubmitButton from "@/components/submit-button";
-import initialFormState from "@/constants/initial-form-state";
+import { initialFormState } from "@/constants/initial-form-state";
 import { Tables } from "@/types/supabase";
 import { Drawer, FileInput, Label, TextInput } from "flowbite-react";
 import { UserCogIcon } from "lucide-react";

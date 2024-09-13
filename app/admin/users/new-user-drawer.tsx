@@ -2,7 +2,7 @@
 
 import ErrorAlert from "@/components/error-alert";
 import SubmitButton from "@/components/submit-button";
-import initialFormState from "@/constants/initial-form-state";
+import { initialFormState } from "@/constants/initial-form-state";
 import { Button, Drawer, FileInput, Label, TextInput } from "flowbite-react";
 import { UserPlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

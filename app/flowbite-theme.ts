@@ -1,4 +1,5 @@
-import { CustomFlowbiteTheme } from "flowbite-react";
+import { CustomFlowbiteTheme, theme } from "flowbite-react";
+import { twMerge } from "tailwind-merge";
 
 export const customTheme: CustomFlowbiteTheme = {
   button: {
@@ -10,6 +11,14 @@ export const customTheme: CustomFlowbiteTheme = {
   card: {
     root: {
       base: "rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900",
+    },
+  },
+  tabs: {
+    tablist: {
+      base: twMerge(theme.tabs.tablist.base, "pt-1 pl-1"),
+      variant: {
+        underline: twMerge(theme.tabs.tablist.variant.underline, "flex-nowrap"),
+      },
     },
   },
 };
