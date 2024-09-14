@@ -8,21 +8,34 @@ import {
   Navbar,
   theme,
 } from "flowbite-react";
-import useManageMenuItems from "./use-manage-menu-items";
+import useManageMenuItems from "../use-manage-menu-items";
 import { twMerge } from "tailwind-merge";
+import { useParams } from "next/navigation";
 
 export default function ManageNav() {
   const menuItems = useManageMenuItems();
   const {
-    user: { full_name },
+    user: { full_name, locations },
   } = useUserContext();
+
+  const { locationId } = useParams();
+  const selectedLocation = locations?.find(
+    (location) => location.id === Number(locationId),
+  );
 
   return (
     <Navbar fluid>
-      <Dropdown label="St George" size="sm" color="light">
+      <Dropdown
+        label={selectedLocation?.name ?? "Select a location"}
+        size="sm"
+        color="light"
+      >
         <Dropdown.Header>Select a Location</Dropdown.Header>
-        <Dropdown.Item>St. George, Utah</Dropdown.Item>
-        <Dropdown.Item>Salt Lake City, Utah</Dropdown.Item>
+        {locations?.map((location) => (
+          <Dropdown.Item key={location.id} href={`/manage/${location.id}`}>
+            {location.name}
+          </Dropdown.Item>
+        ))}
       </Dropdown>
       <div className="ml-auto flex gap-2 md:order-2 md:ml-0 md:gap-4">
         <Dropdown
