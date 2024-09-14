@@ -6,8 +6,9 @@ import {
   TLocationProfileRoles,
 } from "@/constants/location_profile_roles";
 import { TLocationEmployee } from "@/types/location";
-import { formatAsPercentage } from "@/utils/formatter";
+import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
 import {
+  Alert,
   Badge,
   Button,
   Dropdown,
@@ -22,6 +23,7 @@ import {
   ChevronRight,
   CircleXIcon,
   EllipsisVertical,
+  InfoIcon,
   SearchIcon,
   SettingsIcon,
   Trash2Icon,
@@ -45,12 +47,20 @@ const EmployeesTableContext = createContext<{
   handleUpdateSearchParam: (arg1: string, arg2: string) => void;
   handleRemoveSearchParam: (arg1: string, arg2: string) => void;
   isProcessing: boolean;
+  roleCounts: {
+    [key: string]: number;
+  };
 }>({
   clearFilters: () => null,
   employees: [],
   handleUpdateSearchParam: () => null,
   handleRemoveSearchParam: () => null,
   isProcessing: false,
+  roleCounts: {
+    admin: 0,
+    manager: 0,
+    base: 0,
+  },
 });
 
 function useEmployeesTableContext() {
@@ -104,6 +114,15 @@ function EmployeesTableProvider({
     router.push(pathname);
   }, [router, pathname]);
 
+  const roleCounts = employees.reduce(
+    (dictionary, employee) => {
+      dictionary[employee.role] = (dictionary[employee.role] ?? 0) + 1;
+
+      return dictionary;
+    },
+    { admin: 0, manager: 0, base: 0 },
+  );
+
   const value = useMemo(
     () => ({
       clearFilters,
@@ -111,6 +130,7 @@ function EmployeesTableProvider({
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
+      roleCounts,
     }),
     [
       clearFilters,
@@ -118,6 +138,7 @@ function EmployeesTableProvider({
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
+      roleCounts,
     ],
   );
 
@@ -159,8 +180,12 @@ function TableSearchFilter() {
 }
 
 function RoleTabFilters() {
-  const { handleUpdateSearchParam, handleRemoveSearchParam } =
-    useEmployeesTableContext();
+  const {
+    employees,
+    roleCounts,
+    handleUpdateSearchParam,
+    handleRemoveSearchParam,
+  } = useEmployeesTableContext();
 
   const searchParams = useSearchParams();
   const hasRoleParam = searchParams.has("role");
@@ -208,7 +233,7 @@ function RoleTabFilters() {
       <Tabs.Item
         title={
           <div className="flex items-center gap-2">
-            All <Badge color="lime">1M</Badge>
+            All <Badge color="lime">{employees.length}</Badge>
           </div>
         }
         active={!searchParams.has("role")}
@@ -219,7 +244,9 @@ function RoleTabFilters() {
           title={
             <div className="flex items-center gap-2">
               <span>{role.name}</span>
-              <Badge color={role.color}>1M</Badge>
+              <Badge color={role.color}>
+                {formatAsCompactNumber(roleCounts[roleKey] ?? 0)}
+              </Badge>
             </div>
           }
           active={hasRoleParam && roleParamValue === roleKey}
@@ -496,7 +523,16 @@ export default function EmployeesTable({
           <AddEmployee />
         </div>
         <TableActiveFilters />
-        <Content />
+        {employees.length === 0 ? (
+          <div className="px-6">
+            <Alert color="failure" icon={() => <InfoIcon className="mr-2" />}>
+              <span className="font-medium">No employees found!</span> If this
+              is an error, get help.
+            </Alert>
+          </div>
+        ) : (
+          <Content />
+        )}
         <TablePagination />
       </div>
     </EmployeesTableProvider>

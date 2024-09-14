@@ -11,8 +11,12 @@ import { useState } from "react";
 import AdminUpdateLocationDrawer from "@/components/admin/admin-update-location-drawer";
 import { DeleteLocation } from "./actions";
 
+type TLocationAndEmployeeCount = Tables<"locations"> & {
+  location_profiles: { count: number }[];
+};
+
 type TLocationsTableProps = {
-  data: Tables<"locations">[];
+  data: TLocationAndEmployeeCount[];
 };
 
 function LocationActionCell({ location }: { location: Tables<"locations"> }) {
@@ -93,7 +97,7 @@ function LocationActionCell({ location }: { location: Tables<"locations"> }) {
 
 export default function LocationsTable({ data }: TLocationsTableProps) {
   return (
-    <DynamicTable<Tables<"locations">>
+    <DynamicTable<TLocationAndEmployeeCount>
       columns={[
         {
           field: "name",
@@ -115,7 +119,7 @@ export default function LocationsTable({ data }: TLocationsTableProps) {
         {
           field: "employees",
           header: "Employees",
-          renderCell: () => "#",
+          renderCell: ({ location_profiles }) => location_profiles[0].count,
         },
         {
           cellClassNames: "w-0",
