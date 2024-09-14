@@ -40,18 +40,18 @@ import SearchOrInviteUserDrawer from "./search-or-invite-user-drawer";
 import { formatAsPercentage } from "@/utils/formatter";
 
 type TLocationProfile = Tables<"location_profiles"> & {
-  profile: Tables<"profiles">;
+  profile: Tables<"profiles"> | null;
 };
 
 const EmployeesTableContext = createContext<{
   clearFilters: () => void;
-  data: TLocationProfile[];
+  employees: TLocationProfile[];
   handleUpdateSearchParam: (arg1: string, arg2: string) => void;
   handleRemoveSearchParam: (arg1: string, arg2: string) => void;
   isProcessing: boolean;
 }>({
   clearFilters: () => null,
-  data: [],
+  employees: [],
   handleUpdateSearchParam: () => null,
   handleRemoveSearchParam: () => null,
   isProcessing: false,
@@ -76,7 +76,6 @@ function EmployeesTableProvider({
   employees,
 }: TLocationProfilesTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data] = useState(employees);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -112,14 +111,14 @@ function EmployeesTableProvider({
   const value = useMemo(
     () => ({
       clearFilters,
-      data,
+      employees,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
     }),
     [
       clearFilters,
-      data,
+      employees,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
@@ -260,13 +259,13 @@ function TablePagination() {
 }
 
 function Content() {
-  const { data } = useEmployeesTableContext();
+  const { employees } = useEmployeesTableContext();
 
   const columns = [
     {
       field: "name",
       name: "Name",
-      render: (row: TLocationProfile) => row.profile.full_name,
+      render: (row: TLocationProfile) => row.profile?.full_name,
     },
     {
       field: "role",
@@ -354,7 +353,7 @@ function Content() {
         ))}
       </Table.Head>
       <Table.Body>
-        {data.map((employee) => (
+        {employees.map((employee) => (
           <Table.Row
             key={employee.profile_id}
             className="border-b border-dashed border-gray-200 dark:border-gray-700"
