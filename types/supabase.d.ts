@@ -34,338 +34,61 @@ export type Database = {
   }
   public: {
     Tables: {
-      appointment_profiles: {
-        Row: {
-          appointment_id: number
-          created_at: string
-          id: number
-          profile_id: string
-        }
-        Insert: {
-          appointment_id: number
-          created_at?: string
-          id?: number
-          profile_id: string
-        }
-        Update: {
-          appointment_id?: number
-          created_at?: string
-          id?: number
-          profile_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointment_profiles_appointment_id_fkey"
-            columns: ["appointment_id"]
-            isOneToOne: false
-            referencedRelation: "appointments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointment_profiles_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      appointments: {
-        Row: {
-          created_at: string
-          date: string
-          id: number
-          job_id: number | null
-          name: string
-          notes: string | null
-          time: string
-        }
-        Insert: {
-          created_at?: string
-          date: string
-          id?: number
-          job_id?: number | null
-          name?: string
-          notes?: string | null
-          time: string
-        }
-        Update: {
-          created_at?: string
-          date?: string
-          id?: number
-          job_id?: number | null
-          name?: string
-          notes?: string | null
-          time?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       global_admins: {
         Row: {
           created_at: string
-          id: number
           profile_id: string
         }
         Insert: {
           created_at?: string
-          id?: number
           profile_id: string
         }
         Update: {
           created_at?: string
-          id?: number
           profile_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "global_admins_profile_id_fkey"
             columns: ["profile_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
-      job_employees: {
+      location_profiles: {
         Row: {
-          commission_percentage: number
+          commission_rate: number | null
           created_at: string
-          id: number
-          job_id: number
-          profile_id: string
-          role: Database["public"]["Enums"]["job_employee_roles"]
-        }
-        Insert: {
-          commission_percentage?: number
-          created_at?: string
-          id?: number
-          job_id: number
-          profile_id: string
-          role?: Database["public"]["Enums"]["job_employee_roles"]
-        }
-        Update: {
-          commission_percentage?: number
-          created_at?: string
-          id?: number
-          job_id?: number
-          profile_id?: string
-          role?: Database["public"]["Enums"]["job_employee_roles"]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_employees_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "job_employees_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      job_media: {
-        Row: {
-          created_at: string
-          id: number
-          job_id: number
-          name: string
-          type: Database["public"]["Enums"]["job_media_types"]
-          url: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          job_id: number
-          name: string
-          type: Database["public"]["Enums"]["job_media_types"]
-          url: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          job_id?: number
-          name?: string
-          type?: Database["public"]["Enums"]["job_media_types"]
-          url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_media_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      job_proposals: {
-        Row: {
-          amount: number | null
-          created_at: string
-          date: string
-          id: number
-          job_id: number
-          measurements: Json | null
-        }
-        Insert: {
-          amount?: number | null
-          created_at?: string
-          date?: string
-          id?: number
-          job_id: number
-          measurements?: Json | null
-        }
-        Update: {
-          amount?: number | null
-          created_at?: string
-          date?: string
-          id?: number
-          job_id?: number
-          measurements?: Json | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_proposals_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      job_reviews: {
-        Row: {
-          created_at: string
-          full_name: string
-          id: number
-          job_id: number
-          message: string | null
-          rating: number
-          status: Database["public"]["Enums"]["record_status"]
-        }
-        Insert: {
-          created_at?: string
-          full_name: string
-          id?: number
-          job_id: number
-          message?: string | null
-          rating?: number
-          status?: Database["public"]["Enums"]["record_status"]
-        }
-        Update: {
-          created_at?: string
-          full_name?: string
-          id?: number
-          job_id?: number
-          message?: string | null
-          rating?: number
-          status?: Database["public"]["Enums"]["record_status"]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_reviews_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      jobs: {
-        Row: {
-          city: string
-          contact_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
-          created_at: string
-          id: number
-          location_id: number | null
-          notes: string | null
-          state: string
-          status: Database["public"]["Enums"]["job_statuses"]
-          street_address: string
-        }
-        Insert: {
-          city: string
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          id?: number
-          location_id?: number | null
-          notes?: string | null
-          state: string
-          status?: Database["public"]["Enums"]["job_statuses"]
-          street_address: string
-        }
-        Update: {
-          city?: string
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          created_at?: string
-          id?: number
-          location_id?: number | null
-          notes?: string | null
-          state?: string
-          status?: Database["public"]["Enums"]["job_statuses"]
-          street_address?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "jobs_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      location_employees: {
-        Row: {
-          created_at: string
-          default_commission_rate: number | null
           location_id: number
           profile_id: string
-          role: Database["public"]["Enums"]["location_employee_roles"]
+          role: Database["public"]["Enums"]["location_profile_roles"]
         }
         Insert: {
+          commission_rate?: number | null
           created_at?: string
-          default_commission_rate?: number | null
           location_id: number
           profile_id: string
-          role?: Database["public"]["Enums"]["location_employee_roles"]
+          role?: Database["public"]["Enums"]["location_profile_roles"]
         }
         Update: {
+          commission_rate?: number | null
           created_at?: string
-          default_commission_rate?: number | null
           location_id?: number
           profile_id?: string
-          role?: Database["public"]["Enums"]["location_employee_roles"]
+          role?: Database["public"]["Enums"]["location_profile_roles"]
         }
         Relationships: [
           {
-            foreignKeyName: "location_employees_location_id_fkey"
+            foreignKeyName: "location_profiles_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "location_employees_profile_id_fkey"
+            foreignKeyName: "location_profiles_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -376,33 +99,33 @@ export type Database = {
       locations: {
         Row: {
           address: string | null
+          address2: string | null
           city: string | null
           created_at: string
           id: number
           name: string
           postal_code: string | null
           state: string | null
-          status: Database["public"]["Enums"]["record_status"]
         }
         Insert: {
           address?: string | null
+          address2?: string | null
           city?: string | null
           created_at?: string
           id?: number
           name: string
           postal_code?: string | null
           state?: string | null
-          status?: Database["public"]["Enums"]["record_status"]
         }
         Update: {
           address?: string | null
+          address2?: string | null
           city?: string | null
           created_at?: string
           id?: number
           name?: string
           postal_code?: string | null
           state?: string | null
-          status?: Database["public"]["Enums"]["record_status"]
         }
         Relationships: []
       }
@@ -461,13 +184,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_location_profile: {
+        Args: {
+          location_id: number
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      job_employee_roles: "setter" | "closer" | "installer"
-      job_media_types: "pdf" | "photo" | "video"
-      job_statuses: "new" | "in_progress" | "complete"
-      location_employee_roles: "admin" | "manager" | "employee"
-      record_status: "draft" | "published" | "needs_review" | "archived"
+      location_profile_roles: "admin" | "manager" | "base"
     }
     CompositeTypes: {
       [_ in never]: never
