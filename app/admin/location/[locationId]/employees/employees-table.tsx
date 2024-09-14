@@ -6,6 +6,7 @@ import {
   TLocationProfileRoles,
 } from "@/constants/location_profile_roles";
 import { Tables } from "@/types/supabase";
+import { formatAsPercentage } from "@/utils/formatter";
 import {
   Badge,
   Button,
@@ -21,7 +22,6 @@ import {
   ChevronRight,
   CircleXIcon,
   EllipsisVertical,
-  EyeIcon,
   SearchIcon,
   SettingsIcon,
   Trash2Icon,
@@ -37,7 +37,6 @@ import {
 } from "react";
 import { twMerge } from "tailwind-merge";
 import SearchOrInviteUserDrawer from "./search-or-invite-user-drawer";
-import { formatAsPercentage } from "@/utils/formatter";
 
 type TLocationProfile = Tables<"location_profiles"> & {
   profile: Tables<"profiles"> | null;
@@ -236,7 +235,7 @@ function RoleTabFilters() {
 function TablePagination() {
   return (
     <div className="flex items-center justify-end gap-4 p-4 lg:gap-6">
-      <div className="flex items-center gap-2">
+      <div className="hidden items-center gap-2">
         <span>Rows per page:</span>
         <Dropdown inline label="5">
           <Dropdown.Item>5</Dropdown.Item>
@@ -245,8 +244,8 @@ function TablePagination() {
           <Dropdown.Item>20</Dropdown.Item>
         </Dropdown>
       </div>
-      <p>1-5 of 20</p>
-      <div className="flex items-center gap-2">
+      <p className="hidden">1-5 of 20</p>
+      <div className="hidden items-center gap-2">
         <div className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
           <ChevronLeft />
         </div>
@@ -282,14 +281,9 @@ function Content() {
       cellClassNames: "w-0",
       field: "actions",
       name: "",
-      render: () => (
+      render: (row: TLocationProfile) => (
         <>
           <div className="relative hidden items-center gap-2 sm:flex">
-            <Tooltip content="Details">
-              <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
-                <EyeIcon />
-              </span>
-            </Tooltip>
             <Tooltip content="Settings">
               <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
                 <SettingsIcon />
@@ -297,7 +291,7 @@ function Content() {
             </Tooltip>
             <Tooltip content="Delete">
               <ConfirmModal
-                description={`Are you sure you want to remove this job for user?`}
+                description={`Are you sure you want to remove ${row.profile?.full_name} from the location?`}
                 onConfirmClick={console.log}
                 trigger={(toggle) => (
                   <span
