@@ -3,7 +3,6 @@
 import { initialFormState } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { createClient } from "@/utils/supabase/server";
-import { isValidEmailInput } from "@/utils/validate-email-input";
 import { headers } from "next/headers";
 
 export async function AddNewUser<T>(...args: ServerActionWithState<T>) {
@@ -11,9 +10,6 @@ export async function AddNewUser<T>(...args: ServerActionWithState<T>) {
   const supabase = createClient({ admin: true });
   const [state, formData] = args;
   const { email, full_name, avatar_url } = Object.fromEntries(formData);
-
-  if (!isValidEmailInput(email as string))
-    return { ...state, success: false, error: "Invalid email format" };
 
   const { error } = await supabase.auth.admin.inviteUserByEmail(
     email as string,

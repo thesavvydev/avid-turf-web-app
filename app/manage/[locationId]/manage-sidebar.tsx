@@ -4,7 +4,7 @@ import { Sidebar, theme } from "flowbite-react";
 import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-import useManageMenuItems from "../use-manage-menu-items";
+import useManageMenuItems from "./use-manage-menu-items";
 
 const Brand = ({ isCollapsed = false }) => (
   <p className="text-center">
@@ -31,7 +31,7 @@ export default function ManageSidebar() {
         root: {
           base: twMerge(
             theme.sidebar.root.base,
-            "h-screen hidden lg:block top-0 border-r dark:border-gray-700 relative sticky z-50",
+            "h-screen hidden lg:block top-0 border-r dark:border-gray-700 relative sticky z-10",
           ),
         },
       }}

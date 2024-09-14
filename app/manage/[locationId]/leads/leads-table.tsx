@@ -1,13 +1,10 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
-import Linky from "@/components/linky";
-import StatusBadge, {
-  JOB_STATUSES,
-  TStatusesBadgeProps,
-} from "@/components/job-status-badge";
-import { formatAsCurrency } from "@/utils/formatter";
+import { LEAD_STATUSES } from "@/constants/lead-statuses";
+import { Tables } from "@/types/supabase";
 import {
+  Avatar,
   Badge,
   Button,
   Datepicker,
@@ -25,7 +22,6 @@ import {
   CircleXIcon,
   EllipsisVertical,
   EyeIcon,
-  MapPinIcon,
   SearchIcon,
   SettingsIcon,
   Trash2Icon,
@@ -34,6 +30,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   PropsWithChildren,
+  ReactNode,
   useCallback,
   useContext,
   useMemo,
@@ -41,188 +38,34 @@ import {
 } from "react";
 import { twMerge } from "tailwind-merge";
 
-const mockJobs = [
-  {
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 1,
-    city: "Washington",
-    amount: 10_000,
-    status: "lead",
-    employees:
-      "John Doe, Jane Doe, Doe Jean,John Doe, Jane Doe, Doe Jean,John Doe, Jane Doe, Doe Jean",
-  },
-  {
-    address:
-      "1161 S Colton Road 1161 S Colton Road 1161 S Colton Road 1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 2,
-    city: "Ivins",
-    amount: 20_000,
-    status: "complete",
-    employees: "John Doe",
-  },
-  {
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 3,
-    city: "Santa Clara",
-    amount: 30_000,
-    status: "lead",
-    employees: "John Doe",
-  },
-  {
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 4,
-    city: "St George",
-    amount: 40_000,
-    status: "closed",
-    employees: "John Doe",
-  },
-  {
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 5,
-    city: "St George",
-    amount: 50_000,
-    status: "archived",
-    employees: "John Doe",
-  },
-];
-
-const columns = [
-  {
-    field: "address",
-    name: "Address",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="flex items-center gap-1">
-        <MapPinIcon className="hidden size-6 text-gray-400 md:block" />
-        <div>
-          <p>
-            <Linky href={`/manage/job/${row.id}`}>{row.address}</Linky>
-          </p>
-          <p className="text-sm text-gray-400">{`ORDER-${row.id}`}</p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    cellClassNames: "hidden md:table-cell",
-    field: "city",
-    name: "City",
-    render: (row: (typeof mockJobs)[0]) => row.city,
-  },
-  {
-    cellClassNames: "hidden md:table-cell",
-    field: "start_date",
-    name: "Start Date",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="w-28">
-        {new Date(row.start_date).toLocaleDateString(undefined, {
-          dateStyle: "medium",
-        })}
-      </div>
-    ),
-  },
-  {
-    cellClassNames: "hidden md:table-cell",
-    field: "amount",
-    name: "Amount",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="w-28">{formatAsCurrency(row.amount)}</div>
-    ),
-  },
-  {
-    field: "status",
-    name: "Status",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="flex">
-        <StatusBadge status={row.status as keyof TStatusesBadgeProps} />
-      </div>
-    ),
-  },
-  {
-    field: "actions",
-    name: "",
-    render: (row: (typeof mockJobs)[0]) => (
-      <>
-        <div className="relative hidden items-center gap-2 sm:flex">
-          <Tooltip content="Details">
-            <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
-              <EyeIcon />
-            </span>
-          </Tooltip>
-          <Tooltip content="Settings">
-            <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
-              <SettingsIcon />
-            </span>
-          </Tooltip>
-          <Tooltip content="Delete">
-            <ConfirmModal
-              description={`Are you sure you want to remove this job for ${row.address}?`}
-              onConfirmClick={console.log}
-              trigger={(toggle) => (
-                <span
-                  className="cursor-pointer text-lg text-red-500 active:opacity-50"
-                  onClick={toggle}
-                >
-                  <Trash2Icon />
-                </span>
-              )}
-            />
-          </Tooltip>
-        </div>
-        <div className="w-2 sm:hidden">
-          <Dropdown
-            label=""
-            renderTrigger={() => <EllipsisVertical />}
-            size="sm"
-            dismissOnClick={false}
-          >
-            <Dropdown.Item>Details</Dropdown.Item>
-            <Dropdown.Item>Settings</Dropdown.Item>
-            <ConfirmModal
-              description={`Are you sure you want to remove this job for ${row.address}?`}
-              onConfirmClick={console.log}
-              trigger={(toggle) => (
-                <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
-              )}
-            />
-          </Dropdown>
-        </div>
-      </>
-    ),
-  },
-];
-
-const JobsTableContext = createContext<{
-  data: typeof mockJobs;
+const LeadsTableContext = createContext<{
+  leads: Tables<"location_leads">[];
   handleUpdateSearchParam: (arg1: string, arg2: string) => void;
   handleRemoveSearchParam: (arg1: string, arg2: string) => void;
   isProcessing: boolean;
 }>({
-  data: [],
+  leads: [],
   handleUpdateSearchParam: () => null,
   handleRemoveSearchParam: () => null,
   isProcessing: false,
 });
 
-function useJobsTableContext() {
-  const context = useContext(JobsTableContext);
+function useLeadsTableContext() {
+  const context = useContext(LeadsTableContext);
   if (context === undefined)
     throw new Error(
-      "useJobsTableContext needs to used be in JobsTableContextProvider",
+      "useLeadsTableContext needs to used be in LeadsTableContextProvider",
     );
 
   return context;
 }
 
-type TJobsTableProviderProps = PropsWithChildren & { jobs: typeof mockJobs };
+type TLeadsTableProviderProps = PropsWithChildren & {
+  leads: Tables<"location_leads">[];
+};
 
-function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
+function LeadsTableProvider({ children, leads }: TLeadsTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState(jobs);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -253,37 +96,30 @@ function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
 
   const value = useMemo(
     () => ({
-      data,
+      leads,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
-      setData,
     }),
-    [
-      data,
-      handleUpdateSearchParam,
-      handleRemoveSearchParam,
-      isProcessing,
-      setData,
-    ],
+    [leads, handleUpdateSearchParam, handleRemoveSearchParam, isProcessing],
   );
 
   return (
-    <JobsTableContext.Provider value={value}>
+    <LeadsTableContext.Provider value={value}>
       {children}
-    </JobsTableContext.Provider>
+    </LeadsTableContext.Provider>
   );
 }
 
 function TableSearchFilter() {
   const [value, setValue] = useState("");
-  const { handleUpdateSearchParam, isProcessing } = useJobsTableContext();
+  const { handleUpdateSearchParam, isProcessing } = useLeadsTableContext();
 
   return (
     <div className="relative">
       <TextInput
         icon={() => <SearchIcon className="mr-2 size-4" />}
-        placeholder="Search by job # or address"
+        placeholder="Search by name"
         onChange={(e) => setValue(e.target.value)}
         value={value}
         disabled={isProcessing}
@@ -307,7 +143,7 @@ function TableSearchFilter() {
 
 function StatusTabFilters() {
   const { handleUpdateSearchParam, handleRemoveSearchParam } =
-    useJobsTableContext();
+    useLeadsTableContext();
 
   const searchParams = useSearchParams();
   const hasStatusParam = searchParams.has("status");
@@ -319,7 +155,10 @@ function StatusTabFilters() {
         if (tab === 0) {
           handleRemoveSearchParam("status", statusParamValue ?? "");
         } else {
-          handleUpdateSearchParam("status", Object.keys(JOB_STATUSES)[tab - 1]);
+          handleUpdateSearchParam(
+            "status",
+            Object.keys(LEAD_STATUSES)[tab - 1],
+          );
         }
       }}
       variant="underline"
@@ -351,7 +190,7 @@ function StatusTabFilters() {
         }
         active={!searchParams.has("status")}
       />
-      {Object.entries(JOB_STATUSES).map(([statusKey, status]) => (
+      {Object.entries(LEAD_STATUSES).map(([statusKey, status]) => (
         <Tabs.Item
           key={status.name}
           title={
@@ -414,8 +253,95 @@ function TablePagination() {
   );
 }
 
+function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
+  return (
+    <>
+      <div className="relative hidden items-center gap-2 sm:flex">
+        <Tooltip content="Details">
+          <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
+            <EyeIcon />
+          </span>
+        </Tooltip>
+        <Tooltip content="Settings">
+          <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
+            <SettingsIcon />
+          </span>
+        </Tooltip>
+        <Tooltip content="Delete">
+          <ConfirmModal
+            description={`Are you sure you want to remove ${row.name}?`}
+            onConfirmClick={console.log}
+            trigger={(toggle) => (
+              <span
+                className="cursor-pointer text-lg text-red-500 active:opacity-50"
+                onClick={toggle}
+              >
+                <Trash2Icon />
+              </span>
+            )}
+          />
+        </Tooltip>
+      </div>
+      <div className="w-2 sm:hidden">
+        <Dropdown
+          label=""
+          renderTrigger={() => <EllipsisVertical />}
+          size="sm"
+          dismissOnClick={false}
+        >
+          <Dropdown.Item>Details</Dropdown.Item>
+          <Dropdown.Item>Settings</Dropdown.Item>
+          <ConfirmModal
+            description={`Are you sure you want to remove for ${row.name}?`}
+            onConfirmClick={console.log}
+            trigger={(toggle) => (
+              <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
+            )}
+          />
+        </Dropdown>
+      </div>
+    </>
+  );
+}
+
+interface IColumn<RowData> {
+  cellClassNames?: string;
+  field?: string;
+  header?: string;
+  render: (arg: RowData) => ReactNode;
+}
+
 function Content() {
-  const { data } = useJobsTableContext();
+  const { leads } = useLeadsTableContext();
+
+  const columns: IColumn<(typeof leads)[0]>[] = [
+    {
+      field: "name",
+      header: "Name",
+      render: (row) => (
+        <div className="flex items-center gap-1">
+          <Avatar>{row.name}</Avatar>
+        </div>
+      ),
+    },
+    {
+      field: "status",
+      header: "Status",
+      render: (row) => (
+        <div className="flex">
+          <Badge color={LEAD_STATUSES[row.status].color}>
+            {LEAD_STATUSES[row.status].name}
+          </Badge>
+        </div>
+      ),
+    },
+    {
+      cellClassNames: "w-0",
+      field: "actions",
+      header: "",
+      render: (row) => <ActionsCell row={row} />,
+    },
+  ];
 
   return (
     <Table>
@@ -431,20 +357,20 @@ function Content() {
         }}
       >
         {columns.map((column) => (
-          <Table.HeadCell key={column.name} className={column.cellClassNames}>
-            {column.name}
+          <Table.HeadCell key={column.header} className={column.cellClassNames}>
+            {column.header}
           </Table.HeadCell>
         ))}
       </Table.Head>
       <Table.Body>
-        {data.map((job) => (
+        {leads.map((lead) => (
           <Table.Row
-            key={job.id}
+            key={lead.id}
             className="border-b border-dashed border-gray-200 dark:border-gray-700"
           >
             {columns.map((column) => (
               <Table.Cell
-                key={column.name}
+                key={column.header}
                 theme={{
                   base: twMerge(
                     theme.table.body.cell.base,
@@ -453,7 +379,7 @@ function Content() {
                   ),
                 }}
               >
-                {column.render(job)}
+                {column.render(lead)}
               </Table.Cell>
             ))}
           </Table.Row>
@@ -464,7 +390,7 @@ function Content() {
 }
 
 function TableActiveFilters() {
-  const { handleRemoveSearchParam } = useJobsTableContext();
+  const { handleRemoveSearchParam } = useLeadsTableContext();
   const searchParams = useSearchParams();
   const searchFilterValue = searchParams.get("search");
   const statusFilterValue = searchParams.get("status");
@@ -503,7 +429,7 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color={
-                  JOB_STATUSES[statusFilterValue as keyof typeof JOB_STATUSES]
+                  LEAD_STATUSES[statusFilterValue as keyof typeof LEAD_STATUSES]
                     ?.color
                 }
                 onClick={() =>
@@ -513,8 +439,8 @@ function TableActiveFilters() {
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>
                     {
-                      JOB_STATUSES[
-                        statusFilterValue as keyof typeof JOB_STATUSES
+                      LEAD_STATUSES[
+                        statusFilterValue as keyof typeof LEAD_STATUSES
                       ]?.name
                     }
                   </p>
@@ -535,9 +461,13 @@ function TableActiveFilters() {
   );
 }
 
-export default function JobsTable() {
+export default function LeadsTable({
+  leads,
+}: {
+  leads: Tables<"location_leads">[];
+}) {
   return (
-    <JobsTableProvider jobs={mockJobs}>
+    <LeadsTableProvider leads={leads}>
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
         <StatusTabFilters />
         <div className="track grid gap-4 px-4 md:grid-cols-4 lg:px-6">
@@ -549,6 +479,6 @@ export default function JobsTable() {
         <Content />
         <TablePagination />
       </div>
-    </JobsTableProvider>
+    </LeadsTableProvider>
   );
 }

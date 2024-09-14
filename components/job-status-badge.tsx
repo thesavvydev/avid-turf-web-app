@@ -21,7 +21,7 @@ export const JOB_STATUSES = {
 
 export type TStatusesBadgeProps = typeof JOB_STATUSES;
 
-export default function StatusBadge({
+export default function JobStatusBadge({
   status,
 }: {
   status: keyof TStatusesBadgeProps;

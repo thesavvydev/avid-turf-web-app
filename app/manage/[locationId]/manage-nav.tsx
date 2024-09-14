@@ -8,7 +8,7 @@ import {
   Navbar,
   theme,
 } from "flowbite-react";
-import useManageMenuItems from "../use-manage-menu-items";
+import useManageMenuItems from "./use-manage-menu-items";
 import { twMerge } from "tailwind-merge";
 import { useParams } from "next/navigation";
 

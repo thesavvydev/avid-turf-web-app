@@ -14,7 +14,7 @@ const FormFields = () => {
   const { pending } = useFormStatus();
 
   return (
-    <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
+    <fieldset disabled={pending} className="grid gap-2 sm:gap-4 lg:gap-6">
       <div>
         <Label htmlFor="avatar_url" className="mb-2 block">
           Avatar
@@ -74,7 +74,7 @@ export default function NewUserDrawer() {
                 <ErrorAlert message={state.error} />
               </div>
             )}
-            <form action={action}>
+            <form action={action} className="my-4">
               <FormFields />
             </form>
           </Drawer.Items>

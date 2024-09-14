@@ -34,6 +34,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      custom_fields: {
+        Row: {
+          created_at: string
+          id: number
+          label: string
+          model: Database["public"]["Enums"]["custom_field_models"]
+          type: Database["public"]["Enums"]["custom_field_types"]
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          label: string
+          model: Database["public"]["Enums"]["custom_field_models"]
+          type: Database["public"]["Enums"]["custom_field_types"]
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          label?: string
+          model?: Database["public"]["Enums"]["custom_field_models"]
+          type?: Database["public"]["Enums"]["custom_field_types"]
+        }
+        Relationships: []
+      }
       global_admins: {
         Row: {
           created_at: string
@@ -52,6 +76,96 @@ export type Database = {
             foreignKeyName: "global_admins_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      location_lead_custom_fields: {
+        Row: {
+          created_at: string
+          custom_field_id: number
+          lead_id: number
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          custom_field_id: number
+          lead_id: number
+          value: string
+        }
+        Update: {
+          created_at?: string
+          custom_field_id?: number
+          lead_id?: number
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_custom_fields_custom_field_id_fkey"
+            columns: ["custom_field_id"]
+            isOneToOne: false
+            referencedRelation: "custom_fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_custom_fields_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "location_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      location_leads: {
+        Row: {
+          budget: number | null
+          created_at: string
+          creator_id: string
+          custom_fields: Json | null
+          id: number
+          location_id: number
+          name: string
+          score: number
+          source: Database["public"]["Enums"]["lead_sources"]
+          status: Database["public"]["Enums"]["lead_statuses"]
+        }
+        Insert: {
+          budget?: number | null
+          created_at?: string
+          creator_id: string
+          custom_fields?: Json | null
+          id?: number
+          location_id: number
+          name: string
+          score?: number
+          source?: Database["public"]["Enums"]["lead_sources"]
+          status?: Database["public"]["Enums"]["lead_statuses"]
+        }
+        Update: {
+          budget?: number | null
+          created_at?: string
+          creator_id?: string
+          custom_fields?: Json | null
+          id?: number
+          location_id?: number
+          name?: string
+          score?: number
+          source?: Database["public"]["Enums"]["lead_sources"]
+          status?: Database["public"]["Enums"]["lead_statuses"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_profile_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -192,6 +306,16 @@ export type Database = {
       }
     }
     Enums: {
+      custom_field_models: "leads" | "jobs"
+      custom_field_types: "text" | "date" | "number" | "select"
+      lead_sources: "website-form" | "phone" | "email" | "referral" | "other"
+      lead_statuses:
+        | "new"
+        | "qualified"
+        | "nurturing"
+        | "follow-up"
+        | "lost"
+        | "inactive"
       location_profile_roles: "admin" | "manager" | "base"
     }
     CompositeTypes: {
