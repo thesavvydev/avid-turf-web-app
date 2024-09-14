@@ -30,7 +30,7 @@ const FormFields = ({
         value={defaultValues.location_id}
       />
       <input type="hidden" name="profile_id" value={defaultValues.profile_id} />
-      <div className="flex items-center gap-2 rounded border border-gray-100 bg-gray-50 p-4">
+      <div className="flex items-center gap-2 rounded border border-gray-100 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-700">
         <Avatar>{defaultValues.profile?.full_name}</Avatar>
       </div>
       <div>

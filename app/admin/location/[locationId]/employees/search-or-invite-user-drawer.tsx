@@ -77,7 +77,7 @@ export default function SearchOrInviteUserDrawer({
             />
           </div>
           {state.data?.id && (
-            <div className="flex items-center gap-2 rounded border border-gray-100 bg-gray-50 p-4">
+            <div className="flex items-center gap-2 rounded border border-gray-100 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-700">
               <Avatar>{state.data.full_name}</Avatar>
               <input type="hidden" name="profile_id" value={state.data.id} />
             </div>
