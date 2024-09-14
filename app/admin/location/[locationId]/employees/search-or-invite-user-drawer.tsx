@@ -1,8 +1,11 @@
 "use client";
 
+import ErrorAlert from "@/components/error-alert";
+import SubmitButton from "@/components/submit-button";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { LOCATION_PROFILE_ROLES } from "@/constants/location_profile_roles";
 import {
   Alert,
   Avatar,
@@ -12,14 +15,10 @@ import {
   TextInput,
 } from "flowbite-react";
 import { UserPlusIcon } from "lucide-react";
-import { SearchOrInviteUser } from "./actions";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import ErrorAlert from "@/components/error-alert";
-import { useFormState } from "react-dom";
-import SubmitButton from "@/components/submit-button";
-import { Tables } from "@/types/supabase";
-import { LOCATION_EMPLOYEE_ROLES } from "@/constants/location_employee_roles";
 import { useParams, useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
+import { useFormState } from "react-dom";
+import { SearchOrInviteUser } from "./actions";
 
 type TSearchOrInviteUserDrawer = {
   isOpen: boolean;
@@ -37,7 +36,7 @@ export default function SearchOrInviteUserDrawer({
     initialFormState,
   );
 
-  const handleClose = useCallback(() => setIsOpen(false), []);
+  const handleClose = useCallback(() => setIsOpen(false), [setIsOpen]);
 
   useEffect(() => {
     if (state.success) {
@@ -99,7 +98,7 @@ export default function SearchOrInviteUserDrawer({
               </Label>
               <Select name="role" required>
                 <option value="">Select a role</option>
-                {Object.entries(LOCATION_EMPLOYEE_ROLES).map(
+                {Object.entries(LOCATION_PROFILE_ROLES).map(
                   ([roleKey, role]) => (
                     <option key={roleKey} value={roleKey}>
                       {role.name}

@@ -2,9 +2,9 @@
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import {
-  LOCATION_EMPLOYEE_ROLES,
-  TLocationEmployeeRoles,
-} from "@/constants/location_employee_roles";
+  LOCATION_PROFILE_ROLES,
+  TLocationProfileRoles,
+} from "@/constants/location_profile_roles";
 import { Tables } from "@/types/supabase";
 import {
   Badge,
@@ -39,11 +39,13 @@ import { twMerge } from "tailwind-merge";
 import SearchOrInviteUserDrawer from "./search-or-invite-user-drawer";
 import { formatAsPercentage } from "@/utils/formatter";
 
-type TEmployee = Tables<"location_employees"> & { profile: Tables<"profiles"> };
+type TLocationProfile = Tables<"location_profiles"> & {
+  profile: Tables<"profiles">;
+};
 
 const EmployeesTableContext = createContext<{
   clearFilters: () => void;
-  data: TEmployee[];
+  data: TLocationProfile[];
   handleUpdateSearchParam: (arg1: string, arg2: string) => void;
   handleRemoveSearchParam: (arg1: string, arg2: string) => void;
   isProcessing: boolean;
@@ -65,14 +67,14 @@ function useEmployeesTableContext() {
   return context;
 }
 
-type TEmployeesTableProviderProps = PropsWithChildren & {
-  employees: TEmployee[];
+type TLocationProfilesTableProviderProps = PropsWithChildren & {
+  employees: TLocationProfile[];
 };
 
 function EmployeesTableProvider({
   children,
   employees,
-}: TEmployeesTableProviderProps) {
+}: TLocationProfilesTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [data] = useState(employees);
   const router = useRouter();
@@ -177,7 +179,7 @@ function RoleTabFilters() {
         } else {
           handleUpdateSearchParam(
             "role",
-            Object.keys(LOCATION_EMPLOYEE_ROLES)[tab - 1],
+            Object.keys(LOCATION_PROFILE_ROLES)[tab - 1],
           );
         }
       }}
@@ -216,7 +218,7 @@ function RoleTabFilters() {
         }
         active={!searchParams.has("role")}
       />
-      {Object.entries(LOCATION_EMPLOYEE_ROLES).map(([roleKey, role]) => (
+      {Object.entries(LOCATION_PROFILE_ROLES).map(([roleKey, role]) => (
         <Tabs.Item
           key={role.name}
           title={
@@ -264,18 +266,18 @@ function Content() {
     {
       field: "name",
       name: "Name",
-      render: (row: TEmployee) => row.profile.full_name,
+      render: (row: TLocationProfile) => row.profile.full_name,
     },
     {
       field: "role",
       name: "Role",
-      render: (row: TEmployee) => LOCATION_EMPLOYEE_ROLES[row.role].name,
+      render: (row: TLocationProfile) => LOCATION_PROFILE_ROLES[row.role].name,
     },
     {
       field: "commission",
       name: "Commission",
-      render: (row: TEmployee) =>
-        formatAsPercentage(row.default_commission_rate ?? 0),
+      render: (row: TLocationProfile) =>
+        formatAsPercentage(row.commission_rate ?? 0),
     },
     {
       cellClassNames: "w-0",
@@ -415,8 +417,8 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color={
-                  LOCATION_EMPLOYEE_ROLES[
-                    roleFilterValue as TLocationEmployeeRoles
+                  LOCATION_PROFILE_ROLES[
+                    roleFilterValue as TLocationProfileRoles
                   ]?.color
                 }
                 onClick={() =>
@@ -426,8 +428,8 @@ function TableActiveFilters() {
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>
                     {
-                      LOCATION_EMPLOYEE_ROLES[
-                        roleFilterValue as TLocationEmployeeRoles
+                      LOCATION_PROFILE_ROLES[
+                        roleFilterValue as TLocationProfileRoles
                       ]?.name
                     }
                   </p>
@@ -466,7 +468,7 @@ function AddEmployee() {
 export default function EmployeesTable({
   employees,
 }: {
-  employees: TEmployee[];
+  employees: TLocationProfile[];
 }) {
   return (
     <EmployeesTableProvider employees={employees}>

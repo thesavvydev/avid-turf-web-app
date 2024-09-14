@@ -8,7 +8,7 @@ export default async function Page({
 }) {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from("location_employees")
+    .from("location_profiles")
     .select("*, profile: profiles(*)")
     .eq("location_id", locationId);
 

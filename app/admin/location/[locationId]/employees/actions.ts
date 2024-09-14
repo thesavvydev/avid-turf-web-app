@@ -36,17 +36,17 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
   }
 
   if (fields.profile_id) {
-    const { error } = await supabase.from("location_employees").upsert({
+    const { error } = await supabase.from("location_profiles").upsert({
       location_id: Number(fields.location_id) as number,
       profile_id: fields.profile_id as string,
-      role: fields.role as Database["public"]["Enums"]["location_employee_roles"],
+      role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
     });
 
     if (error) {
       return formStateResponse({ ...state, error: error.message });
     }
   } else if (fields.inviting_new) {
-    // if invite present, send invite and then add new user to location_employees with role
+    // if invite present, send invite and then add new user to location_profiles with role
   }
 
   return formStateResponse({ success: true, dismiss: true });
