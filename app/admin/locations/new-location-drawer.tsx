@@ -64,6 +64,16 @@ export default function NewLocationDrawer() {
                 />
               </div>
               <div>
+                <Label htmlFor="address2" className="mb-2 block">
+                  Address 2
+                </Label>
+                <TextInput
+                  id="address2"
+                  name="address2"
+                  placeholder="Suite 300"
+                />
+              </div>
+              <div>
                 <Label htmlFor="city" className="mb-2 block">
                   City
                 </Label>

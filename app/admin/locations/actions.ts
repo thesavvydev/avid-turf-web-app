@@ -13,6 +13,7 @@ export async function AddLocation<T>(...args: ServerActionWithState<T>) {
   const { error } = await supabase.from("locations").insert({
     name: fields.name as string,
     address: fields.address as string,
+    address2: fields.address2 as string,
     city: fields.city as string,
     state: fields.state as string,
     postal_code: fields.postal_code as string,
@@ -40,6 +41,7 @@ export async function UpdateLocation<T>(...args: ServerActionWithState<T>) {
     .update({
       name: fields.name as string,
       address: fields.address as string,
+      address2: fields.address2 as string,
       city: fields.city as string,
       state: fields.state as string,
       postal_code: fields.postal_code as string,
