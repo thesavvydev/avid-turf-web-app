@@ -5,7 +5,7 @@ import {
   LOCATION_PROFILE_ROLES,
   TLocationProfileRoles,
 } from "@/constants/location_profile_roles";
-import { Tables } from "@/types/supabase";
+import { TLocationEmployee } from "@/types/location";
 import { formatAsPercentage } from "@/utils/formatter";
 import {
   Badge,
@@ -37,14 +37,11 @@ import {
 } from "react";
 import { twMerge } from "tailwind-merge";
 import SearchOrInviteUserDrawer from "./search-or-invite-user-drawer";
-
-type TLocationProfile = Tables<"location_profiles"> & {
-  profile: Tables<"profiles"> | null;
-};
-
+import UpdateEmployeeDrawer from "./update-employee-drawer";
+import { DeleteEmployee } from "./actions";
 const EmployeesTableContext = createContext<{
   clearFilters: () => void;
-  employees: TLocationProfile[];
+  employees: TLocationEmployee[];
   handleUpdateSearchParam: (arg1: string, arg2: string) => void;
   handleRemoveSearchParam: (arg1: string, arg2: string) => void;
   isProcessing: boolean;
@@ -66,14 +63,14 @@ function useEmployeesTableContext() {
   return context;
 }
 
-type TLocationProfilesTableProviderProps = PropsWithChildren & {
-  employees: TLocationProfile[];
+type TLocationEmployeesTableProviderProps = PropsWithChildren & {
+  employees: TLocationEmployee[];
 };
 
 function EmployeesTableProvider({
   children,
   employees,
-}: TLocationProfilesTableProviderProps) {
+}: TLocationEmployeesTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -257,6 +254,73 @@ function TablePagination() {
   );
 }
 
+function EmployeeActions({ employee }: { employee: TLocationEmployee }) {
+  const router = useRouter();
+  const [isUpdateEmployeeDrawerOpen, setIsUpdateEmployeeDrawerOpen] =
+    useState(false);
+
+  return (
+    <>
+      {isUpdateEmployeeDrawerOpen && (
+        <UpdateEmployeeDrawer
+          isOpen
+          setIsOpen={setIsUpdateEmployeeDrawerOpen}
+          employee={employee}
+        />
+      )}
+      <div className="relative hidden items-center gap-2 sm:flex">
+        <Tooltip content="Settings">
+          <span
+            className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
+            onClick={() => setIsUpdateEmployeeDrawerOpen(true)}
+          >
+            <SettingsIcon />
+          </span>
+        </Tooltip>
+        <Tooltip content="Delete">
+          <ConfirmModal
+            description={`Are you sure you want to remove ${employee.profile?.full_name} from the location?`}
+            onConfirmClick={async () => {
+              await DeleteEmployee(employee.location_id, employee.profile_id);
+              router.refresh();
+            }}
+            trigger={(toggle) => (
+              <span
+                className="cursor-pointer text-lg text-red-500 active:opacity-50"
+                onClick={toggle}
+              >
+                <Trash2Icon />
+              </span>
+            )}
+          />
+        </Tooltip>
+      </div>
+      <div className="w-2 sm:hidden">
+        <Dropdown
+          label=""
+          renderTrigger={() => <EllipsisVertical />}
+          size="sm"
+          dismissOnClick={false}
+        >
+          <Dropdown.Item onClick={() => setIsUpdateEmployeeDrawerOpen(true)}>
+            Settings
+          </Dropdown.Item>
+          <ConfirmModal
+            description={`Are you sure you want to remove ${employee.profile?.full_name} from the location?`}
+            onConfirmClick={async () => {
+              await DeleteEmployee(employee.location_id, employee.profile_id);
+              router.refresh();
+            }}
+            trigger={(toggle) => (
+              <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
+            )}
+          />
+        </Dropdown>
+      </div>
+    </>
+  );
+}
+
 function Content() {
   const { employees } = useEmployeesTableContext();
 
@@ -264,66 +328,24 @@ function Content() {
     {
       field: "name",
       name: "Name",
-      render: (row: TLocationProfile) => row.profile?.full_name,
+      render: (row: TLocationEmployee) => row.profile?.full_name,
     },
     {
       field: "role",
       name: "Role",
-      render: (row: TLocationProfile) => LOCATION_PROFILE_ROLES[row.role].name,
+      render: (row: TLocationEmployee) => LOCATION_PROFILE_ROLES[row.role].name,
     },
     {
       field: "commission",
       name: "Commission",
-      render: (row: TLocationProfile) =>
+      render: (row: TLocationEmployee) =>
         formatAsPercentage(row.commission_rate ?? 0),
     },
     {
       cellClassNames: "w-0",
       field: "actions",
       name: "",
-      render: (row: TLocationProfile) => (
-        <>
-          <div className="relative hidden items-center gap-2 sm:flex">
-            <Tooltip content="Settings">
-              <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
-                <SettingsIcon />
-              </span>
-            </Tooltip>
-            <Tooltip content="Delete">
-              <ConfirmModal
-                description={`Are you sure you want to remove ${row.profile?.full_name} from the location?`}
-                onConfirmClick={console.log}
-                trigger={(toggle) => (
-                  <span
-                    className="cursor-pointer text-lg text-red-500 active:opacity-50"
-                    onClick={toggle}
-                  >
-                    <Trash2Icon />
-                  </span>
-                )}
-              />
-            </Tooltip>
-          </div>
-          <div className="w-2 sm:hidden">
-            <Dropdown
-              label=""
-              renderTrigger={() => <EllipsisVertical />}
-              size="sm"
-              dismissOnClick={false}
-            >
-              <Dropdown.Item>Details</Dropdown.Item>
-              <Dropdown.Item>Settings</Dropdown.Item>
-              <ConfirmModal
-                description={`Are you sure you want to remove this job for user?`}
-                onConfirmClick={console.log}
-                trigger={(toggle) => (
-                  <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
-                )}
-              />
-            </Dropdown>
-          </div>
-        </>
-      ),
+      render: (row: TLocationEmployee) => <EmployeeActions employee={row} />,
     },
   ];
 
@@ -461,7 +483,7 @@ function AddEmployee() {
 export default function EmployeesTable({
   employees,
 }: {
-  employees: TLocationProfile[];
+  employees: TLocationEmployee[];
 }) {
   return (
     <EmployeesTableProvider employees={employees}>

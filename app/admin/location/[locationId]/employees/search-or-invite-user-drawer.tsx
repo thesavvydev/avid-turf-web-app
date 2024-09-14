@@ -89,6 +89,12 @@ export default function SearchOrInviteUserDrawer({
                 An invite will be sent to this email so they can join the
                 system.
               </Alert>
+              <div>
+                <Label htmlFor="full_name" className="mb-2 block">
+                  Full Name
+                </Label>
+                <TextInput id="full_name" name="full_name" required />
+              </div>
             </>
           )}
           {(state.data?.id || state.data === "confirm-invite") && (
