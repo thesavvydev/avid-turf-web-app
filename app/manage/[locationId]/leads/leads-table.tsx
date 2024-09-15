@@ -545,15 +545,15 @@ function TableActiveFilters() {
   const { handleRemoveSearchParam, leads } = useLeadsTableContext();
   const { locationId } = useParams();
   const searchParams = useSearchParams();
-  const searchFilterValue = searchParams.get("search");
-  const statusFilterValue = searchParams.get("status");
-  const sourceFilterValue = searchParams.get("source");
-  const createdBeforeFilterValue = searchParams.get("created_before");
-  const createdAfterFilterValue = searchParams.get("created_after");
-  const pageFilterValue = searchParams.get("page");
-  const perPageFilterValue =
-    searchParams.get("per_page") && Number(searchParams.get("per_page"));
-
+  const {
+    search,
+    status,
+    source,
+    created_before,
+    created_after,
+    page,
+    per_page,
+  } = Object.fromEntries(searchParams);
   const hasFilters = Array.from(searchParams.entries()).length > 0;
 
   return (
@@ -563,66 +563,57 @@ function TableActiveFilters() {
           <span className="font-bold">{leads.length}</span> filtered results
         </p>
         <div className="flex items-center gap-2 px-4 lg:px-6">
-          {searchFilterValue && (
+          {search && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Search
               </span>
               <Badge
                 color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("search", searchFilterValue)
-                }
+                onClick={() => handleRemoveSearchParam("search", search)}
               >
                 <div className="flex cursor-pointer items-center gap-2">
-                  <p>{searchFilterValue}</p>
+                  <p>{search}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {statusFilterValue && (
+          {status && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Status
               </span>
               <Badge
                 color={
-                  LEAD_STATUSES[statusFilterValue as keyof typeof LEAD_STATUSES]
-                    ?.color
+                  LEAD_STATUSES[status as keyof typeof LEAD_STATUSES]?.color
                 }
-                onClick={() =>
-                  handleRemoveSearchParam("status", statusFilterValue)
-                }
+                onClick={() => handleRemoveSearchParam("status", status)}
               >
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>
-                    {
-                      LEAD_STATUSES[
-                        statusFilterValue as keyof typeof LEAD_STATUSES
-                      ]?.name
-                    }
+                    {LEAD_STATUSES[status as keyof typeof LEAD_STATUSES]?.name}
                   </p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {pageFilterValue && (
+          {page && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">Page</span>
               <Badge
                 color="gray"
-                onClick={() => handleRemoveSearchParam("page", pageFilterValue)}
+                onClick={() => handleRemoveSearchParam("page", page)}
               >
                 <div className="flex cursor-pointer items-center gap-2">
-                  <p>{pageFilterValue}</p>
+                  <p>{page}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {perPageFilterValue && (
+          {per_page && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Per Page
@@ -630,38 +621,33 @@ function TableActiveFilters() {
               <Badge
                 color="gray"
                 onClick={() =>
-                  handleRemoveSearchParam(
-                    "per_page",
-                    perPageFilterValue.toString(),
-                  )
+                  handleRemoveSearchParam("per_page", per_page.toString())
                 }
               >
                 <div className="flex cursor-pointer items-center gap-2">
-                  <p>{perPageFilterValue}</p>
+                  <p>{per_page}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {sourceFilterValue && (
+          {source && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Source
               </span>
               <Badge
                 color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("source", sourceFilterValue)
-                }
+                onClick={() => handleRemoveSearchParam("source", source)}
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
-                  <p>{sourceFilterValue}</p>
+                  <p>{source}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {createdAfterFilterValue && (
+          {created_after && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Created after
@@ -669,20 +655,17 @@ function TableActiveFilters() {
               <Badge
                 color="gray"
                 onClick={() =>
-                  handleRemoveSearchParam(
-                    "createed_after",
-                    createdAfterFilterValue,
-                  )
+                  handleRemoveSearchParam("createed_after", created_after)
                 }
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
-                  <p>{createdAfterFilterValue}</p>
+                  <p>{created_after}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {createdBeforeFilterValue && (
+          {created_before && (
             <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Created before
@@ -690,14 +673,11 @@ function TableActiveFilters() {
               <Badge
                 color="gray"
                 onClick={() =>
-                  handleRemoveSearchParam(
-                    "createed_before",
-                    createdBeforeFilterValue,
-                  )
+                  handleRemoveSearchParam("createed_before", created_before)
                 }
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
-                  <p>{createdBeforeFilterValue}</p>
+                  <p>{created_before}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
