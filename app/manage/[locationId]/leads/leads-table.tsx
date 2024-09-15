@@ -53,6 +53,7 @@ const LeadsTableContext = createContext<{
   handleUpdateSearchParam: (param: string, value: string) => void;
   handleRemoveSearchParam: (param: string, value: string) => void;
   isProcessing: boolean;
+  paginatedTotal: number;
   statusCounts: {
     [k in TLeadStatus]: number;
   };
@@ -62,6 +63,7 @@ const LeadsTableContext = createContext<{
   handleUpdateSearchParam: () => null,
   handleRemoveSearchParam: () => null,
   isProcessing: false,
+  paginatedTotal: 0,
   statusCounts: {
     new: 0,
     qualified: 0,
@@ -84,6 +86,7 @@ function useLeadsTableContext() {
 
 type TLeadsTableProviderProps = PropsWithChildren & {
   leadsCount: number | null;
+  paginatedTotal: number;
   leads: Tables<"location_leads">[];
   statusCounts: {
     [k in TLeadStatus]: number;
@@ -94,6 +97,7 @@ function LeadsTableProvider({
   children,
   leads,
   leadsCount,
+  paginatedTotal,
   statusCounts,
 }: TLeadsTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -132,6 +136,7 @@ function LeadsTableProvider({
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
+      paginatedTotal,
       statusCounts,
     }),
     [
@@ -140,6 +145,7 @@ function LeadsTableProvider({
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
+      paginatedTotal,
       statusCounts,
     ],
   );
@@ -312,14 +318,14 @@ function TablePagination() {
   const {
     handleUpdateSearchParam,
     handleRemoveSearchParam,
-    leads,
+    paginatedTotal,
     leadsCount,
   } = useLeadsTableContext();
   const searchParams = useSearchParams();
   const perPage = Number(searchParams.get("per_page") ?? 10);
   const page = Number(searchParams.get("page") ?? 1);
 
-  const numberOfPages = Math.ceil(leads.length / perPage);
+  const numberOfPages = Math.ceil(paginatedTotal / perPage);
 
   const onPageChange = (page: number) => {
     if (page === 0 || page === 1)
@@ -542,7 +548,7 @@ function Content() {
 }
 
 function TableActiveFilters() {
-  const { handleRemoveSearchParam, leads } = useLeadsTableContext();
+  const { handleRemoveSearchParam, paginatedTotal } = useLeadsTableContext();
   const { locationId } = useParams();
   const searchParams = useSearchParams();
   const {
@@ -560,7 +566,7 @@ function TableActiveFilters() {
     hasFilters && (
       <>
         <p className="px-4 font-light lg:px-6">
-          <span className="font-bold">{leads.length}</span> filtered results
+          <span className="font-bold">{paginatedTotal}</span> filtered results
         </p>
         <div className="flex items-center gap-2 px-4 lg:px-6">
           {search && (
@@ -703,10 +709,12 @@ function TableActiveFilters() {
 export default function LeadsTable({
   leadsCount,
   leads,
+  paginatedTotal,
   statusCounts,
 }: {
   leadsCount: number | null;
   leads: Tables<"location_leads">[];
+  paginatedTotal: number;
   statusCounts: {
     [k in TLeadStatus]: number;
   };
@@ -716,6 +724,7 @@ export default function LeadsTable({
       leads={leads}
       leadsCount={leadsCount}
       statusCounts={statusCounts}
+      paginatedTotal={paginatedTotal}
     >
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
         <StatusTabFilters />

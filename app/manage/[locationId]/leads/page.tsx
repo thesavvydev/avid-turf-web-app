@@ -1,3 +1,5 @@
+import { TLeadStatus } from "@/constants/lead-statuses";
+import { Database, Tables } from "@/types/supabase";
 import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
 import { createClient } from "@/utils/supabase/server";
 import {
@@ -10,55 +12,100 @@ import {
 import { twMerge } from "tailwind-merge";
 import LeadsHeader from "./leads-header";
 import LeadsTable from "./leads-table";
+import { percentageChange } from "@/utils/percentage-change";
 
 export const metadata = {
   title: "Leads",
   description: "",
 };
 
-function LeadStatusTiles() {
+function LeadStatusTiles({
+  previousWeek,
+  leadsCount,
+  statusCounts,
+}: {
+  previousWeek: Partial<Tables<"location_leads">>[] | null;
+  leadsCount: number;
+  statusCounts: {
+    [k in TLeadStatus]: number;
+  };
+}) {
+  const previousWeekStatusCounts = (previousWeek ?? []).reduce(
+    (dictionary, lead) => {
+      dictionary[lead.status as Database["public"]["Enums"]["lead_statuses"]] =
+        Number(
+          dictionary[
+            lead.status as Database["public"]["Enums"]["lead_statuses"]
+          ] ?? 0,
+        ) + 1;
+
+      return dictionary;
+    },
+    {
+      new: 0,
+      qualified: 0,
+      nurturing: 0,
+      "follow-up": 0,
+      lost: 0,
+      inactive: 0,
+    },
+  );
+
   const tiles = [
     {
       name: "All",
-      value: 1_000_000,
-      weekly_change: 0.05,
+      value: formatAsCompactNumber(leadsCount),
+      weekly_change: percentageChange(previousWeek?.length ?? 0, leadsCount),
       classNames: "fill-lime-600/20 stroke-lime-600",
       progressClassNames: "text-lime-700 dark:text-lime-800 ",
       icon: WorkflowIcon,
     },
     {
       name: "New",
-      value: 20_000,
-      weekly_change: 0.15,
+      value: formatAsCompactNumber(statusCounts.new),
+      weekly_change: percentageChange(
+        previousWeekStatusCounts.new,
+        statusCounts.new,
+      ),
       classNames: "fill-indigo-600/20 stroke-indigo-600",
       progressClassNames: "text-indigo-700 dark:text-indigo-800 ",
       icon: SignpostIcon,
     },
     {
       name: "Qualified",
-      value: 1_000,
-      weekly_change: -0.05,
+      value: formatAsCompactNumber(statusCounts.qualified),
+      weekly_change: percentageChange(
+        previousWeekStatusCounts.qualified,
+        statusCounts.qualified,
+      ),
       classNames: "fill-green-600/20 stroke-green-600",
       progressClassNames: "text-green-700 dark:text-green-800 ",
       icon: LandmarkIcon,
     },
     {
       name: "Follow Up",
-      value: 20_000,
-      weekly_change: 0.15,
+      value: formatAsCompactNumber(statusCounts["follow-up"]),
+      weekly_change: percentageChange(
+        previousWeekStatusCounts["follow-up"],
+        statusCounts["follow-up"],
+      ),
       classNames: "fill-red-600/20 stroke-red-600",
       progressClassNames: "text-red-700 dark:text-red-800 ",
       icon: CaptionsOffIcon,
     },
     {
-      name: "Closed",
-      value: 1_000,
-      weekly_change: -0.05,
+      name: "Lost",
+      value: formatAsCompactNumber(statusCounts.lost),
+      weekly_change: percentageChange(
+        previousWeekStatusCounts.lost,
+        statusCounts.lost,
+      ),
       classNames: " fill-gray-300/20 stroke-gray-300",
       progressClassNames: "text-gray-600 dark:text-gray-800",
       icon: ArchiveIcon,
     },
   ];
+
   return (
     <div className="flex max-w-full items-center divide-x divide-gray-100 overflow-x-auto rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
       {tiles.map((tile) => (
@@ -107,7 +154,9 @@ function LeadStatusTiles() {
           </div>
           <div>
             <h6 className="whitespace-nowrap font-medium">{tile.name}</h6>
-            <p className="text-gray-400">{formatAsCompactNumber(tile.value)}</p>
+            <p className="text-gray-400">
+              {formatAsCompactNumber(Number(tile.value))}
+            </p>
             <p className="whitespace-nowrap text-xs">
               Weekly Change{" "}
               <span
@@ -138,9 +187,17 @@ export default async function Page({
   },
 }) {
   const supabase = createClient();
+
   const { data: all, count } = await supabase
     .from("location_leads")
     .select("status", { count: "exact" });
+
+  const lastWeekDate = new Date(new Date().setDate(new Date().getDate() - 5));
+
+  const { data: previousWeek } = await supabase
+    .from("location_leads")
+    .select("id,status")
+    .lte("created_at", lastWeekDate.toISOString());
 
   const startRange =
     page > 1
@@ -154,6 +211,15 @@ export default async function Page({
     .select("*")
     .match({ ...(status ? { status } : {}), ...(source ? { source } : {}) })
     .range(startRange, endRange)
+    .gte("created_at", new Date(created_after ?? "0").toISOString())
+    .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString());
+
+  if (error) throw error;
+
+  const { count: paginatedTotal } = await supabase
+    .from("location_leads")
+    .select(undefined, { count: "exact" })
+    .match({ ...(status ? { status } : {}), ...(source ? { source } : {}) })
     .gte("created_at", new Date(created_after ?? "0").toISOString())
     .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString());
 
@@ -178,8 +244,17 @@ export default async function Page({
   return (
     <>
       <LeadsHeader />
-      <LeadStatusTiles />
-      <LeadsTable leads={data} leadsCount={count} statusCounts={statusCounts} />
+      <LeadStatusTiles
+        previousWeek={previousWeek}
+        leadsCount={count ?? 0}
+        statusCounts={statusCounts}
+      />
+      <LeadsTable
+        paginatedTotal={paginatedTotal ?? 0}
+        leads={data}
+        leadsCount={count}
+        statusCounts={statusCounts}
+      />
     </>
   );
 }
