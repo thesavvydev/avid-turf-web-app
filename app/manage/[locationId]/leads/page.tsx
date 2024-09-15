@@ -184,6 +184,7 @@ export default async function Page({
     source = null,
     created_after = null,
     created_before = null,
+    search = null,
   },
 }) {
   const supabase = createClient();
@@ -212,7 +213,8 @@ export default async function Page({
     .match({ ...(status ? { status } : {}), ...(source ? { source } : {}) })
     .range(startRange, endRange)
     .gte("created_at", new Date(created_after ?? "0").toISOString())
-    .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString());
+    .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString())
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
 

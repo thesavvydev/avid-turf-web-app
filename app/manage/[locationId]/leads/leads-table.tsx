@@ -131,7 +131,13 @@ function LeadsTableProvider({
 
   const value = useMemo(
     () => ({
-      leads,
+      leads: leads.filter((item) =>
+        searchParams.get("search")
+          ? item.name
+              .toLowerCase()
+              .includes(searchParams.get("search")?.toLowerCase() ?? "")
+          : true,
+      ),
       leadsCount,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
@@ -159,7 +165,8 @@ function LeadsTableProvider({
 
 function TableSearchFilter() {
   const [value, setValue] = useState("");
-  const { handleUpdateSearchParam, isProcessing } = useLeadsTableContext();
+  const { handleUpdateSearchParam, handleRemoveSearchParam, isProcessing } =
+    useLeadsTableContext();
 
   return (
     <div className="relative">
@@ -167,6 +174,15 @@ function TableSearchFilter() {
         icon={() => <SearchIcon className="mr-2 size-4" />}
         placeholder="Search by name"
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            if (value === "") {
+              handleRemoveSearchParam("search", value);
+            } else {
+              handleUpdateSearchParam("search", value);
+            }
+          }
+        }}
         value={value}
         disabled={isProcessing}
       />
