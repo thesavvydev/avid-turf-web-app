@@ -184,7 +184,6 @@ export default async function Page({
     source = null,
     created_after = null,
     created_before = null,
-    search = null,
   },
 }) {
   const supabase = createClient();

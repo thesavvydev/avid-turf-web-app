@@ -129,15 +129,17 @@ function LeadsTableProvider({
     [pathname, router, searchParams],
   );
 
+  const filteredLeads = leads.filter((item) =>
+    searchParams.get("search")
+      ? item.name
+          .toLowerCase()
+          .includes(searchParams.get("search")?.toLowerCase() ?? "")
+      : true,
+  );
+
   const value = useMemo(
     () => ({
-      leads: leads.filter((item) =>
-        searchParams.get("search")
-          ? item.name
-              .toLowerCase()
-              .includes(searchParams.get("search")?.toLowerCase() ?? "")
-          : true,
-      ),
+      leads: filteredLeads,
       leadsCount,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
@@ -146,7 +148,7 @@ function LeadsTableProvider({
       statusCounts,
     }),
     [
-      leads,
+      filteredLeads,
       leadsCount,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
