@@ -550,6 +550,7 @@ function TableActiveFilters() {
   const sourceFilterValue = searchParams.get("source");
   const createdBeforeFilterValue = searchParams.get("created_before");
   const createdAfterFilterValue = searchParams.get("created_after");
+  const pageFilterValue = searchParams.get("page");
   const perPageFilterValue =
     searchParams.get("per_page") && Number(searchParams.get("per_page"));
 
@@ -602,6 +603,20 @@ function TableActiveFilters() {
                       ]?.name
                     }
                   </p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {pageFilterValue && (
+            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">Page</span>
+              <Badge
+                color="gray"
+                onClick={() => handleRemoveSearchParam("page", pageFilterValue)}
+              >
+                <div className="flex cursor-pointer items-center gap-2">
+                  <p>{pageFilterValue}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
