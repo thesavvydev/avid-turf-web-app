@@ -13,7 +13,6 @@ import {
   Datepicker,
   Dropdown,
   Pagination,
-  Progress,
   Select,
   Table,
   Tabs,
@@ -46,6 +45,8 @@ import {
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
+import { DeleteLead } from "./actions";
+import UpdateLeadDrawer from "./update-lead-drawer";
 
 const LeadsTableContext = createContext<{
   leads: Tables<"location_leads">[];
@@ -173,6 +174,8 @@ function TableSearchFilter() {
   return (
     <div className="relative">
       <TextInput
+        autoComplete="off"
+        id="name"
         icon={() => <SearchIcon className="mr-2 size-4" />}
         placeholder="Search by name"
         onChange={(e) => setValue(e.target.value)}
@@ -232,7 +235,7 @@ function StatusTabFilters() {
       variant="underline"
       theme={{
         tablist: {
-          base: twMerge(theme.tabs.tablist.base, "pt-1 pl-1"),
+          base: twMerge(theme.tabs.tablist.base, "pt-1 pl-1 text-nowrap"),
           tabitem: {
             variant: {
               underline: {
@@ -313,6 +316,7 @@ function DateRangeFilter() {
   return (
     <>
       <Datepicker
+        id="created_after"
         onSelectedDateChanged={(date) =>
           handleUpdateSearchParam(
             "created_after",
@@ -321,6 +325,7 @@ function DateRangeFilter() {
         }
       />
       <Datepicker
+        id="created_before"
         onSelectedDateChanged={(date) =>
           handleUpdateSearchParam(
             "created_before",
@@ -353,7 +358,7 @@ function TablePagination() {
   };
 
   return (
-    <div className="flex items-center justify-end gap-4 p-4 pt-0 lg:gap-6">
+    <div className="flex flex-col items-center justify-end gap-4 p-4 pt-0 sm:flex-row lg:gap-6">
       {(leadsCount ?? 0) >= 10 && (
         <div className="flex items-center gap-2">
           <span>Rows per page:</span>
@@ -382,20 +387,48 @@ function TablePagination() {
         </div>
       )}
       {numberOfPages > 1 && (
-        <Pagination
-          currentPage={page}
-          totalPages={numberOfPages}
-          onPageChange={onPageChange}
-          showIcons
-        />
+        <>
+          <div className="hidden sm:block">
+            <Pagination
+              currentPage={page}
+              totalPages={numberOfPages}
+              onPageChange={onPageChange}
+              showIcons
+            />
+          </div>
+          <div className="sm:hidden">
+            <Pagination
+              layout="navigation"
+              currentPage={page}
+              totalPages={numberOfPages}
+              onPageChange={onPageChange}
+              showIcons
+            />
+          </div>
+        </>
       )}
     </div>
   );
 }
 
 function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    await DeleteLead(row.id);
+    router.refresh();
+  };
+
   return (
     <>
+      {isOpen && (
+        <UpdateLeadDrawer
+          locationLead={row}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      )}
       <div className="relative hidden items-center gap-2 sm:flex">
         <Tooltip content="Details">
           <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
@@ -403,14 +436,17 @@ function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
           </span>
         </Tooltip>
         <Tooltip content="Settings">
-          <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
+          <span
+            className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
+            onClick={() => setIsOpen(true)}
+          >
             <SettingsIcon />
           </span>
         </Tooltip>
         <Tooltip content="Delete">
           <ConfirmModal
             description={`Are you sure you want to remove ${row.name}?`}
-            onConfirmClick={console.log}
+            onConfirmClick={handleDelete}
             trigger={(toggle) => (
               <span
                 className="cursor-pointer text-lg text-red-500 active:opacity-50"
@@ -430,10 +466,12 @@ function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
           dismissOnClick={false}
         >
           <Dropdown.Item>Details</Dropdown.Item>
-          <Dropdown.Item>Settings</Dropdown.Item>
+          <Dropdown.Item onClick={() => setIsOpen(true)}>
+            Settings
+          </Dropdown.Item>
           <ConfirmModal
             description={`Are you sure you want to remove for ${row.name}?`}
-            onConfirmClick={console.log}
+            onConfirmClick={handleDelete}
             trigger={(toggle) => (
               <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
             )}
@@ -462,11 +500,66 @@ function Content() {
         <div className="flex items-center gap-1">
           <Avatar size="sm" rounded>
             {row.name}
+            <div className="sm:hidden">
+              <Badge color={LEAD_STATUSES[row.status].color}>
+                {LEAD_STATUSES[row.status].name}
+              </Badge>
+            </div>
           </Avatar>
         </div>
       ),
     },
     {
+      cellClassNames: "w-0 hidden sm:table-cell",
+      field: "score",
+      header: "Score",
+      render: (row) => {
+        const determineColor = () => {
+          if (row.score > 7) return "stroke-indigo-500";
+          if (row.score > 5) return "stroke-green-500";
+          if (row.score > 3) return "stroke-yellow-500";
+          return "stroke-red-500";
+        };
+
+        return (
+          <div className="relative mx-auto size-8 flex-shrink-0">
+            <svg
+              className="size-full -rotate-90"
+              viewBox="0 0 34 34"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="17"
+                cy="17"
+                r="14"
+                fill="none"
+                className="stroke-current text-gray-200 dark:text-neutral-700"
+                strokeWidth="2"
+              />
+              <circle
+                cx="17"
+                cy="17"
+                r="14"
+                fill="none"
+                className={twMerge(
+                  "stroke-current text-lime-600 dark:text-lime-500",
+                  determineColor(),
+                )}
+                strokeWidth="4"
+                strokeDasharray="100"
+                strokeDashoffset={100 - row.score * 10}
+                strokeLinecap="round"
+              />
+            </svg>
+            <div className="absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs font-bold text-gray-400">
+              {row.score}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
       field: "status",
       header: "Status",
       render: (row) => (
@@ -478,35 +571,19 @@ function Content() {
       ),
     },
     {
+      cellClassNames: "text-right hidden sm:table-cell",
       field: "budget",
       header: "Budget",
       render: (row) => formatAsCurrency(Number(row.budget)),
     },
     {
-      field: "score",
-      header: "Score",
-      render: (row) => {
-        const determineColor = () => {
-          if (row.score > 7) return "indigo";
-          if (row.score > 5) return "green";
-          if (row.score > 3) return "yellow";
-          return "red";
-        };
-        return (
-          <Progress
-            size="xl"
-            progress={row.score * 10}
-            color={determineColor()}
-          />
-        );
-      },
-    },
-    {
+      cellClassNames: "hidden sm:table-cell",
       field: "source",
       header: "Source",
       render: (row) => <span className="capitalize">{row.source}</span>,
     },
     {
+      cellClassNames: "hidden sm:table-cell",
       field: "created",
       header: "Created",
       render: (row) => new Date(row.created_at).toLocaleDateString(),
@@ -586,9 +663,9 @@ function TableActiveFilters() {
         <p className="px-4 font-light lg:px-6">
           <span className="font-bold">{paginatedTotal}</span> filtered results
         </p>
-        <div className="flex items-center gap-2 px-4 lg:px-6">
+        <div className="flex flex-col gap-2 px-4 sm:flex-row sm:items-center lg:px-6">
           {search && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Search
               </span>
@@ -604,7 +681,7 @@ function TableActiveFilters() {
             </div>
           )}
           {status && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Status
               </span>
@@ -624,7 +701,7 @@ function TableActiveFilters() {
             </div>
           )}
           {page && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">Page</span>
               <Badge
                 color="gray"
@@ -638,7 +715,7 @@ function TableActiveFilters() {
             </div>
           )}
           {per_page && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Per Page
               </span>
@@ -656,7 +733,7 @@ function TableActiveFilters() {
             </div>
           )}
           {source && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Source
               </span>
@@ -672,7 +749,7 @@ function TableActiveFilters() {
             </div>
           )}
           {created_after && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Created after
               </span>
@@ -690,7 +767,7 @@ function TableActiveFilters() {
             </div>
           )}
           {created_before && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Created before
               </span>
@@ -745,7 +822,9 @@ export default function LeadsTable({
       paginatedTotal={paginatedTotal}
     >
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
-        <StatusTabFilters />
+        <div className="overflow-x-auto">
+          <StatusTabFilters />
+        </div>
         <div className="track grid gap-4 px-4 md:grid-cols-4 lg:px-6">
           <TableSearchFilter />
           <SourceFilter />

@@ -59,9 +59,11 @@ function LeadStatusTiles({
       classNames: "fill-lime-600/20 stroke-lime-600",
       progressClassNames: "text-lime-700 dark:text-lime-800 ",
       icon: WorkflowIcon,
+      progress: 0,
     },
     {
       name: "New",
+      status: "new",
       value: formatAsCompactNumber(statusCounts.new),
       weekly_change: percentageChange(
         previousWeekStatusCounts.new,
@@ -70,9 +72,11 @@ function LeadStatusTiles({
       classNames: "fill-indigo-600/20 stroke-indigo-600",
       progressClassNames: "text-indigo-700 dark:text-indigo-800 ",
       icon: SignpostIcon,
+      progress: 100 - (statusCounts.new / leadsCount) * 100,
     },
     {
       name: "Qualified",
+      status: "qualified",
       value: formatAsCompactNumber(statusCounts.qualified),
       weekly_change: percentageChange(
         previousWeekStatusCounts.qualified,
@@ -81,9 +85,11 @@ function LeadStatusTiles({
       classNames: "fill-green-600/20 stroke-green-600",
       progressClassNames: "text-green-700 dark:text-green-800 ",
       icon: LandmarkIcon,
+      progress: 100 - (statusCounts.qualified / leadsCount) * 100,
     },
     {
       name: "Follow Up",
+      status: "follow-up",
       value: formatAsCompactNumber(statusCounts["follow-up"]),
       weekly_change: percentageChange(
         previousWeekStatusCounts["follow-up"],
@@ -92,17 +98,20 @@ function LeadStatusTiles({
       classNames: "fill-red-600/20 stroke-red-600",
       progressClassNames: "text-red-700 dark:text-red-800 ",
       icon: CaptionsOffIcon,
+      progress: 100 - (statusCounts["follow-up"] / leadsCount) * 100,
     },
     {
       name: "Lost",
+      status: "lost",
       value: formatAsCompactNumber(statusCounts.lost),
       weekly_change: percentageChange(
         previousWeekStatusCounts.lost,
         statusCounts.lost,
       ),
-      classNames: " fill-gray-300/20 stroke-gray-300",
+      classNames: "fill-gray-300/20 stroke-gray-300",
       progressClassNames: "text-gray-600 dark:text-gray-800",
       icon: ArchiveIcon,
+      progress: 100 - (statusCounts.lost / leadsCount) * 100,
     },
   ];
 
@@ -138,7 +147,7 @@ function LeadStatusTiles({
                 )}
                 strokeWidth="2"
                 strokeDasharray="100"
-                strokeDashoffset="65"
+                strokeDashoffset={tile.progress}
                 strokeLinecap="round"
               />
             </svg>
