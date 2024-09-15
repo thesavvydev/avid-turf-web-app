@@ -85,12 +85,16 @@ function useLeadsTableContext() {
 type TLeadsTableProviderProps = PropsWithChildren & {
   leadsCount: number | null;
   leads: Tables<"location_leads">[];
+  statusCounts: {
+    [k in TLeadStatus]: number;
+  };
 };
 
 function LeadsTableProvider({
   children,
   leads,
   leadsCount,
+  statusCounts,
 }: TLeadsTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
@@ -119,22 +123,6 @@ function LeadsTableProvider({
       setIsProcessing(false);
     },
     [pathname, router, searchParams],
-  );
-
-  const statusCounts = leads.reduce(
-    (dictionary, lead) => {
-      dictionary[lead.status] = Number(dictionary[lead.status] ?? 0) + 1;
-
-      return dictionary;
-    },
-    {
-      new: 0,
-      qualified: 0,
-      nurturing: 0,
-      "follow-up": 0,
-      lost: 0,
-      inactive: 0,
-    },
   );
 
   const value = useMemo(
@@ -720,12 +708,20 @@ function TableActiveFilters() {
 export default function LeadsTable({
   leadsCount,
   leads,
+  statusCounts,
 }: {
   leadsCount: number | null;
   leads: Tables<"location_leads">[];
+  statusCounts: {
+    [k in TLeadStatus]: number;
+  };
 }) {
   return (
-    <LeadsTableProvider leads={leads} leadsCount={leadsCount}>
+    <LeadsTableProvider
+      leads={leads}
+      leadsCount={leadsCount}
+      statusCounts={statusCounts}
+    >
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
         <StatusTabFilters />
         <div className="track grid gap-4 px-4 md:grid-cols-4 lg:px-6">

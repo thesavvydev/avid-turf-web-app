@@ -138,9 +138,9 @@ export default async function Page({
   },
 }) {
   const supabase = createClient();
-  const { count } = await supabase
+  const { data: all, count } = await supabase
     .from("location_leads")
-    .select(undefined, { count: "exact" });
+    .select("status", { count: "exact" });
 
   const startRange =
     page > 1
@@ -159,11 +159,27 @@ export default async function Page({
 
   if (error) throw error;
 
+  const statusCounts = (all ?? []).reduce(
+    (dictionary, lead) => {
+      dictionary[lead.status] = Number(dictionary[lead.status] ?? 0) + 1;
+
+      return dictionary;
+    },
+    {
+      new: 0,
+      qualified: 0,
+      nurturing: 0,
+      "follow-up": 0,
+      lost: 0,
+      inactive: 0,
+    },
+  );
+
   return (
     <>
       <LeadsHeader />
       <LeadStatusTiles />
-      <LeadsTable leads={data} leadsCount={count} />
+      <LeadsTable leads={data} leadsCount={count} statusCounts={statusCounts} />
     </>
   );
 }
