@@ -1,14 +1,19 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
-import { LEAD_STATUSES } from "@/constants/lead-statuses";
-import { Tables } from "@/types/supabase";
+import { LEAD_SOURCES } from "@/constants/lead-sources";
+import { LEAD_STATUSES, TLeadStatus } from "@/constants/lead-statuses";
+import { Database, Tables } from "@/types/supabase";
+import { formatAsCompactNumber, formatAsCurrency } from "@/utils/formatter";
 import {
+  Alert,
   Avatar,
   Badge,
   Button,
   Datepicker,
   Dropdown,
+  Pagination,
+  Progress,
   Select,
   Table,
   Tabs,
@@ -17,16 +22,20 @@ import {
   Tooltip,
 } from "flowbite-react";
 import {
-  ChevronLeft,
-  ChevronRight,
   CircleXIcon,
   EllipsisVertical,
   EyeIcon,
+  InfoIcon,
   SearchIcon,
   SettingsIcon,
   Trash2Icon,
 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import {
   createContext,
   PropsWithChildren,
@@ -40,14 +49,27 @@ import { twMerge } from "tailwind-merge";
 
 const LeadsTableContext = createContext<{
   leads: Tables<"location_leads">[];
-  handleUpdateSearchParam: (arg1: string, arg2: string) => void;
-  handleRemoveSearchParam: (arg1: string, arg2: string) => void;
+  leadsCount: number | null;
+  handleUpdateSearchParam: (param: string, value: string) => void;
+  handleRemoveSearchParam: (param: string, value: string) => void;
   isProcessing: boolean;
+  statusCounts: {
+    [k in TLeadStatus]: number;
+  };
 }>({
   leads: [],
+  leadsCount: 0,
   handleUpdateSearchParam: () => null,
   handleRemoveSearchParam: () => null,
   isProcessing: false,
+  statusCounts: {
+    new: 0,
+    qualified: 0,
+    nurturing: 0,
+    "follow-up": 0,
+    lost: 0,
+    inactive: 0,
+  },
 });
 
 function useLeadsTableContext() {
@@ -61,10 +83,15 @@ function useLeadsTableContext() {
 }
 
 type TLeadsTableProviderProps = PropsWithChildren & {
+  leadsCount: number | null;
   leads: Tables<"location_leads">[];
 };
 
-function LeadsTableProvider({ children, leads }: TLeadsTableProviderProps) {
+function LeadsTableProvider({
+  children,
+  leads,
+  leadsCount,
+}: TLeadsTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -94,14 +121,39 @@ function LeadsTableProvider({ children, leads }: TLeadsTableProviderProps) {
     [pathname, router, searchParams],
   );
 
+  const statusCounts = leads.reduce(
+    (dictionary, lead) => {
+      dictionary[lead.status] = Number(dictionary[lead.status] ?? 0) + 1;
+
+      return dictionary;
+    },
+    {
+      new: 0,
+      qualified: 0,
+      nurturing: 0,
+      "follow-up": 0,
+      lost: 0,
+      inactive: 0,
+    },
+  );
+
   const value = useMemo(
     () => ({
       leads,
+      leadsCount,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
+      statusCounts,
     }),
-    [leads, handleUpdateSearchParam, handleRemoveSearchParam, isProcessing],
+    [
+      leads,
+      leadsCount,
+      handleUpdateSearchParam,
+      handleRemoveSearchParam,
+      isProcessing,
+      statusCounts,
+    ],
   );
 
   return (
@@ -142,8 +194,12 @@ function TableSearchFilter() {
 }
 
 function StatusTabFilters() {
-  const { handleUpdateSearchParam, handleRemoveSearchParam } =
-    useLeadsTableContext();
+  const {
+    handleUpdateSearchParam,
+    handleRemoveSearchParam,
+    statusCounts,
+    leadsCount,
+  } = useLeadsTableContext();
 
   const searchParams = useSearchParams();
   const hasStatusParam = searchParams.has("status");
@@ -185,7 +241,8 @@ function StatusTabFilters() {
       <Tabs.Item
         title={
           <div className="flex items-center gap-2">
-            All <Badge color="lime">1M</Badge>
+            All{" "}
+            <Badge color="lime">{formatAsCompactNumber(leadsCount ?? 0)}</Badge>
           </div>
         }
         active={!searchParams.has("status")}
@@ -196,7 +253,13 @@ function StatusTabFilters() {
           title={
             <div className="flex items-center gap-2">
               <span>{status.name}</span>
-              <Badge color={status.color}>1M</Badge>
+              <Badge color={status.color}>
+                {formatAsCompactNumber(
+                  statusCounts[
+                    statusKey as Database["public"]["Enums"]["lead_statuses"]
+                  ] ?? 0,
+                )}
+              </Badge>
             </div>
           }
           active={hasStatusParam && statusParamValue === statusKey}
@@ -206,49 +269,114 @@ function StatusTabFilters() {
   );
 }
 
-function CityFilter() {
+function SourceFilter() {
+  const searchParams = useSearchParams();
+  const { handleUpdateSearchParam, handleRemoveSearchParam } =
+    useLeadsTableContext();
+
   return (
-    <Select>
-      <option>Select a city</option>
-      <option>Hurricane</option>
-      <option>Ivins</option>
-      <option>Santa Clara</option>
-      <option>St George</option>
-      <option>Washington</option>
+    <Select
+      name="source"
+      onChange={(e) => {
+        if (e.target.value === "") {
+          handleRemoveSearchParam("source", searchParams.get("source") ?? "");
+        } else {
+          handleUpdateSearchParam("source", e.target.value);
+        }
+      }}
+    >
+      <option value="">Select a source</option>
+      {Object.entries(LEAD_SOURCES).map(([leadSourceKey, leadSource]) => (
+        <option key={leadSourceKey} value={leadSourceKey}>
+          {leadSource.name}
+        </option>
+      ))}
     </Select>
   );
 }
 
 function DateRangeFilter() {
+  const { handleUpdateSearchParam } = useLeadsTableContext();
+
   return (
     <>
-      <Datepicker />
-      <Datepicker />
+      <Datepicker
+        onSelectedDateChanged={(date) =>
+          handleUpdateSearchParam(
+            "created_after",
+            new Date(date).toLocaleDateString(),
+          )
+        }
+      />
+      <Datepicker
+        onSelectedDateChanged={(date) =>
+          handleUpdateSearchParam(
+            "created_before",
+            new Date(date).toLocaleDateString(),
+          )
+        }
+      />
     </>
   );
 }
 
 function TablePagination() {
+  const {
+    handleUpdateSearchParam,
+    handleRemoveSearchParam,
+    leads,
+    leadsCount,
+  } = useLeadsTableContext();
+  const searchParams = useSearchParams();
+  const perPage = Number(searchParams.get("per_page") ?? 10);
+  const page = Number(searchParams.get("page") ?? 1);
+
+  const numberOfPages = Math.ceil(leads.length / perPage);
+
+  const onPageChange = (page: number) => {
+    if (page === 0 || page === 1)
+      return handleRemoveSearchParam("page", searchParams.get("page") ?? "");
+
+    handleUpdateSearchParam("page", page.toString());
+  };
+
   return (
-    <div className="flex items-center justify-end gap-4 p-4 lg:gap-6">
-      <div className="flex items-center gap-2">
-        <span>Rows per page:</span>
-        <Dropdown inline label="5">
-          <Dropdown.Item>5</Dropdown.Item>
-          <Dropdown.Item>10</Dropdown.Item>
-          <Dropdown.Item>15</Dropdown.Item>
-          <Dropdown.Item>20</Dropdown.Item>
-        </Dropdown>
-      </div>
-      <p>1-5 of 20</p>
-      <div className="flex items-center gap-2">
-        <div className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
-          <ChevronLeft />
+    <div className="flex items-center justify-end gap-4 p-4 pt-0 lg:gap-6">
+      {(leadsCount ?? 0) >= 10 && (
+        <div className="flex items-center gap-2">
+          <span>Rows per page:</span>
+          <Dropdown inline label={perPage}>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "5")}
+            >
+              5
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "10")}
+            >
+              10
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "15")}
+            >
+              15
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "20")}
+            >
+              20
+            </Dropdown.Item>
+          </Dropdown>
         </div>
-        <div className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
-          <ChevronRight />
-        </div>
-      </div>
+      )}
+      {numberOfPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={numberOfPages}
+          onPageChange={onPageChange}
+          showIcons
+        />
+      )}
     </div>
   );
 }
@@ -320,7 +448,9 @@ function Content() {
       header: "Name",
       render: (row) => (
         <div className="flex items-center gap-1">
-          <Avatar>{row.name}</Avatar>
+          <Avatar size="sm" rounded>
+            {row.name}
+          </Avatar>
         </div>
       ),
     },
@@ -334,6 +464,40 @@ function Content() {
           </Badge>
         </div>
       ),
+    },
+    {
+      field: "budget",
+      header: "Budget",
+      render: (row) => formatAsCurrency(Number(row.budget)),
+    },
+    {
+      field: "score",
+      header: "Score",
+      render: (row) => {
+        const determineColor = () => {
+          if (row.score > 7) return "indigo";
+          if (row.score > 5) return "green";
+          if (row.score > 3) return "yellow";
+          return "red";
+        };
+        return (
+          <Progress
+            size="xl"
+            progress={row.score * 10}
+            color={determineColor()}
+          />
+        );
+      },
+    },
+    {
+      field: "source",
+      header: "Source",
+      render: (row) => <span className="capitalize">{row.source}</span>,
+    },
+    {
+      field: "created",
+      header: "Created",
+      render: (row) => new Date(row.created_at).toLocaleDateString(),
     },
     {
       cellClassNames: "w-0",
@@ -390,10 +554,16 @@ function Content() {
 }
 
 function TableActiveFilters() {
-  const { handleRemoveSearchParam } = useLeadsTableContext();
+  const { handleRemoveSearchParam, leads } = useLeadsTableContext();
+  const { locationId } = useParams();
   const searchParams = useSearchParams();
   const searchFilterValue = searchParams.get("search");
   const statusFilterValue = searchParams.get("status");
+  const sourceFilterValue = searchParams.get("source");
+  const createdBeforeFilterValue = searchParams.get("created_before");
+  const createdAfterFilterValue = searchParams.get("created_after");
+  const perPageFilterValue =
+    searchParams.get("per_page") && Number(searchParams.get("per_page"));
 
   const hasFilters = Array.from(searchParams.entries()).length > 0;
 
@@ -401,7 +571,7 @@ function TableActiveFilters() {
     hasFilters && (
       <>
         <p className="px-4 font-light lg:px-6">
-          <span className="font-bold">20</span> filtered results
+          <span className="font-bold">{leads.length}</span> filtered results
         </p>
         <div className="flex items-center gap-2 px-4 lg:px-6">
           {searchFilterValue && (
@@ -449,7 +619,93 @@ function TableActiveFilters() {
               </Badge>
             </div>
           )}
-          <Button color="red" outline size="sm" href="/manage/jobs">
+          {perPageFilterValue && (
+            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Per Page
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam(
+                    "per_page",
+                    perPageFilterValue.toString(),
+                  )
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2">
+                  <p>{perPageFilterValue}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {sourceFilterValue && (
+            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Source
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam("source", sourceFilterValue)
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2 capitalize">
+                  <p>{sourceFilterValue}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {createdAfterFilterValue && (
+            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Created after
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam(
+                    "createed_after",
+                    createdAfterFilterValue,
+                  )
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2 capitalize">
+                  <p>{createdAfterFilterValue}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {createdBeforeFilterValue && (
+            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Created before
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam(
+                    "createed_before",
+                    createdBeforeFilterValue,
+                  )
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2 capitalize">
+                  <p>{createdBeforeFilterValue}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          <Button
+            color="red"
+            outline
+            size="sm"
+            href={`/manage/${locationId}/leads`}
+          >
             <div className="flex items-center gap-1 text-red-500">
               <Trash2Icon className="size-5" />
               Clear
@@ -462,21 +718,33 @@ function TableActiveFilters() {
 }
 
 export default function LeadsTable({
+  leadsCount,
   leads,
 }: {
+  leadsCount: number | null;
   leads: Tables<"location_leads">[];
 }) {
   return (
-    <LeadsTableProvider leads={leads}>
+    <LeadsTableProvider leads={leads} leadsCount={leadsCount}>
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
         <StatusTabFilters />
         <div className="track grid gap-4 px-4 md:grid-cols-4 lg:px-6">
           <TableSearchFilter />
-          <CityFilter />
+          <SourceFilter />
           <DateRangeFilter />
         </div>
         <TableActiveFilters />
-        <Content />
+        {leads.length === 0 ? (
+          <div className="px-4">
+            <Alert color="failure" icon={() => <InfoIcon className="mr-2" />}>
+              <span className="font-medium">No rows found!</span> If this is an
+              error, get help.
+            </Alert>
+          </div>
+        ) : (
+          <Content />
+        )}
+
         <TablePagination />
       </div>
     </LeadsTableProvider>

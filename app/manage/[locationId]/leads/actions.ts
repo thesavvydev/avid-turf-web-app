@@ -22,6 +22,6 @@ export async function AddLead<T>(...args: ServerActionWithState<T>) {
   if (error) {
     return formStateResponse({ ...state, error: error.message });
   }
-  console.log({ fields });
+
   return formStateResponse({ success: true, dismiss: true });
 }

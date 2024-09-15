@@ -19,7 +19,6 @@ export default async function Page() {
     .limit(1)
     .maybeSingle();
 
-  console.log({ user, data, fetchLocationError });
   if (fetchLocationError) throw new Error(fetchLocationError.message);
 
   if (data) {

@@ -1,6 +1,6 @@
 import { Database } from "@/types/supabase";
 
-type TLeadStatus = Database["public"]["Enums"]["lead_statuses"];
+export type TLeadStatus = Database["public"]["Enums"]["lead_statuses"];
 
 export const LEAD_STATUSES: {
   [k in TLeadStatus]: {

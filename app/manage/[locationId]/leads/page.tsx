@@ -1,10 +1,8 @@
 import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
 import { createClient } from "@/utils/supabase/server";
-import { Alert } from "flowbite-react";
 import {
   ArchiveIcon,
   CaptionsOffIcon,
-  InfoIcon,
   LandmarkIcon,
   SignpostIcon,
   WorkflowIcon,
@@ -129,29 +127,43 @@ function LeadStatusTiles() {
   );
 }
 
-export default async function Page({ searchParams: { limit = 10 } }) {
+export default async function Page({
+  searchParams: {
+    page = 0,
+    per_page = 10,
+    status = null,
+    source = null,
+    created_after = null,
+    created_before = null,
+  },
+}) {
   const supabase = createClient();
+  const { count } = await supabase
+    .from("location_leads")
+    .select(undefined, { count: "exact" });
+
+  const startRange =
+    page > 1
+      ? Number(page - 1) * Number(per_page)
+      : Number(page) * Number(per_page);
+
+  const endRange = page > 1 ? startRange + Number(per_page) : per_page;
+
   const { data, error } = await supabase
     .from("location_leads")
     .select("*")
-    .limit(limit);
+    .match({ ...(status ? { status } : {}), ...(source ? { source } : {}) })
+    .range(startRange, endRange)
+    .gte("created_at", new Date(created_after ?? "0").toISOString())
+    .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString());
 
   if (error) throw error;
 
   return (
     <>
       <LeadsHeader />
-      {data.length === 0 ? (
-        <Alert color="failure" icon={() => <InfoIcon className="mr-2" />}>
-          <span className="font-medium">No rows found!</span> If this is an
-          error, get help.
-        </Alert>
-      ) : (
-        <>
-          <LeadStatusTiles />
-          <LeadsTable leads={data} />
-        </>
-      )}
+      <LeadStatusTiles />
+      <LeadsTable leads={data} leadsCount={count} />
     </>
   );
 }

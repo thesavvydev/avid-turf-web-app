@@ -96,7 +96,7 @@ export async function UpdateEmployee<T>(...args: ServerActionWithState<T>) {
 
 export async function DeleteEmployee(location_id: number, profile_id: string) {
   const supabase = createClient();
-  console.log("Deleting...", { location_id, profile_id });
+
   return supabase
     .from("location_profiles")
     .delete()

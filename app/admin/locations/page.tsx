@@ -11,8 +11,6 @@ export default async function Page() {
 
   if (error) throw new Error(error.message);
 
-  console.log({ locations });
-
   return (
     <div className="grid gap-4 lg:gap-8">
       <LocationsPageHeader />
