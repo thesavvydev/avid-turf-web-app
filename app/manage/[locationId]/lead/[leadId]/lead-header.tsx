@@ -4,7 +4,7 @@ import PageHeaderWithActions from "@/components/page-header-with-actions";
 import { LEAD_STATUSES } from "@/constants/lead-statuses";
 import { Database, Tables } from "@/types/supabase";
 import { Badge, Breadcrumb, Button, Dropdown } from "flowbite-react";
-import { ChevronLeft, WorkflowIcon } from "lucide-react";
+import { ChevronLeft, ReceiptIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 import { UpdateStatus } from "./actions";
@@ -59,8 +59,8 @@ export default function LeadHeader({
           </Dropdown>
 
           <Button size="sm">
-            <WorkflowIcon className="mr-2 size-5" />
-            Convert to Job
+            <ReceiptIcon className="mr-2 size-5" />
+            Add estimate
           </Button>
         </div>
       )}

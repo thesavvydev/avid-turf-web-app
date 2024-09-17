@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
+import Linky from "@/components/linky";
 import { LEAD_SOURCES } from "@/constants/lead-sources";
 import { LEAD_STATUSES, TLeadStatus } from "@/constants/lead-statuses";
 import { Database, Tables } from "@/types/supabase";
@@ -549,7 +550,9 @@ function Content() {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              {row.name}
+              <Linky href={`/manage/${row.location_id}/lead/${row.id}`}>
+                {row.name}
+              </Linky>
               <div className="sm:hidden">
                 <Badge color={LEAD_STATUSES[row.status].color}>
                   {LEAD_STATUSES[row.status].name}
