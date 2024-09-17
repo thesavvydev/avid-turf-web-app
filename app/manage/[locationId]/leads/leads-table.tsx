@@ -7,7 +7,6 @@ import { Database, Tables } from "@/types/supabase";
 import { formatAsCompactNumber, formatAsCurrency } from "@/utils/formatter";
 import {
   Alert,
-  Avatar,
   Badge,
   Button,
   Datepicker,

@@ -22,7 +22,7 @@ export default async function Layout({
   if (!lead) notFound();
 
   return (
-    <div className="grid gap-4 md:gap-6">
+    <div className="grid gap-4 divide-y divide-gray-100 md:gap-6 [&>div]:py-4">
       <LeadHeader lead={lead} />
       {children}
     </div>

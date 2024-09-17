@@ -2,10 +2,12 @@
 
 import PageHeaderWithActions from "@/components/page-header-with-actions";
 import { LEAD_STATUSES } from "@/constants/lead-statuses";
-import { Tables } from "@/types/supabase";
-import { Breadcrumb, Button } from "flowbite-react";
-import { ChevronLeft } from "lucide-react";
-import { useParams } from "next/navigation";
+import { Database, Tables } from "@/types/supabase";
+import { Badge, Breadcrumb, Button, Dropdown } from "flowbite-react";
+import { ChevronLeft, WorkflowIcon } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+
+import { UpdateStatus } from "./actions";
 
 export default function LeadHeader({
   lead,
@@ -13,14 +15,54 @@ export default function LeadHeader({
   lead: Tables<"location_leads">;
 }) {
   const { locationId } = useParams();
+  const router = useRouter();
+
   return (
     <PageHeaderWithActions
       title={`#${lead.id} ${lead.name}`}
-      subtitle={`Created on ${new Date(lead.created_at).toLocaleDateString()}`}
+      subtitle={
+        <div className="mt-2 flex gap-2">
+          <span className="inline max-w-fit">
+            <Badge color={LEAD_STATUSES[lead.status].color}>
+              {LEAD_STATUSES[lead.status].name}
+            </Badge>
+          </span>
+          <p className="text-sm">
+            {`Created on ${new Date(lead.created_at).toLocaleDateString()}`}
+          </p>
+        </div>
+      }
       renderActions={() => (
-        <Button color={LEAD_STATUSES[lead.status].color}>
-          {LEAD_STATUSES[lead.status].name}
-        </Button>
+        <div className="flex items-start gap-2">
+          <Dropdown
+            color={LEAD_STATUSES[lead.status].color}
+            label={LEAD_STATUSES[lead.status].name}
+            dismissOnClick={false}
+            size="sm"
+          >
+            {Object.entries(LEAD_STATUSES).map(
+              ([leadStatusKey, leadStatus]) => (
+                <Dropdown.Item
+                  key={leadStatusKey}
+                  onClick={async () => {
+                    await UpdateStatus(
+                      lead.id,
+                      leadStatusKey as Database["public"]["Enums"]["lead_statuses"],
+                    );
+                    router.refresh();
+                  }}
+                >
+                  {leadStatus.name}
+                </Dropdown.Item>
+              ),
+            )}
+          </Dropdown>
+
+          <Button size="sm">
+            <WorkflowIcon className="mr-2 size-5" />
+            Convert to Job
+          </Button>
+        </div>
       )}
       renderBreadcrumbs={() => (
         <Breadcrumb>
