@@ -431,7 +431,12 @@ function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
       )}
       <div className="relative hidden items-center gap-2 sm:flex">
         <Tooltip content="Details">
-          <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
+          <span
+            className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
+            onClick={() =>
+              router.push(`/manage/${row.location_id}/lead/${row.id}`)
+            }
+          >
             <EyeIcon />
           </span>
         </Tooltip>
@@ -465,7 +470,13 @@ function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
           size="sm"
           dismissOnClick={false}
         >
-          <Dropdown.Item>Details</Dropdown.Item>
+          <Dropdown.Item
+            onClick={() =>
+              router.push(`/manage/${row.location_id}/lead/${row.id}`)
+            }
+          >
+            Details
+          </Dropdown.Item>
           <Dropdown.Item onClick={() => setIsOpen(true)}>
             Settings
           </Dropdown.Item>
@@ -496,23 +507,6 @@ function Content() {
     {
       field: "name",
       header: "Name",
-      render: (row) => (
-        <div className="flex items-center gap-1">
-          <Avatar size="sm" rounded>
-            {row.name}
-            <div className="sm:hidden">
-              <Badge color={LEAD_STATUSES[row.status].color}>
-                {LEAD_STATUSES[row.status].name}
-              </Badge>
-            </div>
-          </Avatar>
-        </div>
-      ),
-    },
-    {
-      cellClassNames: "w-0 hidden sm:table-cell",
-      field: "score",
-      header: "Score",
       render: (row) => {
         const determineColor = () => {
           if (row.score > 7) return "stroke-indigo-500";
@@ -520,39 +514,48 @@ function Content() {
           if (row.score > 3) return "stroke-yellow-500";
           return "stroke-red-500";
         };
-
         return (
-          <div className="relative mx-auto size-8 flex-shrink-0">
-            <svg
-              className="size-full -rotate-90"
-              viewBox="0 0 34 34"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle
-                cx="17"
-                cy="17"
-                r="14"
-                fill="none"
-                className="stroke-current text-gray-200 dark:text-neutral-700"
-                strokeWidth="2"
-              />
-              <circle
-                cx="17"
-                cy="17"
-                r="14"
-                fill="none"
-                className={twMerge(
-                  "stroke-current text-lime-600 dark:text-lime-500",
-                  determineColor(),
-                )}
-                strokeWidth="4"
-                strokeDasharray="100"
-                strokeDashoffset={100 - row.score * 10}
-                strokeLinecap="round"
-              />
-            </svg>
-            <div className="absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs font-bold text-gray-400">
-              {row.score}
+          <div className="flex items-center gap-2">
+            <div className="relative size-8 flex-shrink-0">
+              <svg
+                className="size-full -rotate-90"
+                viewBox="0 0 34 34"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="17"
+                  cy="17"
+                  r="14"
+                  fill="none"
+                  className="stroke-current text-gray-200 dark:text-neutral-700"
+                  strokeWidth="2"
+                />
+                <circle
+                  cx="17"
+                  cy="17"
+                  r="14"
+                  fill="none"
+                  className={twMerge(
+                    "stroke-current text-lime-600 dark:text-lime-500",
+                    determineColor(),
+                  )}
+                  strokeWidth="4"
+                  strokeDasharray="100"
+                  strokeDashoffset={100 - row.score * 10}
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-xs font-bold text-gray-400">
+                {row.score}
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              {row.name}
+              <div className="sm:hidden">
+                <Badge color={LEAD_STATUSES[row.status].color}>
+                  {LEAD_STATUSES[row.status].name}
+                </Badge>
+              </div>
             </div>
           </div>
         );

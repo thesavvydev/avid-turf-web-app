@@ -119,40 +119,70 @@ export type Database = {
       }
       location_leads: {
         Row: {
+          address: string | null
           budget: number | null
+          city: string | null
+          completion_date: string | null
           created_at: string
           creator_id: string
           custom_fields: Json | null
+          email: string | null
+          follow_up_date: string | null
           id: number
           location_id: number
           name: string
+          notes: string | null
+          phone: string | null
+          postal_code: string | null
           score: number
           source: Database["public"]["Enums"]["lead_sources"]
+          state: string | null
           status: Database["public"]["Enums"]["lead_statuses"]
+          type: Database["public"]["Enums"]["lead_type"] | null
         }
         Insert: {
+          address?: string | null
           budget?: number | null
+          city?: string | null
+          completion_date?: string | null
           created_at?: string
           creator_id: string
           custom_fields?: Json | null
+          email?: string | null
+          follow_up_date?: string | null
           id?: number
           location_id: number
           name: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
           score?: number
           source?: Database["public"]["Enums"]["lead_sources"]
+          state?: string | null
           status?: Database["public"]["Enums"]["lead_statuses"]
+          type?: Database["public"]["Enums"]["lead_type"] | null
         }
         Update: {
+          address?: string | null
           budget?: number | null
+          city?: string | null
+          completion_date?: string | null
           created_at?: string
           creator_id?: string
           custom_fields?: Json | null
+          email?: string | null
+          follow_up_date?: string | null
           id?: number
           location_id?: number
           name?: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
           score?: number
           source?: Database["public"]["Enums"]["lead_sources"]
+          state?: string | null
           status?: Database["public"]["Enums"]["lead_statuses"]
+          type?: Database["public"]["Enums"]["lead_type"] | null
         }
         Relationships: [
           {
@@ -316,6 +346,7 @@ export type Database = {
         | "follow-up"
         | "lost"
         | "inactive"
+      lead_type: "new" | "remodel" | "maintenance"
       location_profile_roles: "admin" | "manager" | "base"
     }
     CompositeTypes: {
