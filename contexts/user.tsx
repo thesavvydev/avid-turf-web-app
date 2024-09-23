@@ -4,7 +4,9 @@ import { Tables } from "@/types/supabase";
 import { createContext, PropsWithChildren, useContext, useMemo } from "react";
 
 const UserProviderContext = createContext<{
-  user: Partial<Tables<"profiles">> & { locations?: Tables<"locations">[] };
+  user: Partial<Tables<"profiles">> & {
+    business_locations?: Tables<"business_locations">[];
+  };
 }>({
   user: {},
 });

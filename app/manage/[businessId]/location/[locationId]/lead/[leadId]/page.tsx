@@ -32,7 +32,7 @@ export default async function Page({
 }) {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from("location_leads")
+    .from("business_location_leads")
     .select("*")
     .eq("id", leadId)
     .limit(1)

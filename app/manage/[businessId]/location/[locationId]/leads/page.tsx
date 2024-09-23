@@ -24,7 +24,7 @@ function LeadStatusTiles({
   leadsCount,
   statusCounts,
 }: {
-  previousWeek: Partial<Tables<"location_leads">>[] | null;
+  previousWeek: Partial<Tables<"business_location_leads">>[] | null;
   leadsCount: number;
   statusCounts: {
     [k in TLeadStatus]: number;
@@ -194,18 +194,21 @@ export default async function Page({
     created_after = null,
     created_before = null,
   },
+  params: { businessId = "" },
 }) {
   const supabase = createClient();
 
   const { data: all, count } = await supabase
-    .from("location_leads")
-    .select("status", { count: "exact" });
+    .from("business_location_leads")
+    .select("status", { count: "exact" })
+    .eq("business_id", businessId);
 
   const lastWeekDate = new Date(new Date().setDate(new Date().getDate() - 5));
 
   const { data: previousWeek } = await supabase
-    .from("location_leads")
+    .from("business_location_leads")
     .select("id,status")
+    .eq("business_id", businessId)
     .lte("created_at", lastWeekDate.toISOString());
 
   const startRange =
@@ -216,9 +219,13 @@ export default async function Page({
   const endRange = page > 1 ? startRange + Number(per_page) : per_page;
 
   const { data, error } = await supabase
-    .from("location_leads")
+    .from("business_location_leads")
     .select("*")
-    .match({ ...(status ? { status } : {}), ...(source ? { source } : {}) })
+    .match({
+      ...(status ? { status } : {}),
+      ...(source ? { source } : {}),
+      business_id: businessId,
+    })
     .range(startRange, endRange)
     .gte("created_at", new Date(created_after ?? "0").toISOString())
     .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString())
@@ -227,9 +234,13 @@ export default async function Page({
   if (error) throw error;
 
   const { count: paginatedTotal } = await supabase
-    .from("location_leads")
+    .from("business_location_leads")
     .select(undefined, { count: "exact" })
-    .match({ ...(status ? { status } : {}), ...(source ? { source } : {}) })
+    .match({
+      ...(status ? { status } : {}),
+      ...(source ? { source } : {}),
+      business_id: businessId,
+    })
     .gte("created_at", new Date(created_after ?? "0").toISOString())
     .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString());
 

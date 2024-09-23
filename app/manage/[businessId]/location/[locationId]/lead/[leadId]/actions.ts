@@ -9,5 +9,8 @@ export async function UpdateStatus(
 ) {
   const supabase = createClient();
 
-  return supabase.from("location_leads").update({ status }).eq("id", id);
+  return supabase
+    .from("business_location_leads")
+    .update({ status })
+    .eq("id", id);
 }

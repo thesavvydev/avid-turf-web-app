@@ -13,7 +13,7 @@ export default async function Layout({
 }: TLayout) {
   const supabase = createClient();
   const { data: lead, error } = await supabase
-    .from("location_leads")
+    .from("business_location_leads")
     .select("*")
     .eq("id", leadId)
     .maybeSingle();

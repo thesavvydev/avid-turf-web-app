@@ -1,11 +1,12 @@
 import UserContextProvider from "@/contexts/user";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { PropsWithChildren } from "react";
-import ManageNav from "./manage-nav";
-import ManageSidebar from "./manage-sidebar";
 
-export default async function ManageLayout({ children }: PropsWithChildren) {
+import { PropsWithChildren } from "react";
+import ManageSidebar from "./manage-sidebar";
+import ManageNav from "./manage-nav";
+
+export default async function Layout({ children }: PropsWithChildren) {
   const supabase = createClient();
   const {
     data: { user },
@@ -17,13 +18,13 @@ export default async function ManageLayout({ children }: PropsWithChildren) {
 
   const { data, error: fetchProfileError } = await supabase
     .from("profiles")
-    .select("*, locations(*)")
+    .select("*,businesses(*),business_locations(*)")
     .eq("id", user.id)
     .limit(1)
     .single();
 
+  if (fetchProfileError) throw new Error(fetchProfileError.message);
   if (!data) redirect("/sign-in");
-  if (fetchProfileError) throw new Error(fetchProfileError);
 
   return (
     <UserContextProvider user={data}>

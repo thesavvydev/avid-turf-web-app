@@ -12,9 +12,9 @@ import { UpdateStatus } from "./actions";
 export default function LeadHeader({
   lead,
 }: {
-  lead: Tables<"location_leads">;
+  lead: Tables<"business_location_leads">;
 }) {
-  const { locationId } = useParams();
+  const { businessId, locationId } = useParams();
   const router = useRouter();
 
   return (
@@ -68,7 +68,7 @@ export default function LeadHeader({
         <Breadcrumb>
           <Breadcrumb.Item
             icon={() => <ChevronLeft />}
-            href={`/manage/${locationId}/leads`}
+            href={`/manage/${businessId}/location/${locationId}/leads`}
           >
             Back to Leads
           </Breadcrumb.Item>

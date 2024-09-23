@@ -10,7 +10,7 @@ export async function UpdateLead<T>(...args: ServerActionWithState<T>) {
   const fields = Object.fromEntries(formData);
 
   const { error } = await supabase
-    .from("location_leads")
+    .from("business_location_leads")
     .update({
       budget: Number(fields.budget) as number,
       score: Number(fields.score) as number,
@@ -29,5 +29,5 @@ export async function UpdateLead<T>(...args: ServerActionWithState<T>) {
 
 export async function DeleteLead(id: number) {
   const supabase = createClient();
-  return supabase.from("location_leads").delete().eq("id", id);
+  return supabase.from("business_location_leads").delete().eq("id", id);
 }

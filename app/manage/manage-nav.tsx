@@ -8,18 +8,19 @@ import {
   Navbar,
   theme,
 } from "flowbite-react";
-import useManageMenuItems from "./use-manage-menu-items";
+
 import { twMerge } from "tailwind-merge";
 import { useParams } from "next/navigation";
+import useManageMenuItems from "./use-manage-menu-items";
 
 export default function ManageNav() {
   const menuItems = useManageMenuItems();
   const {
-    user: { full_name, locations },
+    user: { full_name, business_locations },
   } = useUserContext();
 
-  const { locationId } = useParams();
-  const selectedLocation = locations?.find(
+  const { locationId, businessId } = useParams();
+  const selectedLocation = business_locations?.find(
     (location) => location.id === Number(locationId),
   );
 
@@ -31,8 +32,11 @@ export default function ManageNav() {
         color="light"
       >
         <Dropdown.Header>Select a Location</Dropdown.Header>
-        {locations?.map((location) => (
-          <Dropdown.Item key={location.id} href={`/manage/${location.id}`}>
+        {business_locations?.map((location) => (
+          <Dropdown.Item
+            key={location.id}
+            href={`/manage/${businessId}/location/${location.id}`}
+          >
             {location.name}
           </Dropdown.Item>
         ))}

@@ -14,15 +14,15 @@ export default async function Page() {
 
   const { data, error: fetchLocationError } = await supabase
     .from("businesses")
-    .select("*,business_profiles(profile_id)")
+    .select("*,business_profiles(profile_id), business_locations(*)")
     .eq("business_profiles.profile_id", user.id)
     .limit(1)
     .maybeSingle();
 
   if (fetchLocationError) throw new Error(fetchLocationError.message);
 
-  if (data) {
-    redirect(`/manage/${data.id}/location`);
+  if (data && data.business_locations.length) {
+    redirect(`/manage/${data.id}/location/${data.business_locations[0].id}`);
   }
 
   return (
@@ -32,10 +32,10 @@ export default async function Page() {
       </div>
       <div className="text-center xl:max-w-4xl">
         <h1 className="mb-3 text-2xl font-bold leading-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
-          No business found.
+          No locations found.
         </h1>
         <p className="mb-5 text-base font-normal text-gray-500 dark:text-gray-400 md:text-lg">
-          Oops! Looks like you have not been assigned to a business yet.
+          Oops! Looks like you have not been assigned to a location yet.
         </p>
       </div>
     </div>

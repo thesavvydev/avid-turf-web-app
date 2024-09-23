@@ -34,8 +34,9 @@ export type Database = {
   }
   public: {
     Tables: {
-      custom_fields: {
+      business_custom_fields: {
         Row: {
+          business_id: string
           created_at: string
           id: number
           label: string
@@ -43,6 +44,7 @@ export type Database = {
           type: Database["public"]["Enums"]["custom_field_types"]
         }
         Insert: {
+          business_id: string
           created_at?: string
           id?: number
           label: string
@@ -50,11 +52,307 @@ export type Database = {
           type: Database["public"]["Enums"]["custom_field_types"]
         }
         Update: {
+          business_id?: string
           created_at?: string
           id?: number
           label?: string
           model?: Database["public"]["Enums"]["custom_field_models"]
           type?: Database["public"]["Enums"]["custom_field_types"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_custom_fields_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_location_lead_custom_fields: {
+        Row: {
+          business_id: string
+          created_at: string
+          custom_field_id: number
+          lead_id: number
+          value: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          custom_field_id: number
+          lead_id: number
+          value: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          custom_field_id?: number
+          lead_id?: number
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_lead_custom_fields_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_custom_fields_custom_field_id_fkey"
+            columns: ["custom_field_id"]
+            isOneToOne: false
+            referencedRelation: "business_custom_fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_custom_fields_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_location_leads: {
+        Row: {
+          address: string | null
+          budget: number | null
+          business_id: string | null
+          business_location_id: number
+          city: string | null
+          completion_date: string | null
+          created_at: string
+          creator_id: string
+          custom_fields: Json | null
+          email: string | null
+          follow_up_date: string | null
+          id: number
+          name: string
+          notes: string | null
+          phone: string | null
+          postal_code: string | null
+          score: number
+          source: Database["public"]["Enums"]["lead_sources"]
+          state: string | null
+          status: Database["public"]["Enums"]["lead_statuses"]
+          type: Database["public"]["Enums"]["lead_type"] | null
+        }
+        Insert: {
+          address?: string | null
+          budget?: number | null
+          business_id?: string | null
+          business_location_id: number
+          city?: string | null
+          completion_date?: string | null
+          created_at?: string
+          creator_id: string
+          custom_fields?: Json | null
+          email?: string | null
+          follow_up_date?: string | null
+          id?: number
+          name: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          score?: number
+          source?: Database["public"]["Enums"]["lead_sources"]
+          state?: string | null
+          status?: Database["public"]["Enums"]["lead_statuses"]
+          type?: Database["public"]["Enums"]["lead_type"] | null
+        }
+        Update: {
+          address?: string | null
+          budget?: number | null
+          business_id?: string | null
+          business_location_id?: number
+          city?: string | null
+          completion_date?: string | null
+          created_at?: string
+          creator_id?: string
+          custom_fields?: Json | null
+          email?: string | null
+          follow_up_date?: string | null
+          id?: number
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          score?: number
+          source?: Database["public"]["Enums"]["lead_sources"]
+          state?: string | null
+          status?: Database["public"]["Enums"]["lead_statuses"]
+          type?: Database["public"]["Enums"]["lead_type"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_location_id_fkey"
+            columns: ["business_location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_profile_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_leads_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_location_profiles: {
+        Row: {
+          business_id: string
+          commission_rate: number | null
+          created_at: string
+          location_id: number
+          profile_id: string
+          role: Database["public"]["Enums"]["location_profile_roles"]
+        }
+        Insert: {
+          business_id: string
+          commission_rate?: number | null
+          created_at?: string
+          location_id: number
+          profile_id: string
+          role?: Database["public"]["Enums"]["location_profile_roles"]
+        }
+        Update: {
+          business_id?: string
+          commission_rate?: number | null
+          created_at?: string
+          location_id?: number
+          profile_id?: string
+          role?: Database["public"]["Enums"]["location_profile_roles"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_profiles_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_profiles_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_locations: {
+        Row: {
+          address: string | null
+          address2: string | null
+          business_id: string
+          city: string | null
+          created_at: string
+          id: number
+          name: string
+          postal_code: string | null
+          state: string | null
+        }
+        Insert: {
+          address?: string | null
+          address2?: string | null
+          business_id: string
+          city?: string | null
+          created_at?: string
+          id?: number
+          name: string
+          postal_code?: string | null
+          state?: string | null
+        }
+        Update: {
+          address?: string | null
+          address2?: string | null
+          business_id?: string
+          city?: string | null
+          created_at?: string
+          id?: number
+          name?: string
+          postal_code?: string | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_locations_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_profiles: {
+        Row: {
+          business_id: string
+          created_at: string
+          profile_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          profile_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_profiles_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      businesses: {
+        Row: {
+          created_at: string
+          id: string
+          logo: string | null
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logo?: string | null
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logo?: string | null
+          name?: string
         }
         Relationships: []
       }
@@ -80,198 +378,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      location_lead_custom_fields: {
-        Row: {
-          created_at: string
-          custom_field_id: number
-          lead_id: number
-          value: string
-        }
-        Insert: {
-          created_at?: string
-          custom_field_id: number
-          lead_id: number
-          value: string
-        }
-        Update: {
-          created_at?: string
-          custom_field_id?: number
-          lead_id?: number
-          value?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "lead_custom_fields_custom_field_id_fkey"
-            columns: ["custom_field_id"]
-            isOneToOne: false
-            referencedRelation: "custom_fields"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lead_custom_fields_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "location_leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      location_leads: {
-        Row: {
-          address: string | null
-          budget: number | null
-          city: string | null
-          completion_date: string | null
-          created_at: string
-          creator_id: string
-          custom_fields: Json | null
-          email: string | null
-          follow_up_date: string | null
-          id: number
-          location_id: number
-          name: string
-          notes: string | null
-          phone: string | null
-          postal_code: string | null
-          score: number
-          source: Database["public"]["Enums"]["lead_sources"]
-          state: string | null
-          status: Database["public"]["Enums"]["lead_statuses"]
-          type: Database["public"]["Enums"]["lead_type"] | null
-        }
-        Insert: {
-          address?: string | null
-          budget?: number | null
-          city?: string | null
-          completion_date?: string | null
-          created_at?: string
-          creator_id: string
-          custom_fields?: Json | null
-          email?: string | null
-          follow_up_date?: string | null
-          id?: number
-          location_id: number
-          name: string
-          notes?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          score?: number
-          source?: Database["public"]["Enums"]["lead_sources"]
-          state?: string | null
-          status?: Database["public"]["Enums"]["lead_statuses"]
-          type?: Database["public"]["Enums"]["lead_type"] | null
-        }
-        Update: {
-          address?: string | null
-          budget?: number | null
-          city?: string | null
-          completion_date?: string | null
-          created_at?: string
-          creator_id?: string
-          custom_fields?: Json | null
-          email?: string | null
-          follow_up_date?: string | null
-          id?: number
-          location_id?: number
-          name?: string
-          notes?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          score?: number
-          source?: Database["public"]["Enums"]["lead_sources"]
-          state?: string | null
-          status?: Database["public"]["Enums"]["lead_statuses"]
-          type?: Database["public"]["Enums"]["lead_type"] | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "leads_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "leads_profile_id_fkey"
-            columns: ["creator_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      location_profiles: {
-        Row: {
-          commission_rate: number | null
-          created_at: string
-          location_id: number
-          profile_id: string
-          role: Database["public"]["Enums"]["location_profile_roles"]
-        }
-        Insert: {
-          commission_rate?: number | null
-          created_at?: string
-          location_id: number
-          profile_id: string
-          role?: Database["public"]["Enums"]["location_profile_roles"]
-        }
-        Update: {
-          commission_rate?: number | null
-          created_at?: string
-          location_id?: number
-          profile_id?: string
-          role?: Database["public"]["Enums"]["location_profile_roles"]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "location_profiles_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "location_profiles_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      locations: {
-        Row: {
-          address: string | null
-          address2: string | null
-          city: string | null
-          created_at: string
-          id: number
-          name: string
-          postal_code: string | null
-          state: string | null
-        }
-        Insert: {
-          address?: string | null
-          address2?: string | null
-          city?: string | null
-          created_at?: string
-          id?: number
-          name: string
-          postal_code?: string | null
-          state?: string | null
-        }
-        Update: {
-          address?: string | null
-          address2?: string | null
-          city?: string | null
-          created_at?: string
-          id?: number
-          name?: string
-          postal_code?: string | null
-          state?: string | null
-        }
-        Relationships: []
       }
       profiles: {
         Row: {

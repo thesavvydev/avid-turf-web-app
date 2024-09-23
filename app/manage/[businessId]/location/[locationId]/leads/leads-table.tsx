@@ -49,7 +49,7 @@ import { DeleteLead } from "./actions";
 import UpdateLeadDrawer from "./update-lead-drawer";
 
 const LeadsTableContext = createContext<{
-  leads: Tables<"location_leads">[];
+  leads: Tables<"business_location_leads">[];
   leadsCount: number | null;
   handleUpdateSearchParam: (param: string, value: string) => void;
   handleRemoveSearchParam: (param: string, value: string) => void;
@@ -88,7 +88,7 @@ function useLeadsTableContext() {
 type TLeadsTableProviderProps = PropsWithChildren & {
   leadsCount: number | null;
   paginatedTotal: number;
-  leads: Tables<"location_leads">[];
+  leads: Tables<"business_location_leads">[];
   statusCounts: {
     [k in TLeadStatus]: number;
   };
@@ -411,7 +411,7 @@ function TablePagination() {
   );
 }
 
-function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
+function ActionsCell({ row }: { row: Tables<"business_location_leads"> }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -434,7 +434,9 @@ function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
           <span
             className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
             onClick={() =>
-              router.push(`/manage/${row.location_id}/lead/${row.id}`)
+              router.push(
+                `/manage/${row.business_id}/location/${row.business_location_id}/lead/${row.id}`,
+              )
             }
           >
             <EyeIcon />
@@ -472,7 +474,9 @@ function ActionsCell({ row }: { row: Tables<"location_leads"> }) {
         >
           <Dropdown.Item
             onClick={() =>
-              router.push(`/manage/${row.location_id}/lead/${row.id}`)
+              router.push(
+                `/manage/${row.business_id}/location/${row.business_location_id}/lead/${row.id}`,
+              )
             }
           >
             Details
@@ -550,7 +554,9 @@ function Content() {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <Linky href={`/manage/${row.location_id}/lead/${row.id}`}>
+              <Linky
+                href={`/manage/${row.business_id}/location/${row.business_location_id}/lead/${row.id}`}
+              >
                 {row.name}
               </Linky>
               <div className="sm:hidden">
@@ -649,7 +655,7 @@ function Content() {
 
 function TableActiveFilters() {
   const { handleRemoveSearchParam, paginatedTotal } = useLeadsTableContext();
-  const { locationId } = useParams();
+  const { locationId, businessId } = useParams();
   const searchParams = useSearchParams();
   const {
     search,
@@ -793,7 +799,7 @@ function TableActiveFilters() {
             color="red"
             outline
             size="sm"
-            href={`/manage/${locationId}/leads`}
+            href={`/manage/${businessId}/location/${locationId}/leads`}
           >
             <div className="flex items-center gap-1 text-red-500">
               <Trash2Icon className="size-5" />
@@ -813,7 +819,7 @@ export default function LeadsTable({
   statusCounts,
 }: {
   leadsCount: number | null;
-  leads: Tables<"location_leads">[];
+  leads: Tables<"business_location_leads">[];
   paginatedTotal: number;
   statusCounts: {
     [k in TLeadStatus]: number;

@@ -25,7 +25,7 @@ import { US_STATES } from "@/constants/us-states";
 import { AddLead } from "./action";
 
 const FormFields = () => {
-  const { locationId } = useParams();
+  const { businessId, locationId } = useParams();
   const { user } = useUserContext();
   const { pending } = useFormStatus();
 
@@ -37,7 +37,8 @@ const FormFields = () => {
         className="grid gap-2 border-b border-gray-100 pb-2 dark:border-gray-700 sm:grid-cols-2 md:gap-6 md:pb-6"
       >
         <input type="hidden" name="creator_id" value={user.id} />
-        <input type="hidden" name="location_id" value={locationId} />
+        <input type="hidden" name="business_location_id" value={locationId} />
+        <input type="hidden" name="business_id" value={businessId} />
 
         <div>
           <Label htmlFor="name" className="mb-2 block">
@@ -198,7 +199,7 @@ const FormFields = () => {
 };
 
 export default function Page() {
-  const { locationId } = useParams();
+  const { businessId, locationId } = useParams();
   const [state, action] = useFormState(
     AddLead<TInitialFormState>,
     initialFormState,
@@ -211,7 +212,7 @@ export default function Page() {
         renderBreadcrumbs={() => (
           <Breadcrumb aria-label="Back to leads">
             <Breadcrumb.Item
-              href={`/manage/${locationId}/leads`}
+              href={`/manage/${businessId}/location/${locationId}/leads`}
               icon={() => <ChevronLeftIcon className="mr-2" />}
             >
               Back to Leads

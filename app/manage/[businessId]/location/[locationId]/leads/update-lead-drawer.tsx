@@ -19,7 +19,7 @@ import { UpdateLead } from "./actions";
 const FormFields = ({
   defaultValues,
 }: {
-  defaultValues: Tables<"location_leads">;
+  defaultValues: Tables<"business_location_leads">;
 }) => {
   const { pending } = useFormStatus();
 
@@ -103,7 +103,7 @@ const FormFields = ({
 type TUpdateLeadDrawer = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  locationLead: Tables<"location_leads">;
+  locationLead: Tables<"business_location_leads">;
 };
 
 export default function UpdateLeadDrawer({

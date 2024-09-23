@@ -23,7 +23,7 @@ import {
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
-export default function ManagePage() {
+export default function Page() {
   return (
     <>
       <PageHeaderWithActions
