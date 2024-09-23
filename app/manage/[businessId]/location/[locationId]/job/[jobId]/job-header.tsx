@@ -6,7 +6,7 @@ import { ChevronLeftIcon, EditIcon, PrinterIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 
 export default function JobHeader() {
-  const { jobId } = useParams();
+  const { businessId, locationId, jobId } = useParams();
   return (
     <PageHeaderWithActions
       title={`Order #${jobId}`}
@@ -36,7 +36,7 @@ export default function JobHeader() {
       renderBreadcrumbs={() => (
         <Breadcrumb aria-label="Default breadcrumb example">
           <Breadcrumb.Item
-            href="/manage/jobs"
+            href={`/manage/${businessId}/location/${locationId}/jobs`}
             icon={() => <ChevronLeftIcon className="mr-2" />}
           >
             Back to Jobs

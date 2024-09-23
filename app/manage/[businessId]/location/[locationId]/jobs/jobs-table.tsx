@@ -44,6 +44,8 @@ import { twMerge } from "tailwind-merge";
 const mockJobs = [
   {
     address: "1161 S Colton Road",
+    business_id: 1,
+    location_id: 1,
     start_date: "2024-02-02",
     id: 1,
     city: "Washington",
@@ -53,6 +55,8 @@ const mockJobs = [
       "John Doe, Jane Doe, Doe Jean,John Doe, Jane Doe, Doe Jean,John Doe, Jane Doe, Doe Jean",
   },
   {
+    business_id: 2,
+    location_id: 2,
     address:
       "1161 S Colton Road 1161 S Colton Road 1161 S Colton Road 1161 S Colton Road",
     start_date: "2024-02-02",
@@ -63,6 +67,8 @@ const mockJobs = [
     employees: "John Doe",
   },
   {
+    business_id: 3,
+    location_id: 3,
     address: "1161 S Colton Road",
     start_date: "2024-02-02",
     id: 3,
@@ -72,6 +78,8 @@ const mockJobs = [
     employees: "John Doe",
   },
   {
+    business_id: 4,
+    location_id: 4,
     address: "1161 S Colton Road",
     start_date: "2024-02-02",
     id: 4,
@@ -81,6 +89,8 @@ const mockJobs = [
     employees: "John Doe",
   },
   {
+    business_id: 5,
+    location_id: 5,
     address: "1161 S Colton Road",
     start_date: "2024-02-02",
     id: 5,
@@ -100,7 +110,11 @@ const columns = [
         <MapPinIcon className="hidden size-6 text-gray-400 md:block" />
         <div>
           <p>
-            <Linky href={`/manage/job/${row.id}`}>{row.address}</Linky>
+            <Linky
+              href={`/manage/${row.business_id}/location/${row.location_id}/job/${row.id}`}
+            >
+              {row.address}
+            </Linky>
           </p>
           <p className="text-sm text-gray-400">{`ORDER-${row.id}`}</p>
         </div>
