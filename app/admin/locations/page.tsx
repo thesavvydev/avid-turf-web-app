@@ -5,8 +5,8 @@ import LocationsTable from "./locations-table";
 export default async function Page() {
   const supabase = createClient();
   const { data: locations, error } = await supabase
-    .from("locations")
-    .select("*, location_profiles(count)")
+    .from("business_locations")
+    .select("*, business_location_profiles(count)")
     .order("state");
 
   if (error) throw new Error(error.message);

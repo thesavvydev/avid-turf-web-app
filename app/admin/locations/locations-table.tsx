@@ -11,15 +11,19 @@ import { useState } from "react";
 import AdminUpdateLocationDrawer from "@/components/admin/admin-update-location-drawer";
 import { DeleteLocation } from "./actions";
 
-type TLocationAndEmployeeCount = Tables<"locations"> & {
-  location_profiles: { count: number }[];
+type TLocationAndEmployeeCount = Tables<"business_locations"> & {
+  business_location_profiles: { count: number }[];
 };
 
 type TLocationsTableProps = {
   data: TLocationAndEmployeeCount[];
 };
 
-function LocationActionCell({ location }: { location: Tables<"locations"> }) {
+function LocationActionCell({
+  location,
+}: {
+  location: Tables<"business_locations">;
+}) {
   const [isUpdateLocationDrawerOpen, setIsUpdateLocationDrawerOpen] =
     useState(false);
   const router = useRouter();
@@ -119,7 +123,8 @@ export default function LocationsTable({ data }: TLocationsTableProps) {
         {
           field: "employees",
           header: "Employees",
-          renderCell: ({ location_profiles }) => location_profiles[0].count,
+          renderCell: ({ business_location_profiles }) =>
+            business_location_profiles[0].count,
         },
         {
           cellClassNames: "w-0",

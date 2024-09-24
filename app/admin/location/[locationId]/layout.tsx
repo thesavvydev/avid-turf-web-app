@@ -16,7 +16,7 @@ export default async function Layout({
 }: TLayout) {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from("locations")
+    .from("business_locations")
     .select("*")
     .eq("id", locationId)
     .limit(1)

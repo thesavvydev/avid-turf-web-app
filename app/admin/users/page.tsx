@@ -6,7 +6,7 @@ export default async function Page() {
   const supabase = createClient();
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("*, location_profiles(*)")
+    .select("*, business_location_profiles(*)")
     .order("full_name");
 
   if (error) throw new Error(error.message);

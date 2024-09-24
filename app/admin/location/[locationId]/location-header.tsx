@@ -10,7 +10,7 @@ import { useState } from "react";
 export default function LocationHeader({
   location,
 }: {
-  location: Tables<"locations">;
+  location: Tables<"business_locations">;
 }) {
   const [isUpdateLocationDrawerOpen, setIsUpdateLocationDrawerOpen] =
     useState(false);
