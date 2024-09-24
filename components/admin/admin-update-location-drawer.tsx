@@ -17,7 +17,7 @@ import { US_STATES } from "@/constants/us-states";
 const FormFields = ({
   defaultValues,
 }: {
-  defaultValues: Tables<"locations">;
+  defaultValues: Tables<"business_locations">;
 }) => {
   const { pending } = useFormStatus();
 
@@ -105,7 +105,7 @@ const FormFields = ({
 type AdminUpdateLocationDrawerType = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  location: Tables<"locations">;
+  location: Tables<"business_locations">;
 };
 
 export default function AdminUpdateLocationDrawer({
