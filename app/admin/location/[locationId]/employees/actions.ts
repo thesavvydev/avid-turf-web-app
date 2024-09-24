@@ -37,7 +37,8 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
   }
 
   if (fields.profile_id) {
-    const { error } = await supabase.from("location_profiles").upsert({
+    const { error } = await supabase.from("business_location_profiles").upsert({
+      business_id: fields.business_id as string,
       location_id: Number(fields.location_id) as number,
       profile_id: fields.profile_id as string,
       role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
@@ -47,7 +48,7 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       return formStateResponse({ ...state, error: error.message });
     }
   } else if (fields.inviting_new) {
-    // if invite present, send invite and then add new user to location_profiles with role
+    // if invite present, send invite and then add new user to business_location_profiles with role
     const supabaseAdmin = createClient({ admin: true });
     const origin = headers().get("origin");
 
@@ -61,7 +62,8 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       return formStateResponse({ ...state, error: inviteError.message });
     }
 
-    const { error } = await supabase.from("location_profiles").upsert({
+    const { error } = await supabase.from("business_location_profiles").upsert({
+      business_id: fields.business_id as string,
       location_id: Number(fields.location_id) as number,
       profile_id: data.user.id,
       role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
@@ -81,7 +83,7 @@ export async function UpdateEmployee<T>(...args: ServerActionWithState<T>) {
   const fields = Object.fromEntries(formData);
 
   const { error } = await supabase
-    .from("location_profiles")
+    .from("business_location_profiles")
     .update({
       role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
     })
@@ -98,7 +100,7 @@ export async function DeleteEmployee(location_id: number, profile_id: string) {
   const supabase = createClient();
 
   return supabase
-    .from("location_profiles")
+    .from("business_location_profiles")
     .delete()
     .match({ location_id, profile_id });
 }

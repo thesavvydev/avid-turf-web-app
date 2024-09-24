@@ -10,13 +10,14 @@ export async function AddLocation<T>(...args: ServerActionWithState<T>) {
 
   const fields = Object.fromEntries(formData);
 
-  const { error } = await supabase.from("locations").insert({
+  const { error } = await supabase.from("business_locations").insert({
     name: fields.name as string,
     address: fields.address as string,
     address2: fields.address2 as string,
     city: fields.city as string,
     state: fields.state as string,
     postal_code: fields.postal_code as string,
+    business_id: fields.business_id as string,
   });
 
   if (error) {
@@ -37,7 +38,7 @@ export async function UpdateLocation<T>(...args: ServerActionWithState<T>) {
   const fields = Object.fromEntries(formData);
 
   const { error } = await supabase
-    .from("locations")
+    .from("business_locations")
     .update({
       name: fields.name as string,
       address: fields.address as string,
@@ -61,5 +62,5 @@ export async function UpdateLocation<T>(...args: ServerActionWithState<T>) {
 
 export async function DeleteLocation(id: number) {
   const supabase = createClient();
-  return supabase.from("locations").delete().eq("id", id);
+  return supabase.from("business_locations").delete().eq("id", id);
 }
