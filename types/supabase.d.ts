@@ -69,6 +69,134 @@ export type Database = {
           },
         ]
       }
+      business_location_job_logs: {
+        Row: {
+          created_at: string
+          id: number
+          message: string | null
+          record_id: string | null
+          record_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          message?: string | null
+          record_id?: string | null
+          record_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          message?: string | null
+          record_id?: string | null
+          record_name?: string | null
+        }
+        Relationships: []
+      }
+      business_location_jobs: {
+        Row: {
+          address: string | null
+          business_id: string
+          business_location_id: number
+          city: string | null
+          closer_id: string | null
+          created_at: string
+          customer_id: string | null
+          email: string | null
+          id: number
+          installer_id: string | null
+          lead_id: number | null
+          phone: string | null
+          postal_code: string | null
+          setter_id: string | null
+          state: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_id: string
+          business_location_id: number
+          city?: string | null
+          closer_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          email?: string | null
+          id?: number
+          installer_id?: string | null
+          lead_id?: number | null
+          phone?: string | null
+          postal_code?: string | null
+          setter_id?: string | null
+          state?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_id?: string
+          business_location_id?: number
+          city?: string | null
+          closer_id?: string | null
+          created_at?: string
+          customer_id?: string | null
+          email?: string | null
+          id?: number
+          installer_id?: string | null
+          lead_id?: number | null
+          phone?: string | null
+          postal_code?: string | null
+          setter_id?: string | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_jobs_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_closer_id_fkey"
+            columns: ["closer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_installer_id_fkey"
+            columns: ["installer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_location_id_fkey"
+            columns: ["business_location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_setter_id_fkey"
+            columns: ["setter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_lead_custom_fields: {
         Row: {
           business_id: string
