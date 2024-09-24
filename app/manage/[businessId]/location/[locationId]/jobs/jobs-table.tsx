@@ -1,12 +1,9 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
+import { JOB_STATUSES } from "@/components/job-status-badge";
 import Linky from "@/components/linky";
-import StatusBadge, {
-  JOB_STATUSES,
-  TStatusesBadgeProps,
-} from "@/components/job-status-badge";
-import { formatAsCurrency } from "@/utils/formatter";
+import { Tables } from "@/types/supabase";
 import {
   Badge,
   Button,
@@ -41,77 +38,17 @@ import {
 } from "react";
 import { twMerge } from "tailwind-merge";
 
-const mockJobs = [
-  {
-    address: "1161 S Colton Road",
-    business_id: 1,
-    location_id: 1,
-    start_date: "2024-02-02",
-    id: 1,
-    city: "Washington",
-    amount: 10_000,
-    status: "lead",
-    employees:
-      "John Doe, Jane Doe, Doe Jean,John Doe, Jane Doe, Doe Jean,John Doe, Jane Doe, Doe Jean",
-  },
-  {
-    business_id: 2,
-    location_id: 2,
-    address:
-      "1161 S Colton Road 1161 S Colton Road 1161 S Colton Road 1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 2,
-    city: "Ivins",
-    amount: 20_000,
-    status: "complete",
-    employees: "John Doe",
-  },
-  {
-    business_id: 3,
-    location_id: 3,
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 3,
-    city: "Santa Clara",
-    amount: 30_000,
-    status: "lead",
-    employees: "John Doe",
-  },
-  {
-    business_id: 4,
-    location_id: 4,
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 4,
-    city: "St George",
-    amount: 40_000,
-    status: "closed",
-    employees: "John Doe",
-  },
-  {
-    business_id: 5,
-    location_id: 5,
-    address: "1161 S Colton Road",
-    start_date: "2024-02-02",
-    id: 5,
-    city: "St George",
-    amount: 50_000,
-    status: "archived",
-    employees: "John Doe",
-  },
-];
-
 const columns = [
   {
     field: "address",
     name: "Address",
-    render: (row: (typeof mockJobs)[0]) => (
+    render: (row: Tables<"business_location_jobs">) => (
       <div className="flex items-center gap-1">
         <MapPinIcon className="hidden size-6 text-gray-400 md:block" />
         <div>
           <p>
             <Linky
-              href={`/manage/${row.business_id}/location/${row.location_id}/job/${row.id}`}
+              href={`/manage/${row.business_id}/location/${row.business_location_id}/job/${row.id}`}
             >
               {row.address}
             </Linky>
@@ -125,41 +62,12 @@ const columns = [
     cellClassNames: "hidden md:table-cell",
     field: "city",
     name: "City",
-    render: (row: (typeof mockJobs)[0]) => row.city,
-  },
-  {
-    cellClassNames: "hidden md:table-cell",
-    field: "start_date",
-    name: "Start Date",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="w-28">
-        {new Date(row.start_date).toLocaleDateString(undefined, {
-          dateStyle: "medium",
-        })}
-      </div>
-    ),
-  },
-  {
-    cellClassNames: "hidden md:table-cell",
-    field: "amount",
-    name: "Amount",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="w-28">{formatAsCurrency(row.amount)}</div>
-    ),
-  },
-  {
-    field: "status",
-    name: "Status",
-    render: (row: (typeof mockJobs)[0]) => (
-      <div className="flex">
-        <StatusBadge status={row.status as keyof TStatusesBadgeProps} />
-      </div>
-    ),
+    render: (row: Tables<"business_location_jobs">) => row.city,
   },
   {
     field: "actions",
     name: "",
-    render: (row: (typeof mockJobs)[0]) => (
+    render: (row: Tables<"business_location_jobs">) => (
       <>
         <div className="relative hidden items-center gap-2 sm:flex">
           <Tooltip content="Details">
@@ -211,7 +119,7 @@ const columns = [
 ];
 
 const JobsTableContext = createContext<{
-  data: typeof mockJobs;
+  data: Tables<"business_location_jobs">[];
   handleUpdateSearchParam: (arg1: string, arg2: string) => void;
   handleRemoveSearchParam: (arg1: string, arg2: string) => void;
   isProcessing: boolean;
@@ -232,7 +140,9 @@ function useJobsTableContext() {
   return context;
 }
 
-type TJobsTableProviderProps = PropsWithChildren & { jobs: typeof mockJobs };
+type TJobsTableProviderProps = PropsWithChildren & {
+  jobs: Tables<"business_location_jobs">[];
+};
 
 function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -549,9 +459,13 @@ function TableActiveFilters() {
   );
 }
 
-export default function JobsTable() {
+export default function JobsTable({
+  data,
+}: {
+  data: Tables<"business_location_jobs">[];
+}) {
   return (
-    <JobsTableProvider jobs={mockJobs}>
+    <JobsTableProvider jobs={data}>
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
         <StatusTabFilters />
         <div className="track grid gap-4 px-4 md:grid-cols-4 lg:px-6">

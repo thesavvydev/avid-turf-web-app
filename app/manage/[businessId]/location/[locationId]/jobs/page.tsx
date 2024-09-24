@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import JobsTable from "./jobs-table";
+import JobsHeader from "./jobs-header";
+import { createClient } from "@/utils/supabase/server";
 
 const tiles = [
   {
@@ -52,9 +54,17 @@ const tiles = [
   },
 ];
 
-export default function Page() {
+export default async function Page() {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("business_location_jobs")
+    .select("*");
+
+  if (error) throw error;
+
   return (
     <>
+      <JobsHeader />
       <div className="flex max-w-full items-center divide-x divide-gray-100 overflow-x-auto rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
         {tiles.map((tile) => (
           <div
@@ -121,7 +131,7 @@ export default function Page() {
           </div>
         ))}
       </div>
-      <JobsTable />
+      <JobsTable data={data} />
     </>
   );
 }
