@@ -47,32 +47,38 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
           <Label htmlFor="phone" className="mb-2 block">
             Phone
           </Label>
-          <TextInput id="phone" name="phone" autoComplete="off" />
+          <TextInput id="phone" name="phone" autoComplete="off" required />
         </div>
         <div>
           <Label htmlFor="email" className="mb-2 block">
             Email
           </Label>
-          <TextInput id="email" name="email" type="email" autoComplete="off" />
+          <TextInput
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="off"
+            required
+          />
         </div>
         <div className="sm:col-span-2">
           <Label htmlFor="address" className="mb-2 block">
             Address
           </Label>
-          <TextInput id="address" name="address" autoComplete="off" />
+          <TextInput id="address" name="address" autoComplete="off" required />
         </div>
         <div className="grid gap-2 sm:col-span-2 sm:grid-cols-3 md:gap-6">
           <div>
             <Label htmlFor="city" className="mb-2 block">
               City
             </Label>
-            <TextInput id="city" name="city" autoComplete="off" />
+            <TextInput id="city" name="city" autoComplete="off" required />
           </div>
           <div>
             <Label htmlFor="state" className="mb-2 block">
               State
             </Label>
-            <Select id="state" name="state" defaultValue="">
+            <Select id="state" name="state" defaultValue="" required>
               <option value="" disabled>
                 Select a state
               </option>
@@ -87,7 +93,12 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
             <Label htmlFor="postal_code" className="mb-2 block">
               Postal Code
             </Label>
-            <TextInput id="postal_code" name="postal_code" autoComplete="off" />
+            <TextInput
+              id="postal_code"
+              name="postal_code"
+              autoComplete="off"
+              required
+            />
           </div>
         </div>
       </fieldset>
@@ -100,7 +111,12 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
           <Label htmlFor="closer_id" className="mb-2 block">
             Closer
           </Label>
-          <Select name="closer_id" id="closer_id" defaultValue={user.id}>
+          <Select
+            name="closer_id"
+            id="closer_id"
+            defaultValue={user.id}
+            required
+          >
             <option value="">Select a closer</option>
             {profiles.map((profile) => (
               <option key={profile.profile_id} value={profile.profile_id}>
