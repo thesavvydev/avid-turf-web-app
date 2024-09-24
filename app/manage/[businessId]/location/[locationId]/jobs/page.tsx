@@ -54,11 +54,16 @@ const tiles = [
   },
 ];
 
-export default async function Page() {
+export default async function Page({
+  params: { locationId },
+}: {
+  params: { locationId: string };
+}) {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("business_location_jobs")
-    .select("*");
+    .select("*")
+    .eq("business_location_id", locationId);
 
   if (error) throw error;
 
