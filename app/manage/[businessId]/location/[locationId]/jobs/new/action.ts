@@ -1,6 +1,7 @@
 "use server";
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
+import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -17,6 +18,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
       business_id: fields.business_id as string,
       business_location_id: Number(fields.business_location_id) as number,
       city: fields.city as string,
+      creator_id: fields.creator_id as string,
       closer_id: fields.closer_id as string,
       email: fields.email as string,
       installer_id:
@@ -25,6 +27,8 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
       phone: fields.phone as string,
       postal_code: fields.postal_code as string,
       state: fields.state as string,
+      status:
+        fields.status as Database["public"]["Enums"]["location_job_status"],
     })
     .select("id")
     .single();

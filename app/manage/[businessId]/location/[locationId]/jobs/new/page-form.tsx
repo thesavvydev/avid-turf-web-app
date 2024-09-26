@@ -16,6 +16,7 @@ import initialFormState, {
 import { US_STATES } from "@/constants/us-states";
 import { Tables } from "@/types/supabase";
 import { AddJob } from "./action";
+import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
 
 const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
   const { businessId, locationId } = useParams();
@@ -31,7 +32,7 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
       >
         <input type="hidden" name="business_location_id" value={locationId} />
         <input type="hidden" name="business_id" value={businessId} />
-
+        <input type="hidden" name="creator_id" value={user.id} />
         <div>
           <Label htmlFor="full_name" className="mb-2 block">
             Full Name
@@ -136,6 +137,29 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
                 {profile.profile?.full_name}
               </option>
             ))}
+          </Select>
+        </div>
+      </fieldset>
+      <h2 className="text-xl font-medium text-gray-400">
+        Additional Information
+      </h2>
+      <fieldset
+        disabled={pending}
+        className="grid gap-2 border-b border-gray-100 pb-2 dark:border-gray-700 sm:grid-cols-2 md:gap-6 md:pb-6"
+      >
+        <div>
+          <Label htmlFor="status" className="mb-2 block">
+            Status
+          </Label>
+          <Select name="status" id="status" defaultValue="new" required>
+            <option value="">Select a status</option>
+            {Object.entries(LOCATION_JOB_STATUS).map(
+              ([locationJobStatusKey, locationJobStatus]) => (
+                <option key={locationJobStatusKey} value={locationJobStatusKey}>
+                  {locationJobStatus.name}
+                </option>
+              ),
+            )}
           </Select>
         </div>
       </fieldset>

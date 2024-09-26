@@ -1,14 +1,21 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
-import { JOB_STATUSES } from "@/components/job-status-badge";
 import Linky from "@/components/linky";
-import { Tables } from "@/types/supabase";
+import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
+import { useLocationContext } from "@/contexts/location";
+import { useUserContext } from "@/contexts/user";
+import { Database, Tables } from "@/types/supabase";
+import { formatAsCompactNumber } from "@/utils/formatter";
+import getInitials from "@/utils/get-initials";
 import {
+  Alert,
+  Avatar,
   Badge,
   Button,
   Datepicker,
   Dropdown,
+  Pagination,
   Select,
   Table,
   Tabs,
@@ -17,117 +24,64 @@ import {
   Tooltip,
 } from "flowbite-react";
 import {
-  ChevronLeft,
-  ChevronRight,
   CircleXIcon,
   EllipsisVertical,
-  EyeIcon,
-  MapPinIcon,
+  InfoIcon,
+  MessageCircleIcon,
   SearchIcon,
   SettingsIcon,
   Trash2Icon,
 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import {
   createContext,
   PropsWithChildren,
+  ReactNode,
   useCallback,
   useContext,
   useMemo,
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
+import { DeleteJob } from "./actions";
+import JobMessagesDrawer from "./job-messages-drawer";
+import UpdateJobDrawer from "./update-job-drawer";
 
-const columns = [
-  {
-    field: "address",
-    name: "Address",
-    render: (row: Tables<"business_location_jobs">) => (
-      <div className="flex items-center gap-1">
-        <MapPinIcon className="hidden size-6 text-gray-400 md:block" />
-        <div>
-          <p>
-            <Linky
-              href={`/manage/${row.business_id}/location/${row.business_location_id}/job/${row.id}`}
-            >
-              {row.address}
-            </Linky>
-          </p>
-          <p className="text-sm text-gray-400">{`ORDER-${row.id}`}</p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    cellClassNames: "hidden md:table-cell",
-    field: "city",
-    name: "City",
-    render: (row: Tables<"business_location_jobs">) => row.city,
-  },
-  {
-    field: "actions",
-    name: "",
-    render: (row: Tables<"business_location_jobs">) => (
-      <>
-        <div className="relative hidden items-center gap-2 sm:flex">
-          <Tooltip content="Details">
-            <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
-              <EyeIcon />
-            </span>
-          </Tooltip>
-          <Tooltip content="Settings">
-            <span className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300">
-              <SettingsIcon />
-            </span>
-          </Tooltip>
-          <Tooltip content="Delete">
-            <ConfirmModal
-              description={`Are you sure you want to remove this job for ${row.address}?`}
-              onConfirmClick={console.log}
-              trigger={(toggle) => (
-                <span
-                  className="cursor-pointer text-lg text-red-500 active:opacity-50"
-                  onClick={toggle}
-                >
-                  <Trash2Icon />
-                </span>
-              )}
-            />
-          </Tooltip>
-        </div>
-        <div className="w-2 sm:hidden">
-          <Dropdown
-            label=""
-            renderTrigger={() => <EllipsisVertical />}
-            size="sm"
-            dismissOnClick={false}
-          >
-            <Dropdown.Item>Details</Dropdown.Item>
-            <Dropdown.Item>Settings</Dropdown.Item>
-            <ConfirmModal
-              description={`Are you sure you want to remove this job for ${row.address}?`}
-              onConfirmClick={console.log}
-              trigger={(toggle) => (
-                <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
-              )}
-            />
-          </Dropdown>
-        </div>
-      </>
-    ),
-  },
-];
+interface IJob extends Tables<"business_location_jobs"> {
+  closer: Partial<Tables<"profiles">>;
+  installer: Partial<Tables<"profiles">>;
+}
 
 const JobsTableContext = createContext<{
-  data: Tables<"business_location_jobs">[];
-  handleUpdateSearchParam: (arg1: string, arg2: string) => void;
-  handleRemoveSearchParam: (arg1: string, arg2: string) => void;
+  jobs: IJob[];
+  jobsCount: number | null;
+  handleUpdateSearchParam: (param: string, value: string) => void;
+  handleRemoveSearchParam: (param: string, value: string) => void;
   isProcessing: boolean;
+  paginatedTotal: number;
+  statusCounts: {
+    [k: string]: number;
+  };
 }>({
-  data: [],
+  jobs: [],
+  jobsCount: 0,
   handleUpdateSearchParam: () => null,
   handleRemoveSearchParam: () => null,
   isProcessing: false,
+  paginatedTotal: 0,
+  statusCounts: {
+    new: 0,
+    qualified: 0,
+    nurturing: 0,
+    "follow-up": 0,
+    lost: 0,
+    inactive: 0,
+  },
 });
 
 function useJobsTableContext() {
@@ -141,12 +95,22 @@ function useJobsTableContext() {
 }
 
 type TJobsTableProviderProps = PropsWithChildren & {
-  jobs: Tables<"business_location_jobs">[];
+  jobsCount: number | null;
+  paginatedTotal: number;
+  jobs: IJob[];
+  statusCounts: {
+    [k: string]: number;
+  };
 };
 
-function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
+function JobsTableProvider({
+  children,
+  jobs,
+  jobsCount,
+  paginatedTotal,
+  statusCounts,
+}: TJobsTableProviderProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [data, setData] = useState(jobs);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -175,20 +139,32 @@ function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
     [pathname, router, searchParams],
   );
 
+  const filteredjobs = jobs.filter((item) =>
+    searchParams.get("search")
+      ? item.address
+          ?.toLowerCase()
+          .includes(searchParams.get("search")?.toLowerCase() ?? "")
+      : true,
+  );
+
   const value = useMemo(
     () => ({
-      data,
+      jobs: filteredjobs,
+      jobsCount,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
-      setData,
+      paginatedTotal,
+      statusCounts,
     }),
     [
-      data,
+      filteredjobs,
+      jobsCount,
       handleUpdateSearchParam,
       handleRemoveSearchParam,
       isProcessing,
-      setData,
+      paginatedTotal,
+      statusCounts,
     ],
   );
 
@@ -201,14 +177,26 @@ function JobsTableProvider({ children, jobs }: TJobsTableProviderProps) {
 
 function TableSearchFilter() {
   const [value, setValue] = useState("");
-  const { handleUpdateSearchParam, isProcessing } = useJobsTableContext();
+  const { handleUpdateSearchParam, handleRemoveSearchParam, isProcessing } =
+    useJobsTableContext();
 
   return (
     <div className="relative">
       <TextInput
+        autoComplete="off"
+        id="name"
         icon={() => <SearchIcon className="mr-2 size-4" />}
-        placeholder="Search by job # or address"
+        placeholder="Search by name"
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            if (value === "") {
+              handleRemoveSearchParam("search", value);
+            } else {
+              handleUpdateSearchParam("search", value);
+            }
+          }
+        }}
         value={value}
         disabled={isProcessing}
       />
@@ -230,8 +218,12 @@ function TableSearchFilter() {
 }
 
 function StatusTabFilters() {
-  const { handleUpdateSearchParam, handleRemoveSearchParam } =
-    useJobsTableContext();
+  const {
+    handleUpdateSearchParam,
+    handleRemoveSearchParam,
+    statusCounts,
+    jobsCount,
+  } = useJobsTableContext();
 
   const searchParams = useSearchParams();
   const hasStatusParam = searchParams.has("status");
@@ -243,13 +235,16 @@ function StatusTabFilters() {
         if (tab === 0) {
           handleRemoveSearchParam("status", statusParamValue ?? "");
         } else {
-          handleUpdateSearchParam("status", Object.keys(JOB_STATUSES)[tab - 1]);
+          handleUpdateSearchParam(
+            "status",
+            Object.keys(LOCATION_JOB_STATUS)[tab - 1],
+          );
         }
       }}
       variant="underline"
       theme={{
         tablist: {
-          base: twMerge(theme.tabs.tablist.base, "pt-1 pl-1"),
+          base: twMerge(theme.tabs.tablist.base, "pt-1 pl-1 text-nowrap"),
           tabitem: {
             variant: {
               underline: {
@@ -270,18 +265,25 @@ function StatusTabFilters() {
       <Tabs.Item
         title={
           <div className="flex items-center gap-2">
-            All <Badge color="lime">1M</Badge>
+            All{" "}
+            <Badge color="lime">{formatAsCompactNumber(jobsCount ?? 0)}</Badge>
           </div>
         }
         active={!searchParams.has("status")}
       />
-      {Object.entries(JOB_STATUSES).map(([statusKey, status]) => (
+      {Object.entries(LOCATION_JOB_STATUS).map(([statusKey, status]) => (
         <Tabs.Item
           key={status.name}
           title={
             <div className="flex items-center gap-2">
               <span>{status.name}</span>
-              <Badge color={status.color}>1M</Badge>
+              <Badge color={status.color}>
+                {formatAsCompactNumber(
+                  statusCounts[
+                    statusKey as Database["public"]["Enums"]["location_job_status"]
+                  ] ?? 0,
+                )}
+              </Badge>
             </div>
           }
           active={hasStatusParam && statusParamValue === statusKey}
@@ -291,55 +293,370 @@ function StatusTabFilters() {
   );
 }
 
-function CityFilter() {
+function CloserFilter() {
+  const {
+    location: { profiles },
+  } = useLocationContext();
+  const searchParams = useSearchParams();
+  const { handleUpdateSearchParam, handleRemoveSearchParam } =
+    useJobsTableContext();
+
   return (
-    <Select>
-      <option>Select a city</option>
-      <option>Hurricane</option>
-      <option>Ivins</option>
-      <option>Santa Clara</option>
-      <option>St George</option>
-      <option>Washington</option>
+    <Select
+      name="closer_id"
+      onChange={(e) => {
+        if (e.target.value === "") {
+          handleRemoveSearchParam(
+            "closer_id",
+            searchParams.get("closer_id") ?? "",
+          );
+        } else {
+          handleUpdateSearchParam("closer_id", e.target.value);
+        }
+      }}
+    >
+      <option value="">Select a closer</option>
+      {profiles.map(({ profile_id, profile }) => (
+        <option key={profile_id} value={profile_id}>
+          {profile.full_name}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+function InstallerFilter() {
+  const {
+    location: { profiles },
+  } = useLocationContext();
+  const searchParams = useSearchParams();
+  const { handleUpdateSearchParam, handleRemoveSearchParam } =
+    useJobsTableContext();
+
+  return (
+    <Select
+      name="installer_id"
+      onChange={(e) => {
+        if (e.target.value === "") {
+          handleRemoveSearchParam(
+            "installer_id",
+            searchParams.get("installer_id") ?? "",
+          );
+        } else {
+          handleUpdateSearchParam("installer_id", e.target.value);
+        }
+      }}
+    >
+      <option value="">Select an installer</option>
+      {profiles.map(({ profile_id, profile }) => (
+        <option key={profile_id} value={profile_id}>
+          {profile.full_name}
+        </option>
+      ))}
     </Select>
   );
 }
 
 function DateRangeFilter() {
+  const { handleUpdateSearchParam } = useJobsTableContext();
+
   return (
     <>
-      <Datepicker />
-      <Datepicker />
+      <Datepicker
+        id="created_after"
+        onSelectedDateChanged={(date) =>
+          handleUpdateSearchParam(
+            "created_after",
+            new Date(date).toLocaleDateString(),
+          )
+        }
+      />
+      <Datepicker
+        id="created_before"
+        onSelectedDateChanged={(date) =>
+          handleUpdateSearchParam(
+            "created_before",
+            new Date(date).toLocaleDateString(),
+          )
+        }
+      />
     </>
   );
 }
 
 function TablePagination() {
+  const {
+    handleUpdateSearchParam,
+    handleRemoveSearchParam,
+    paginatedTotal,
+    jobsCount,
+  } = useJobsTableContext();
+  const searchParams = useSearchParams();
+  const perPage = Number(searchParams.get("per_page") ?? 10);
+  const page = Number(searchParams.get("page") ?? 1);
+
+  const numberOfPages = Math.ceil(paginatedTotal / perPage);
+
+  const onPageChange = (page: number) => {
+    if (page === 0 || page === 1)
+      return handleRemoveSearchParam("page", searchParams.get("page") ?? "");
+
+    handleUpdateSearchParam("page", page.toString());
+  };
+
   return (
-    <div className="flex items-center justify-end gap-4 p-4 lg:gap-6">
-      <div className="flex items-center gap-2">
-        <span>Rows per page:</span>
-        <Dropdown inline label="5">
-          <Dropdown.Item>5</Dropdown.Item>
-          <Dropdown.Item>10</Dropdown.Item>
-          <Dropdown.Item>15</Dropdown.Item>
-          <Dropdown.Item>20</Dropdown.Item>
-        </Dropdown>
-      </div>
-      <p>1-5 of 20</p>
-      <div className="flex items-center gap-2">
-        <div className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
-          <ChevronLeft />
+    <div className="flex flex-col items-center justify-end gap-4 p-4 pt-0 sm:flex-row lg:gap-6">
+      {(jobsCount ?? 0) >= 10 && (
+        <div className="flex items-center gap-2">
+          <span>Rows per page:</span>
+          <Dropdown inline label={perPage}>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "5")}
+            >
+              5
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "10")}
+            >
+              10
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "15")}
+            >
+              15
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleUpdateSearchParam("per_page", "20")}
+            >
+              20
+            </Dropdown.Item>
+          </Dropdown>
         </div>
-        <div className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
-          <ChevronRight />
-        </div>
-      </div>
+      )}
+      {numberOfPages > 1 && (
+        <>
+          <div className="hidden sm:block">
+            <Pagination
+              currentPage={page}
+              totalPages={numberOfPages}
+              onPageChange={onPageChange}
+              showIcons
+            />
+          </div>
+          <div className="sm:hidden">
+            <Pagination
+              layout="navigation"
+              currentPage={page}
+              totalPages={numberOfPages}
+              onPageChange={onPageChange}
+              showIcons
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
+function ActionsCell({ row }: { row: Tables<"business_location_jobs"> }) {
+  const [isJobDrawerOpen, setIsJobDrawerOpen] = useState(false);
+  const [isJobMessageDrawerOpen, setIsJobMessageDrawerOpen] = useState(false);
+  const router = useRouter();
+  const { user } = useUserContext();
+
+  const isCreator = user.id === row.creator_id;
+
+  const handleDelete = async () => {
+    await DeleteJob(row.id);
+    router.refresh();
+  };
+
+  return (
+    <>
+      {isJobDrawerOpen && (
+        <UpdateJobDrawer
+          job={row}
+          isOpen={isJobDrawerOpen}
+          setIsOpen={setIsJobDrawerOpen}
+        />
+      )}
+      {isJobMessageDrawerOpen && (
+        <JobMessagesDrawer
+          job={row}
+          isOpen={isJobMessageDrawerOpen}
+          setIsOpen={setIsJobMessageDrawerOpen}
+        />
+      )}
+      <div className="relative hidden items-center gap-2 sm:flex">
+        <Tooltip content="Messages">
+          <span
+            className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
+            onClick={() => setIsJobMessageDrawerOpen(true)}
+          >
+            <MessageCircleIcon />
+          </span>
+        </Tooltip>
+        {isCreator && (
+          <>
+            <Tooltip content="Settings">
+              <span
+                className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
+                onClick={() => setIsJobDrawerOpen(true)}
+              >
+                <SettingsIcon />
+              </span>
+            </Tooltip>
+            <Tooltip content="Delete">
+              <ConfirmModal
+                description={`Are you sure you want to remove JOB-${row.id}?`}
+                onConfirmClick={handleDelete}
+                trigger={(toggle) => (
+                  <span
+                    className="cursor-pointer text-lg text-red-500 active:opacity-50"
+                    onClick={toggle}
+                  >
+                    <Trash2Icon />
+                  </span>
+                )}
+              />
+            </Tooltip>
+          </>
+        )}
+      </div>
+      <div className="w-2 sm:hidden">
+        <Dropdown
+          label=""
+          renderTrigger={() => <EllipsisVertical />}
+          size="sm"
+          dismissOnClick={false}
+        >
+          <Dropdown.Item onClick={() => setIsJobMessageDrawerOpen(true)}>
+            Messages
+          </Dropdown.Item>
+          {isCreator && (
+            <>
+              <Dropdown.Item onClick={() => setIsJobDrawerOpen(true)}>
+                Settings
+              </Dropdown.Item>
+              <ConfirmModal
+                description={`Are you sure you want to remove for JOB-${row.id}?`}
+                onConfirmClick={handleDelete}
+                trigger={(toggle) => (
+                  <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
+                )}
+              />
+            </>
+          )}
+        </Dropdown>
+      </div>
+    </>
+  );
+}
+
+interface IColumn<RowData> {
+  cellClassNames?: string;
+  field?: string;
+  header?: string;
+  render: (arg: RowData) => ReactNode;
+}
+
 function Content() {
-  const { data } = useJobsTableContext();
+  const { jobs } = useJobsTableContext();
+
+  const columns: IColumn<(typeof jobs)[0]>[] = [
+    {
+      field: "name",
+      header: "Name",
+      render: (row) => (
+        <Avatar
+          theme={{
+            root: { base: twMerge(theme.avatar.root.base, "justify-start") },
+          }}
+        >
+          <div>
+            <Linky
+              href={`/manage/${row.business_id}/location/${row.business_location_id}/job/${row.id}`}
+            >
+              Customer
+            </Linky>
+            <p className="text-xs text-gray-400">{`JOB-${row.id}`}</p>
+          </div>
+        </Avatar>
+      ),
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "address",
+      header: "Address",
+      render: (row) => (
+        <p>
+          {`${row.address}`}
+          <br />
+          {`${row.city ? `${row.city}, ` : ""}${row.state ? `${row.state} ` : ""}${row.postal_code ? row.postal_code : ""}`}
+        </p>
+      ),
+    },
+    {
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      field: "closer",
+      header: "Closer",
+      render: (row) =>
+        row.closer ? (
+          <Tooltip content={row.closer.full_name}>
+            <Avatar
+              placeholderInitials={getInitials(row.closer.full_name ?? "")}
+              rounded
+              {...(row.closer.avatar_url ? { img: row.closer.avatar_url } : {})}
+            />
+          </Tooltip>
+        ) : (
+          ""
+        ),
+    },
+    {
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      field: "installer",
+      header: "Installer",
+      render: (row) =>
+        row.installer ? (
+          <Tooltip content={row.installer.full_name}>
+            <Avatar
+              placeholderInitials={getInitials(row.installer.full_name ?? "")}
+              rounded
+              {...(row.installer?.avatar_url
+                ? { img: row.installer.avatar_url }
+                : {})}
+            />
+          </Tooltip>
+        ) : (
+          ""
+        ),
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "status",
+      header: "Status",
+      render: (row) => (
+        <div className="flex">
+          <Badge color={LOCATION_JOB_STATUS[row.status].color}>
+            {LOCATION_JOB_STATUS[row.status].name}
+          </Badge>
+        </div>
+      ),
+    },
+    {
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      field: "created",
+      header: "Created",
+      render: (row) => new Date(row.created_at).toLocaleDateString(),
+    },
+    {
+      cellClassNames: "w-0",
+      field: "actions",
+      header: "",
+      render: (row) => <ActionsCell row={row} />,
+    },
+  ];
 
   return (
     <Table>
@@ -355,20 +672,20 @@ function Content() {
         }}
       >
         {columns.map((column) => (
-          <Table.HeadCell key={column.name} className={column.cellClassNames}>
-            {column.name}
+          <Table.HeadCell key={column.header} className={column.cellClassNames}>
+            {column.header}
           </Table.HeadCell>
         ))}
       </Table.Head>
       <Table.Body>
-        {data.map((job) => (
+        {jobs.map((job) => (
           <Table.Row
             key={job.id}
             className="border-b border-dashed border-gray-200 dark:border-gray-700"
           >
             {columns.map((column) => (
               <Table.Cell
-                key={column.name}
+                key={column.header}
                 theme={{
                   base: twMerge(
                     theme.table.body.cell.base,
@@ -388,57 +705,61 @@ function Content() {
 }
 
 function TableActiveFilters() {
-  const { handleRemoveSearchParam } = useJobsTableContext();
+  const { handleRemoveSearchParam, paginatedTotal } = useJobsTableContext();
+  const { locationId, businessId } = useParams();
   const searchParams = useSearchParams();
-  const searchFilterValue = searchParams.get("search");
-  const statusFilterValue = searchParams.get("status");
-
-  const hasFilters = Array.from(searchParams.entries()).length > 0;
+  const {
+    search,
+    status,
+    source,
+    created_before,
+    created_after,
+    page,
+    per_page,
+  } = Object.fromEntries(searchParams);
+  const hasFilters = Array.from(searchParams.entries())?.length > 0;
 
   return (
     hasFilters && (
       <>
         <p className="px-4 font-light lg:px-6">
-          <span className="font-bold">20</span> filtered results
+          <span className="font-bold">{paginatedTotal}</span> filtered results
         </p>
-        <div className="flex items-center gap-2 px-4 lg:px-6">
-          {searchFilterValue && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+        <div className="flex flex-col gap-2 px-4 sm:flex-row sm:items-center lg:px-6">
+          {search && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Search
               </span>
               <Badge
                 color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("search", searchFilterValue)
-                }
+                onClick={() => handleRemoveSearchParam("search", search)}
               >
                 <div className="flex cursor-pointer items-center gap-2">
-                  <p>{searchFilterValue}</p>
+                  <p>{search}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
             </div>
           )}
-          {statusFilterValue && (
-            <div className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+          {status && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
               <span className="text-sm font-semibold text-gray-500">
                 Status
               </span>
               <Badge
                 color={
-                  JOB_STATUSES[statusFilterValue as keyof typeof JOB_STATUSES]
-                    ?.color
+                  LOCATION_JOB_STATUS[
+                    status as keyof typeof LOCATION_JOB_STATUS
+                  ]?.color
                 }
-                onClick={() =>
-                  handleRemoveSearchParam("status", statusFilterValue)
-                }
+                onClick={() => handleRemoveSearchParam("status", status)}
               >
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>
                     {
-                      JOB_STATUSES[
-                        statusFilterValue as keyof typeof JOB_STATUSES
+                      LOCATION_JOB_STATUS[
+                        status as keyof typeof LOCATION_JOB_STATUS
                       ]?.name
                     }
                   </p>
@@ -447,7 +768,96 @@ function TableActiveFilters() {
               </Badge>
             </div>
           )}
-          <Button color="red" outline size="sm" href="/manage/jobs">
+          {page && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">Page</span>
+              <Badge
+                color="gray"
+                onClick={() => handleRemoveSearchParam("page", page)}
+              >
+                <div className="flex cursor-pointer items-center gap-2">
+                  <p>{page}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {per_page && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Per Page
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam("per_page", per_page.toString())
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2">
+                  <p>{per_page}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {source && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Source
+              </span>
+              <Badge
+                color="gray"
+                onClick={() => handleRemoveSearchParam("source", source)}
+              >
+                <div className="flex cursor-pointer items-center gap-2 capitalize">
+                  <p>{source}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {created_after && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Created after
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam("createed_after", created_after)
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2 capitalize">
+                  <p>{created_after}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          {created_before && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Created before
+              </span>
+              <Badge
+                color="gray"
+                onClick={() =>
+                  handleRemoveSearchParam("createed_before", created_before)
+                }
+              >
+                <div className="flex cursor-pointer items-center gap-2 capitalize">
+                  <p>{created_before}</p>
+                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                </div>
+              </Badge>
+            </div>
+          )}
+          <Button
+            color="red"
+            outline
+            size="sm"
+            href={`/manage/${businessId}/location/${locationId}/jobs`}
+          >
             <div className="flex items-center gap-1 text-red-500">
               <Trash2Icon className="size-5" />
               Clear
@@ -460,21 +870,47 @@ function TableActiveFilters() {
 }
 
 export default function JobsTable({
-  data,
+  jobsCount,
+  jobs,
+  paginatedTotal,
+  statusCounts,
 }: {
-  data: Tables<"business_location_jobs">[];
+  jobsCount: number | null;
+  jobs: IJob[];
+  paginatedTotal: number;
+  statusCounts: {
+    [k: string]: number;
+  };
 }) {
   return (
-    <JobsTableProvider jobs={data}>
+    <JobsTableProvider
+      jobs={jobs}
+      jobsCount={jobsCount}
+      statusCounts={statusCounts}
+      paginatedTotal={paginatedTotal}
+    >
       <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
-        <StatusTabFilters />
-        <div className="track grid gap-4 px-4 md:grid-cols-4 lg:px-6">
+        <div className="overflow-x-auto">
+          <StatusTabFilters />
+        </div>
+        <div className="track grid gap-4 px-4 md:grid-cols-5 lg:px-6">
           <TableSearchFilter />
-          <CityFilter />
+          <CloserFilter />
+          <InstallerFilter />
           <DateRangeFilter />
         </div>
         <TableActiveFilters />
-        <Content />
+        {jobs?.length === 0 ? (
+          <div className="px-4">
+            <Alert color="failure" icon={() => <InfoIcon className="mr-2" />}>
+              <span className="font-medium">No rows found!</span> If this is an
+              error, get help.
+            </Alert>
+          </div>
+        ) : (
+          <Content />
+        )}
+
         <TablePagination />
       </div>
     </JobsTableProvider>

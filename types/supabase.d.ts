@@ -101,8 +101,10 @@ export type Database = {
           city: string | null
           closer_id: string | null
           created_at: string
+          creator_id: string
           customer_id: string | null
           email: string | null
+          full_name: string
           id: number
           installer_id: string | null
           lead_id: number | null
@@ -110,6 +112,7 @@ export type Database = {
           postal_code: string | null
           setter_id: string | null
           state: string | null
+          status: Database["public"]["Enums"]["location_job_status"]
         }
         Insert: {
           address?: string | null
@@ -118,8 +121,10 @@ export type Database = {
           city?: string | null
           closer_id?: string | null
           created_at?: string
+          creator_id: string
           customer_id?: string | null
           email?: string | null
+          full_name: string
           id?: number
           installer_id?: string | null
           lead_id?: number | null
@@ -127,6 +132,7 @@ export type Database = {
           postal_code?: string | null
           setter_id?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["location_job_status"]
         }
         Update: {
           address?: string | null
@@ -135,8 +141,10 @@ export type Database = {
           city?: string | null
           closer_id?: string | null
           created_at?: string
+          creator_id?: string
           customer_id?: string | null
           email?: string | null
+          full_name?: string
           id?: number
           installer_id?: string | null
           lead_id?: number | null
@@ -144,6 +152,7 @@ export type Database = {
           postal_code?: string | null
           setter_id?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["location_job_status"]
         }
         Relationships: [
           {
@@ -156,6 +165,13 @@ export type Database = {
           {
             foreignKeyName: "business_location_jobs_closer_id_fkey"
             columns: ["closer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_creator_id_fkey"
+            columns: ["creator_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -581,6 +597,14 @@ export type Database = {
         | "lost"
         | "inactive"
       lead_type: "new" | "remodel" | "maintenance"
+      location_job_status:
+        | "new"
+        | "scheduled"
+        | "pending"
+        | "approved"
+        | "billed"
+        | "canceled"
+        | "complete"
       location_profile_roles: "admin" | "manager" | "base"
     }
     CompositeTypes: {
