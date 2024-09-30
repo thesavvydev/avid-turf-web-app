@@ -84,3 +84,16 @@ export async function UpdateJobLocation<T>(...args: ServerActionWithState<T>) {
 
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
+
+export async function DeleteJobMessage(message_id: number) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("business_location_job_messages")
+    .delete()
+    .eq("id", message_id);
+
+  if (error) throw error;
+
+  return;
+}

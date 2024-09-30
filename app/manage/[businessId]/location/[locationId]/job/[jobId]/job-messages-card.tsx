@@ -1,17 +1,23 @@
 "use client";
+import { ConfirmModal } from "@/components/confirm-modal";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 import { useUserContext } from "@/contexts/user";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, Button, Card, Spinner, Textarea } from "flowbite-react";
-import { SendIcon } from "lucide-react";
+import { SendIcon, Trash2Icon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { twMerge } from "tailwind-merge";
-import { CreateJobMessage } from "./actions";
+import { CreateJobMessage, DeleteJobMessage } from "./actions";
 import { IJobMessage } from "./types";
+
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 type TJobMessages = {
   messages: IJobMessage[] | null;
@@ -93,7 +99,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
             <div
               className={twMerge(
                 isAuthor ? "items-end justify-end" : "items-start",
-                "flex gap-2",
+                "group flex gap-2",
               )}
               id={`message-${message.id}`}
               key={message.id}
@@ -107,7 +113,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
                   )}
                 >
                   {message.author
-                    ? `${message.author.full_name}, time ago`
+                    ? `${message.author.full_name}, ${dayjs(message.created_at).fromNow()} `
                     : "posted seconds ago"}
                 </p>
                 <p
@@ -115,10 +121,29 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
                     isAuthor
                       ? "from-blue-500 to-blue-600 text-blue-100"
                       : "from-gray-100 to-gray-200 dark:bg-gray-800 dark:from-gray-700 dark:to-gray-800",
-                    "w-full rounded bg-gradient-to-tr text-sm lg:p-3",
+                    "relative w-full rounded bg-gradient-to-tr text-sm lg:p-3",
                   )}
                 >
                   {message.message}
+                  {isAuthor && (
+                    <button
+                      aria-label="Delete"
+                      className="absolute right-2 top-2 hidden cursor-pointer rounded bg-white/30 p-1 hover:bg-white group-hover:block dark:bg-gray-800/30 dark:hover:bg-gray-800"
+                    >
+                      <ConfirmModal
+                        description={`Are you sure you want to remove this message?`}
+                        onConfirmClick={async () => {
+                          await DeleteJobMessage(message.id);
+                          router.refresh();
+                        }}
+                        trigger={(toggle) => (
+                          <span onClick={toggle}>
+                            <Trash2Icon className="size-4 text-red-500 dark:text-red-600" />
+                          </span>
+                        )}
+                      />
+                    </button>
+                  )}
                 </p>
               </div>
             </div>

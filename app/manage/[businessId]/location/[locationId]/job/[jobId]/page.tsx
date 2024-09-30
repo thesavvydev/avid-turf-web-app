@@ -28,7 +28,7 @@ export default async function Page({ params: { jobId = "" } }) {
     .select("*, author: author_id(*)")
     .eq("job_id", jobId)
     .order("created_at", { ascending: false })
-    .limit(25)
+    .limit(50)
     .returns<IJobMessage[]>();
 
   return (
