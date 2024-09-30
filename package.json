@@ -7,7 +7,8 @@
     "start": "next start",
     "update-local-types": "npx --yes supabase gen types --lang=typescript --local > types/supabase.d.ts",
     "update-types": "npx --yes supabase gen types --lang=typescript --project-id \"$PROJECT_REF\" --schema public > types/supabase.d.ts",
-    "check-ts": "tsc --noemit"
+    "check-ts": "tsc --noemit",
+    "check-all": "next lint && tsc --noemit"
   },
   "dependencies": {
     "@supabase/ssr": "latest",
