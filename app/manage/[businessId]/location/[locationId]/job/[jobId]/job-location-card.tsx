@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobLocation } from "./actions";
-import { IJob } from "./types";
+import { IJob } from "@/types/job";
 
 type TJobLocationCard = {
   job: IJob;

@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
 import JobHeader from "./job-header";
-import { IJob } from "./types";
+import { IJob } from "@/types/job";
 
 type TLayout = {
   children: ReactNode;

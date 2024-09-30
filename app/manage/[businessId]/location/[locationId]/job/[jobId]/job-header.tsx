@@ -7,7 +7,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Breadcrumb, Button, Dropdown } from "flowbite-react";
 import { ChevronLeftIcon, ShareIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { IJob } from "./types";
+import { IJob } from "@/types/job";
 
 export default function JobHeader({ job }: { job: IJob }) {
   const supabase = createClient();

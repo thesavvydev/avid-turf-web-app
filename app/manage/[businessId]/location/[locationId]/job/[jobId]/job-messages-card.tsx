@@ -12,7 +12,7 @@ import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { twMerge } from "tailwind-merge";
 import { CreateJobMessage, DeleteJobMessage } from "./actions";
-import { IJobMessage } from "./types";
+import { IJobMessage } from "@/types/job";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";

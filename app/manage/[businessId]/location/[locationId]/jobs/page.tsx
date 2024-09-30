@@ -14,6 +14,7 @@ import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import JobsHeader from "./jobs-header";
 import JobsTable from "./jobs-table";
+import { IJob } from "@/types/job";
 
 export const metadata = {
   title: "Jobs",
@@ -197,11 +198,6 @@ function JobStatusTiles({
   );
 }
 
-interface IJob extends Tables<"business_location_jobs"> {
-  closer: Partial<Tables<"profiles">>;
-  installer: Partial<Tables<"profiles">>;
-}
-
 export default async function Page({
   searchParams: {
     page = 0,
@@ -238,7 +234,7 @@ export default async function Page({
   const fetchTableData = supabase
     .from("business_location_jobs")
     .select(
-      "*, closer: profiles!closer_id(id,full_name,avatar_url), installer: profiles!installer_id(id,full_name,avatar_url)",
+      "*, closer: profiles!closer_id(id,full_name,avatar_url), installer: profiles!installer_id(id,full_name,avatar_url), messages: business_location_job_messages(*,author: author_id(*))",
       { count: "exact" },
     )
     .match({
@@ -250,7 +246,8 @@ export default async function Page({
     .range(startRange, endRange)
     .gte("created_at", new Date(created_after ?? "0").toISOString())
     .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString())
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .returns<IJob[]>();
 
   const [
     { data: all, count },
@@ -291,7 +288,7 @@ export default async function Page({
       />
       <JobsTable
         jobsCount={count ?? 0}
-        jobs={data as IJob[]}
+        jobs={data ?? []}
         paginatedTotal={paginatedTotal ?? 0}
         statusCounts={statusCounts}
       />

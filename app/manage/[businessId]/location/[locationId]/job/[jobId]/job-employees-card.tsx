@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobEmployees } from "./actions";
-import { IJob } from "./types";
+import { IJob } from "@/types/job";
 
 function EditDrawerFormFields({ job }: { job: IJob }) {
   const { pending } = useFormStatus();

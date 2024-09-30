@@ -7,7 +7,7 @@ import JobHistoryTimeline from "./job-history-timeline";
 import JobLocationCard from "./job-location-card";
 import JobMessagesCard from "./job-messages-card";
 import JobTimelineCard from "./job-timeline-card";
-import { IJob, IJobMessage } from "./types";
+import { IJob, IJobMessage } from "@/types/job";
 
 export default async function Page({ params: { jobId = "" } }) {
   const supabase = createClient();

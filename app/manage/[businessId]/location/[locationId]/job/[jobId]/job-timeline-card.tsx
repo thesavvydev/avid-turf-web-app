@@ -3,7 +3,7 @@ import {
   formatEmptyOrUndefinedWithPlaceholder,
 } from "@/utils/formatter";
 import { CalendarIcon } from "lucide-react";
-import { IJob } from "./types";
+import { IJob } from "@/types/job";
 
 type TJobTimelineCard = {
   job: IJob;

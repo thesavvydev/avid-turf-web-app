@@ -2,7 +2,7 @@
 
 import { Avatar, Button, Drawer, Label, TextInput } from "flowbite-react";
 import { MailIcon, PencilIcon, PhoneIcon, UserPlus2Icon } from "lucide-react";
-import { IJob } from "./types";
+import { IJob } from "@/types/job";
 import { useEffect, useState } from "react";
 import initialFormState, {
   TInitialFormState,

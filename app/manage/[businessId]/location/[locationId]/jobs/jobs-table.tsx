@@ -51,11 +51,7 @@ import { twMerge } from "tailwind-merge";
 import { DeleteJob } from "./actions";
 import JobMessagesDrawer from "./job-messages-drawer";
 import UpdateJobDrawer from "./update-job-drawer";
-
-interface IJob extends Tables<"business_location_jobs"> {
-  closer: Partial<Tables<"profiles">>;
-  installer: Partial<Tables<"profiles">>;
-}
+import { IJob } from "@/types/job";
 
 const JobsTableContext = createContext<{
   jobs: IJob[];
