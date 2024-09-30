@@ -7,7 +7,7 @@ import initialFormState, {
 } from "@/constants/initial-form-state";
 import { US_STATES } from "@/constants/us-states";
 import { Card, Drawer, Label, Select, TextInput } from "flowbite-react";
-import { MapPinIcon, PencilIcon, UserPlus2Icon } from "lucide-react";
+import { MapPinIcon, PencilIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
@@ -73,8 +73,8 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
         />
       </div>
       <SubmitButton pendingText="Creating Job">
-        <UserPlus2Icon className="mr-2" />
-        Update Employees
+        <MapPinIcon className="mr-2" />
+        Update Location
       </SubmitButton>
     </fieldset>
   );
@@ -105,8 +105,8 @@ function EditDrawer({ job }: { job: IJob }) {
       </div>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
         <Drawer.Header
-          title="Update employees"
-          titleIcon={() => <UserPlus2Icon className="mr-2" />}
+          title="Update location"
+          titleIcon={() => <MapPinIcon className="mr-2" />}
         />
         <Drawer.Items>
           {state.error && (
