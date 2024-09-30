@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 import ManageSidebar from "./manage-sidebar";
 import ManageNav from "./manage-nav";
+import AppToasts from "./app-toasts";
 
 export default async function Layout({ children }: PropsWithChildren) {
   const supabase = createClient();
@@ -30,13 +31,14 @@ export default async function Layout({ children }: PropsWithChildren) {
     <UserContextProvider user={data}>
       <main className="relative md:flex">
         <ManageSidebar />
-        <div className="max-w-full flex-1 overflow-x-hidden">
+        <div className="relative max-w-full flex-1">
           <ManageNav />
-          <div className="container flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+          <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
             {children}
           </div>
         </div>
       </main>
+      <AppToasts />
     </UserContextProvider>
   );
 }

@@ -1,152 +1,92 @@
-import { Avatar, Button, Card, Label } from "flowbite-react";
-import { MailIcon, PencilIcon, PhoneIcon, PlusCircleIcon } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
+import { Card, List, ListItem } from "flowbite-react";
+import { notFound } from "next/navigation";
+import JobCustomerCard from "./job-customer-card";
+import JobEmployeesCard from "./job-employees-card";
 import JobHistoryTimeline from "./job-history-timeline";
+import JobLocationCard from "./job-location-card";
+import JobMessagesCard from "./job-messages-card";
+import JobTimelineCard from "./job-timeline-card";
+import { IJob, IJobMessage } from "./types";
 
-export default function Page() {
+export default async function Page({ params: { jobId = "" } }) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("business_location_jobs")
+    .select(
+      "*, customer: customer_id(*), closer: closer_id(*), installer: installer_id(*)",
+    )
+    .eq("id", jobId)
+    .limit(1)
+    .returns<IJob>()
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) notFound();
+
+  const { data: messages } = await supabase
+    .from("business_location_job_messages")
+    .select("*, author: author_id(*)")
+    .eq("job_id", jobId)
+    .order("created_at", { ascending: false })
+    .limit(25)
+    .returns<IJobMessage[]>();
+
   return (
-    <>
-      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-6">
-        <div className="col-span-2">
-          <Card>
-            <div className="flex flex-1 items-center justify-between gap-2">
-              <h6 className="text-lg font-semibold tracking-tighter">
-                Proposal
-              </h6>
-              <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <PencilIcon className="fill-gray-200" />
-              </div>
-            </div>
-          </Card>
-        </div>
-        <div className="row-span-2">
-          <Card>
-            <div className="grid gap-4 lg:gap-6">
-              <div className="grid gap-4 border-b border-dashed border-gray-200 pb-4 dark:border-gray-700 lg:gap-6 lg:pb-6">
-                <div className="flex items-center justify-between gap-2">
-                  <h6 className="text-lg font-semibold tracking-tighter">
-                    Customer info
-                  </h6>
-                  <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <PencilIcon className="fill-gray-200" />
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <Avatar rounded bordered />
-                  <div className="grid gap-1">
-                    <p className="font-semibold">John Doe</p>
-                    <div className="flex items-center gap-1 font-light">
-                      <PhoneIcon className="size-4" /> 555-555-555
-                    </div>
-                    <Button size="xs" outline color="light">
-                      <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                        <MailIcon className="size-4" />
-                        Send Email
-                      </div>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="grid gap-4 border-b border-dashed border-gray-200 pb-4 dark:border-gray-700 lg:gap-6">
-                <div className="flex items-center justify-between gap-2">
-                  <h6 className="text-lg font-semibold tracking-tighter">
-                    Location
-                  </h6>
-                  <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <PencilIcon className="fill-gray-200" />
-                  </div>
-                </div>
-                <div className="flex flex-col items-start gap-4 lg:gap-6">
-                  <dl className="grid gap-4">
-                    <div className="grid items-center gap-2 xl:grid-cols-2">
-                      <dt className="text-gray-400">Address</dt>
-                      <dd className="text-gray-600 dark:text-gray-300">
-                        11123 Colton Road
-                      </dd>
-                    </div>
-                    <div className="grid items-center gap-2 xl:grid-cols-2">
-                      <dt className="text-gray-400">City</dt>
-                      <dd className="text-gray-600 dark:text-gray-300">
-                        St George
-                      </dd>
-                    </div>
-                    <div className="grid items-center gap-2 xl:grid-cols-2">
-                      <dt className="text-gray-400">State</dt>
-                      <dd className="text-gray-600 dark:text-gray-300">Utah</dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-              <div className="grid gap-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h6 className="text-lg font-semibold tracking-tighter">
-                    Employees
-                  </h6>
-                  <div className="flex items-center gap-2">
-                    <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      <PlusCircleIcon />
-                    </div>
-                    <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      <PencilIcon className="fill-gray-200" />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-start gap-4 lg:gap-6">
-                  <Avatar rounded bordered placeholderInitials="JD">
-                    John Doe
-                    <br />
-                    <Label className="text-amber-500">Setter</Label>
-                  </Avatar>
-                  <Avatar rounded bordered placeholderInitials="BS">
-                    Blake Shelton
-                    <br />
-                    <Label className="text-green-500">Closer</Label>
-                  </Avatar>
-                  <Avatar rounded bordered placeholderInitials="PW">
-                    Paul Walker
-                    <br />
-                    <Label className="text-cyan-500">Installer</Label>
-                  </Avatar>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        <div className="col-span-2">
-          <Card>
-            <h6 className="mb-6 text-lg font-semibold tracking-tighter">
-              History
-            </h6>
-            <JobHistoryTimeline />
-          </Card>
-        </div>
-        <div className="col-span-2">
-          <Card>
-            <div className="flex items-center justify-between gap-2">
-              <h6 className="text-lg font-semibold tracking-tighter">Media</h6>
-              <div className="flex items-center gap-2">
-                <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <PlusCircleIcon />
-                </div>
-                <div className="shrink-0 cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <PencilIcon className="fill-gray-200" />
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-        <div>
-          <Card>
-            <h6 className="mb-6 text-lg font-semibold tracking-tighter">
-              Schedule
-            </h6>
-            <div className="grid lg:grid-cols-2">
-              <div>calendar</div>
-              <div>scedule on selected day</div>
-            </div>
-          </Card>
-        </div>
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
+      <div className="lg:col-span-2">
+        <Card>
+          <h6 className="mb-6 text-lg font-semibold tracking-tighter">Media</h6>
+          <div className="flex flex-wrap gap-2">
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
+          </div>
+        </Card>
       </div>
-    </>
+
+      <div className="row-span-3">
+        <Card>
+          <div className="grid gap-4 lg:gap-6">
+            <div className="grid gap-4 border-b border-dashed border-gray-200 pb-4 dark:border-gray-700 lg:gap-6 lg:pb-6">
+              <h6 className="text-lg font-semibold tracking-tighter">
+                Quick Links
+              </h6>
+
+              <List>
+                <ListItem>Send Contract</ListItem>
+                <ListItem>Add Appointment</ListItem>
+                <ListItem>View Invoice</ListItem>
+              </List>
+            </div>
+            <JobTimelineCard job={data} />
+            <JobCustomerCard job={data} />
+            <JobEmployeesCard job={data} />
+          </div>
+        </Card>
+      </div>
+
+      <JobMessagesCard messages={messages} />
+      <JobLocationCard job={data} />
+      <div className="lg:col-span-2">
+        <Card>
+          <h6 className="mb-6 text-lg font-semibold tracking-tighter">
+            History
+          </h6>
+          <JobHistoryTimeline />
+        </Card>
+      </div>
+    </div>
   );
 }

@@ -577,7 +577,7 @@ function Content() {
             <Linky
               href={`/manage/${row.business_id}/location/${row.business_location_id}/job/${row.id}`}
             >
-              Customer
+              {row.full_name ?? "John Doe"}
             </Linky>
             <p className="text-xs text-gray-400">{`JOB-${row.id}`}</p>
           </div>

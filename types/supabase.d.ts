@@ -93,6 +93,65 @@ export type Database = {
         }
         Relationships: []
       }
+      business_location_job_messages: {
+        Row: {
+          author_id: string
+          business_id: string
+          created_at: string
+          id: number
+          job_id: number
+          location_id: number
+          message: string
+        }
+        Insert: {
+          author_id: string
+          business_id: string
+          created_at?: string
+          id?: number
+          job_id: number
+          location_id: number
+          message: string
+        }
+        Update: {
+          author_id?: string
+          business_id?: string
+          created_at?: string
+          id?: number
+          job_id?: number
+          location_id?: number
+          message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_job_messages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_messages_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_messages_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_messages_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_jobs: {
         Row: {
           address: string | null

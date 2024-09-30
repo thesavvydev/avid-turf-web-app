@@ -6,6 +6,10 @@ export const customTheme: CustomFlowbiteTheme = {
     color: {
       primary:
         "border border-primary-600 bg-primary-500 text-white focus:ring-4 focus:ring-primary-600 enabled:hover:bg-primary-400 dark:border-primary-600 dark:bg-primary-600 dark:focus:ring-primary-700 dark:enabled:hover:border-primary-700 dark:enabled:hover:bg-primary-700",
+      emerald:
+        "border border-emerald-300 bg-white text-emerald-900 focus:ring-4 focus:ring-emerald-300 enabled:hover:bg-emerald-100 dark:border-emerald-600 dark:bg-emerald-600 dark:text-white dark:focus:ring-emerald-700 dark:enabled:hover:border-emerald-700 dark:enabled:hover:bg-emerald-700",
+      slate:
+        "border border-slate-600 bg-slate-500 text-white focus:ring-4 focus:ring-slate-600 enabled:hover:bg-slate-400 dark:border-slate-600 dark:bg-slate-600 dark:focus:ring-slate-700 dark:enabled:hover:border-slate-700 dark:enabled:hover:bg-slate-700",
     },
   },
   badge: {
@@ -21,6 +25,7 @@ export const customTheme: CustomFlowbiteTheme = {
   card: {
     root: {
       base: "rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900",
+      children: "flex h-full flex-col gap-4 p-6",
     },
   },
   tabs: {

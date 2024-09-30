@@ -41,3 +41,26 @@ export function formatAsCurrency(
     style: "currency",
   });
 }
+
+export function formatAsReadableDate(
+  value: string,
+  options?: Intl.DateTimeFormatOptions,
+) {
+  const date = new Date(value);
+
+  return date.toLocaleDateString("en-us", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
+}
+
+export function formatEmptyOrUndefinedWithPlaceholder<T>(
+  placeholder = "--",
+  value: T,
+  formatter: (s: T) => string,
+) {
+  if (!value || value === "") return placeholder;
+
+  return formatter(value);
+}

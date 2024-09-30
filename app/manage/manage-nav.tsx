@@ -25,7 +25,7 @@ export default function ManageNav() {
   );
 
   return (
-    <Navbar fluid>
+    <Navbar fluid className="sm:bg-gray-50">
       <Dropdown
         label={selectedLocation?.name ?? "Select a location"}
         size="sm"

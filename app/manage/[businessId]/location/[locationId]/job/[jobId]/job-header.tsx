@@ -1,35 +1,58 @@
 "use client";
 
 import PageHeaderWithActions from "@/components/page-header-with-actions";
+import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
+import { Database } from "@/types/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Breadcrumb, Button, Dropdown } from "flowbite-react";
-import { ChevronLeftIcon, EditIcon, PrinterIcon } from "lucide-react";
-import { useParams } from "next/navigation";
+import { ChevronLeftIcon, ShareIcon } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { IJob } from "./types";
 
-export default function JobHeader() {
+export default function JobHeader({ job }: { job: IJob }) {
+  const supabase = createClient();
+  const router = useRouter();
   const { businessId, locationId, jobId } = useParams();
+
+  const handleUpdateJobStatus =
+    (status: Database["public"]["Enums"]["location_job_status"]) =>
+    async () => {
+      await supabase
+        .from("business_location_jobs")
+        .update({ status })
+        .eq("id", jobId);
+
+      router.refresh();
+    };
+
   return (
     <PageHeaderWithActions
-      title={`Order #${jobId}`}
-      subtitle="Job started on ..."
+      sticky
+      title={`Job #${jobId} `}
+      subtitle={`Job started on ${new Date(job.created_at).toLocaleDateString()}. Installer: ${job.installer?.full_name ?? "No Installer"}. Closer: ${job.closer?.full_name ?? "No Closer"}`}
       renderActions={() => (
         <div className="flex items-center gap-4">
-          <Dropdown label="Lead" color="light">
-            <Dropdown.Item>Lead</Dropdown.Item>
-            <Dropdown.Item>In Progress</Dropdown.Item>
-            <Dropdown.Item>Complete</Dropdown.Item>
-            <Dropdown.Item>Archive</Dropdown.Item>
+          <Dropdown
+            label={LOCATION_JOB_STATUS[job.status].name}
+            color={LOCATION_JOB_STATUS[job.status].color}
+          >
+            {Object.entries(LOCATION_JOB_STATUS).map(
+              ([locationJobStatusKey, locationJobStatus]) => {
+                return (
+                  <Dropdown.Item
+                    key={locationJobStatusKey}
+                    onClick={handleUpdateJobStatus(
+                      locationJobStatusKey as Database["public"]["Enums"]["location_job_status"],
+                    )}
+                  >
+                    {locationJobStatus.name}
+                  </Dropdown.Item>
+                );
+              },
+            )}
           </Dropdown>
           <Button color="light">
-            <div className="flex items-center gap-1">
-              <PrinterIcon className="size-5" />
-              Print
-            </div>
-          </Button>
-          <Button color="primary">
-            <div className="flex items-center gap-1">
-              <EditIcon className="size-5" />
-              Edit
-            </div>
+            <ShareIcon className="size-5" />
           </Button>
         </div>
       )}
