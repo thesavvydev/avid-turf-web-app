@@ -1,3 +1,4 @@
+import { IJob } from "@/types/job";
 import { Database, Tables } from "@/types/supabase";
 import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
 import { percentageChange } from "@/utils/percentage-change";
@@ -13,8 +14,9 @@ import {
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import JobsHeader from "./jobs-header";
+import JobMessageCard from "./jobs-message-card";
 import JobsTable from "./jobs-table";
-import { IJob } from "@/types/job";
+import JobsUpcomingCard from "./jobs-upcoming-card";
 
 export const metadata = {
   title: "Jobs",
@@ -121,7 +123,7 @@ function JobStatusTiles({
   ];
 
   return (
-    <div className="flex max-w-full items-center divide-x divide-gray-100 overflow-x-auto rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
+    <div className="flex max-w-full items-center divide-x divide-gray-100 overflow-scroll rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
       {tiles.map((tile) => (
         <div
           key={tile.name}
@@ -170,7 +172,7 @@ function JobStatusTiles({
             <div className="flex items-center gap-1">
               <h6 className="whitespace-nowrap font-medium">{tile.name}</h6>
               <Link
-                href={tile.status ? `?status=${tile.status ?? ""}` : "?"}
+                href={`${tile.status ? `?status=${tile.status ?? ""}` : "?"}#jobs-table`}
                 className="rounded p-1 hover:bg-gray-50"
               >
                 <FilterIcon className="size-5" />
@@ -249,14 +251,29 @@ export default async function Page({
     .order("created_at", { ascending: false })
     .returns<IJob[]>();
 
+  const fetchLatestJobMessages = supabase
+    .from("business_location_jobs")
+    .select(
+      "id, messages: business_location_job_messages(*,author: author_id(*))",
+    )
+    .eq("business_location_id", locationId)
+    .order("created_at", {
+      ascending: false,
+      referencedTable: "messages",
+    })
+    .limit(10)
+    .returns<IJob[]>();
+
   const [
     { data: all, count },
     { data: previousWeek },
     { data, error, count: paginatedTotal },
+    { data: latestJobsWithMessages },
   ] = await Promise.all([
     fetchAllJobs,
     fetchAllPreviousWeekJobs,
     fetchTableData,
+    fetchLatestJobMessages,
   ]);
 
   if (error) throw error;
@@ -286,6 +303,19 @@ export default async function Page({
         jobsCount={count ?? 0}
         statusCounts={statusCounts}
       />
+      <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
+        <div className="lg:col-span-4">
+          <JobMessageCard
+            jobs={
+              latestJobsWithMessages?.filter((job) => job.messages?.length) ??
+              []
+            }
+          />
+        </div>
+        <div className="lg:col-span-8">
+          <JobsUpcomingCard />
+        </div>
+      </div>
       <JobsTable
         jobsCount={count ?? 0}
         jobs={data ?? []}

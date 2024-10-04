@@ -885,7 +885,10 @@ export default function JobsTable({
       statusCounts={statusCounts}
       paginatedTotal={paginatedTotal}
     >
-      <div className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900">
+      <div
+        id="jobs-table"
+        className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900"
+      >
         <div className="overflow-x-auto">
           <StatusTabFilters />
         </div>

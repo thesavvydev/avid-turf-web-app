@@ -9,4 +9,5 @@ export interface IJob extends Tables<"business_location_jobs"> {
 
 export interface IJobMessage extends Tables<"business_location_job_messages"> {
   author?: Tables<"profiles">;
+  business_location_job?: Tables<"business_location_jobs">;
 }
