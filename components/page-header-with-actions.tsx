@@ -25,7 +25,7 @@ export default function PageHeaderWithActions({
       <header
         className={twMerge(
           sticky
-            ? "sticky top-0 z-10 border-b border-gray-200 bg-gray-50 p-2 text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+            ? "sticky top-0 z-0 border-b border-gray-200 bg-gray-50 p-2 text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
             : "",
         )}
       >

@@ -44,6 +44,7 @@ import { twMerge } from "tailwind-merge";
 import { DeleteLocationEmployee } from "./actions";
 import { IEmployee } from "./page";
 import UpdateEmployeeDrawer from "./update-employee-drawer";
+import { BUSINESS_PROFILE_ROLES } from "@/constants/business-profile-roles";
 
 const employeesTableContext = createContext<{
   employees: IEmployee[];
@@ -442,6 +443,18 @@ function Content() {
         >
           {row.profile?.full_name ?? "John Doe"}
         </Avatar>
+      ),
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "role",
+      header: "Role",
+      render: (row) => (
+        <div className="flex">
+          <Badge color={BUSINESS_PROFILE_ROLES[row.role].color}>
+            {BUSINESS_PROFILE_ROLES[row.role].name}
+          </Badge>
+        </div>
       ),
     },
     {

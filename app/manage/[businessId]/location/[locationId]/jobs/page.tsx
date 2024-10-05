@@ -4,7 +4,6 @@ import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
 import { percentageChange } from "@/utils/percentage-change";
 import { createClient } from "@/utils/supabase/server";
 import {
-  ArchiveIcon,
   CaptionsOffIcon,
   FilterIcon,
   LandmarkIcon,
@@ -66,7 +65,7 @@ function JobStatusTiles({
       classNames: "fill-lime-600/20 stroke-lime-600",
       progressClassNames: "text-lime-700 dark:text-lime-800 ",
       icon: WorkflowIcon,
-      progress: 0,
+      progress: 100,
     },
     {
       name: "New",
@@ -107,23 +106,10 @@ function JobStatusTiles({
       icon: CaptionsOffIcon,
       progress: 100 - (statusCounts.canceled / jobsCount) * 100,
     },
-    {
-      name: "Complete",
-      status: "complete",
-      value: formatAsCompactNumber(statusCounts.complete),
-      weekly_change: percentageChange(
-        previousWeekStatusCounts.complete,
-        statusCounts.complete,
-      ),
-      classNames: "fill-gray-300/20 stroke-gray-300",
-      progressClassNames: "text-gray-600 dark:text-gray-800",
-      icon: ArchiveIcon,
-      progress: 100 - (statusCounts.complete / jobsCount) * 100,
-    },
   ];
 
   return (
-    <div className="flex max-w-full items-center divide-x divide-gray-100 overflow-scroll rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
+    <div className="flex w-full max-w-full items-center divide-x divide-gray-100 overflow-scroll rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
       {tiles.map((tile) => (
         <div
           key={tile.name}
@@ -154,7 +140,9 @@ function JobStatusTiles({
                 )}
                 strokeWidth="2"
                 strokeDasharray="100"
-                strokeDashoffset={tile.progress}
+                strokeDashoffset={
+                  Number.isNaN(tile.progress) ? 100 : Number(tile.progress)
+                }
                 strokeLinecap="round"
               />
             </svg>

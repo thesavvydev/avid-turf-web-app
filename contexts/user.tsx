@@ -13,12 +13,17 @@ import {
 type TLocation = Partial<Tables<"business_locations">> &
   Partial<Tables<"business_location_profiles">>;
 
+type TBusiness = Partial<Tables<"businesses">> &
+  Partial<Tables<"business_profiles">>;
+
 interface User extends Partial<Tables<"profiles">> {
   businesses?: Tables<"businesses">[];
+  business_profiles?: Tables<"business_profiles">[];
   locations?: Tables<"business_locations">[];
   location_profiles?: Tables<"business_location_profiles">[];
   location?: TLocation;
   locationAdmin?: boolean;
+  business?: TBusiness;
 }
 
 const UserProviderContext = createContext<{
@@ -44,9 +49,9 @@ export default function UserContextProvider({
   children,
   user,
 }: UserProviderContextProps) {
-  const { locationId } = useParams();
+  const { locationId, businessId } = useParams();
 
-  const getLocationData = useCallback(() => {
+  const getSelectedLocationData = useCallback(() => {
     const { locations, location_profiles } = user;
 
     const selectedLocation = locations?.find(
@@ -57,15 +62,36 @@ export default function UserContextProvider({
       (locationProfile) => locationProfile.location_id === Number(locationId),
     );
 
-    const foundBothLocationAndProfile =
+    const foundLocationAndProfile =
       !!selectedLocation && !!selectedLocationProfile;
 
     return {
-      ...(foundBothLocationAndProfile
+      ...(foundLocationAndProfile
         ? { ...selectedLocation, ...selectedLocationProfile }
         : {}),
     };
   }, [locationId, user.locations, user.location_profiles]);
+
+  const getSelectedBusinessData = useCallback(() => {
+    const { business_profiles, businesses } = user;
+
+    const selectedBusiness = businesses?.find(
+      (business) => business.id === businessId,
+    );
+
+    const selectedBusinessProfile = business_profiles?.find(
+      (profile) => profile.business_id === businessId,
+    );
+
+    const foundBusinessAndProfile =
+      !!selectedBusiness && !!selectedBusinessProfile;
+
+    return {
+      ...(foundBusinessAndProfile
+        ? { ...selectedBusiness, ...selectedBusinessProfile }
+        : {}),
+    };
+  }, [businessId, user.business_profiles, user.businesses]);
 
   const value = useMemo(
     () => ({
@@ -73,7 +99,12 @@ export default function UserContextProvider({
         ...user,
         ...(locationId
           ? {
-              location: getLocationData(),
+              location: getSelectedLocationData(),
+            }
+          : {}),
+        ...(businessId
+          ? {
+              business: getSelectedBusinessData(),
             }
           : {}),
       },

@@ -20,7 +20,7 @@ export default async function Layout({ children }: PropsWithChildren) {
   const { data, error: fetchProfileError } = await supabase
     .from("profiles")
     .select(
-      "*,businesses(*), locations: business_locations(*), location_profiles: business_location_profiles(*)",
+      "*, businesses(*), business_profiles(*), locations: business_locations(*), location_profiles: business_location_profiles(*)",
     )
     .eq("id", user.id)
     .limit(1)
@@ -33,7 +33,7 @@ export default async function Layout({ children }: PropsWithChildren) {
     <UserContextProvider user={data}>
       <main className="relative md:flex">
         <ManageSidebar />
-        <div className="relative max-w-full flex-1">
+        <div className="relative max-w-full flex-1 overflow-hidden">
           <ManageNav />
           <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
             {children}

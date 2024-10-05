@@ -510,16 +510,19 @@ export type Database = {
           business_id: string
           created_at: string
           profile_id: string
+          role: Database["public"]["Enums"]["business_roles"]
         }
         Insert: {
           business_id: string
           created_at?: string
           profile_id: string
+          role?: Database["public"]["Enums"]["business_roles"]
         }
         Update: {
           business_id?: string
           created_at?: string
           profile_id?: string
+          role?: Database["public"]["Enums"]["business_roles"]
         }
         Relationships: [
           {
@@ -645,6 +648,7 @@ export type Database = {
       }
     }
     Enums: {
+      business_roles: "admin" | "manager" | "base"
       custom_field_models: "leads" | "jobs"
       custom_field_types: "text" | "date" | "number" | "select"
       lead_sources: "website-form" | "phone" | "email" | "referral" | "other"
