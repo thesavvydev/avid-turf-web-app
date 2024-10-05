@@ -16,11 +16,11 @@ import useManageMenuItems from "./use-manage-menu-items";
 export default function ManageNav() {
   const menuItems = useManageMenuItems();
   const {
-    user: { full_name, business_locations },
+    user: { full_name, locations, location },
   } = useUserContext();
 
   const { locationId, businessId } = useParams();
-  const selectedLocation = business_locations?.find(
+  const selectedLocation = locations?.find(
     (location) => location.id === Number(locationId),
   );
 
@@ -30,9 +30,10 @@ export default function ManageNav() {
         label={selectedLocation?.name ?? "Select a location"}
         size="sm"
         color="light"
+        className="z-20"
       >
         <Dropdown.Header>Select a Location</Dropdown.Header>
-        {business_locations?.map((location) => (
+        {locations?.map((location) => (
           <Dropdown.Item
             key={location.id}
             href={`/manage/${businessId}/location/${location.id}`}
@@ -40,6 +41,13 @@ export default function ManageNav() {
             {location.name}
           </Dropdown.Item>
         ))}
+        {location?.role === "admin" && (
+          <Dropdown.Item
+            href={`/manage/${businessId}/location/${location.id}/new`}
+          >
+            Add Location
+          </Dropdown.Item>
+        )}
       </Dropdown>
       <div className="ml-auto flex gap-2 md:order-2 md:ml-0 md:gap-4">
         <Dropdown
