@@ -516,8 +516,7 @@ function TableActiveFilters() {
     useEmployeesTableContext();
   const { locationId, businessId } = useParams();
   const searchParams = useSearchParams();
-  const { search, source, created_before, created_after, page, per_page } =
-    Object.fromEntries(searchParams);
+  const { search, role, page, per_page } = Object.fromEntries(searchParams);
   const hasFilters = Array.from(searchParams.entries())?.length > 0;
 
   return (
@@ -575,53 +574,15 @@ function TableActiveFilters() {
               </Badge>
             </div>
           )}
-          {source && (
+          {role && (
             <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
-              <span className="text-sm font-semibold text-gray-500">
-                Source
-              </span>
+              <span className="text-sm font-semibold text-gray-500">Role</span>
               <Badge
                 color="gray"
-                onClick={() => handleRemoveSearchParam("source", source)}
+                onClick={() => handleRemoveSearchParam("role", role)}
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
-                  <p>{source}</p>
-                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
-                </div>
-              </Badge>
-            </div>
-          )}
-          {created_after && (
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
-              <span className="text-sm font-semibold text-gray-500">
-                Created after
-              </span>
-              <Badge
-                color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("createed_after", created_after)
-                }
-              >
-                <div className="flex cursor-pointer items-center gap-2 capitalize">
-                  <p>{created_after}</p>
-                  <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
-                </div>
-              </Badge>
-            </div>
-          )}
-          {created_before && (
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
-              <span className="text-sm font-semibold text-gray-500">
-                Created before
-              </span>
-              <Badge
-                color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("createed_before", created_before)
-                }
-              >
-                <div className="flex cursor-pointer items-center gap-2 capitalize">
-                  <p>{created_before}</p>
+                  <p>{role}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>

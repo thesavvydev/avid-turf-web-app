@@ -1,25 +1,48 @@
+import { Tables } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 import EmployeesHeader from "./employees-header";
-import { Tables } from "@/types/supabase";
 import EmployeesTable from "./employees-table";
-
-type TPage = {
-  params: { locationId: string };
-};
-
 export interface IEmployee extends Tables<"business_location_profiles"> {
   profile?: Tables<"profiles">;
 }
 
-export default async function Page({ params: { locationId } }: TPage) {
+export default async function Page({
+  params: { locationId = "" },
+  searchParams: { page = 0, per_page = 10, role = "" },
+}) {
   const supabase = createClient();
-  const { data, error } = await supabase
+  const startRange =
+    page > 1
+      ? Number(page - 1) * Number(per_page)
+      : Number(page) * Number(per_page);
+
+  const endRange = page > 1 ? startRange + Number(per_page) : per_page;
+
+  const fetchFilteredLocationEmployees = await supabase
+    .from("business_location_profiles")
+    .select("*, profile: profile_id(*)", { count: "exact" })
+    .match({
+      location_id: Number(locationId),
+      ...(role ? { role } : {}),
+    })
+    .range(startRange, endRange)
+    .order("created_at", { ascending: false })
+    .returns<IEmployee[]>();
+
+  const fetchAllLocationEmployees = supabase
     .from("business_location_profiles")
     .select("*, profile: profile_id(*)")
     .eq("location_id", Number(locationId))
     .returns<IEmployee[]>();
 
+  const [{ data, error: fetchAllError }, { data: filteredData, error, count }] =
+    await Promise.all([
+      fetchAllLocationEmployees,
+      fetchFilteredLocationEmployees,
+    ]);
+
   if (error) throw error;
+  if (fetchAllError) throw fetchAllError;
 
   const roleCounts = (data ?? []).reduce(
     (dictionary, job) => {
@@ -38,9 +61,9 @@ export default async function Page({ params: { locationId } }: TPage) {
     <>
       <EmployeesHeader />
       <EmployeesTable
-        employeesCount={0}
-        employees={data}
-        paginatedTotal={0}
+        employeesCount={data?.length ?? 0}
+        employees={filteredData ?? []}
+        paginatedTotal={count ?? 0}
         roleCounts={roleCounts}
       />
     </>
