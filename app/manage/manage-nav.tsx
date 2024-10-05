@@ -73,11 +73,12 @@ export default function ManageNav() {
           />
         )}
         {business?.role === "admin" && selectedLocation && (
-          <div className="hidden lg:flex lg:gap-1">
+          <div className="hidden items-center lg:flex lg:gap-2">
             <Tooltip content="Add Location" style="auto">
               <Button
                 color="light"
                 onClick={() => setIsNewLocationDrawerOpen(true)}
+                size="xs"
               >
                 <PlusIcon className="size-4" />
               </Button>
@@ -85,6 +86,7 @@ export default function ManageNav() {
             <Tooltip content="Location Settings" style="auto">
               <Button
                 color="light"
+                size="xs"
                 onClick={() => setIsUpdateLocationDrawerOpen(true)}
               >
                 <SettingsIcon className="size-4" />
@@ -99,7 +101,7 @@ export default function ManageNav() {
                   router.refresh();
                 }}
                 trigger={(toggle) => (
-                  <Button color="light" onClick={toggle}>
+                  <Button color="light" size="xs" onClick={toggle}>
                     <Trash2Icon className="size-4 text-red-500" />
                   </Button>
                 )}

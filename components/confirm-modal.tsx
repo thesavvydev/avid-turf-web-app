@@ -32,7 +32,7 @@ export function ConfirmModal({
             </h3>
             {matchStringConfirmation && (
               <div className="grid gap-2 p-2">
-                <Label className="text-red-400">{`Type "${matchStringConfirmation}" to confirm deleting`}</Label>
+                <Label className="text-red-400 dark:text-red-400">{`Type "${matchStringConfirmation}" to confirm deleting`}</Label>
                 <TextInput
                   className="mb-4"
                   value={stringInputValue}
