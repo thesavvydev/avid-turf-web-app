@@ -224,7 +224,7 @@ export default async function Page({
   const fetchTableData = supabase
     .from("business_location_jobs")
     .select(
-      "*, closer: profiles!closer_id(id,full_name,avatar_url), installer: profiles!installer_id(id,full_name,avatar_url), messages: business_location_job_messages(*,author: author_id(*))",
+      "*,creator: profiles!creator_id(id,full_name,avatar_url),  closer: profiles!closer_id(id,full_name,avatar_url), installer: profiles!installer_id(id,full_name,avatar_url), messages: business_location_job_messages(*,author: author_id(*))",
       { count: "exact" },
     )
     .match({

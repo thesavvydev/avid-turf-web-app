@@ -1,6 +1,7 @@
 import { Tables } from "./supabase";
 
 export interface IJob extends Tables<"business_location_jobs"> {
+  creator?: Tables<"profiles">;
   customer?: Tables<"profiles">;
   installer?: Tables<"profiles">;
   closer?: Tables<"profiles">;

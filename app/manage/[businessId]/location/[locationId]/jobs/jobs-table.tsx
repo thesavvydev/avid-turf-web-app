@@ -460,7 +460,9 @@ function ActionsCell({ row }: { row: Tables<"business_location_jobs"> }) {
   const router = useRouter();
   const { user } = useUserContext();
 
-  const isCreator = user.id === row.creator_id;
+  const isCreator =
+    user.id === row.creator_id ||
+    ["admin", "manager"].includes(user.location?.role ?? "");
 
   const handleDelete = async () => {
     await DeleteJob(row.id);
@@ -557,6 +559,7 @@ interface IColumn<RowData> {
 }
 
 function Content() {
+  const { user } = useUserContext();
   const { jobs } = useJobsTableContext();
 
   const columns: IColumn<(typeof jobs)[0]>[] = [
@@ -644,7 +647,14 @@ function Content() {
       cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
       field: "created",
       header: "Created",
-      render: (row) => new Date(row.created_at).toLocaleDateString(),
+      render: (row) => (
+        <div>
+          <p>{new Date(row.created_at).toLocaleDateString()}</p>
+          {["manager", "admin"].includes(user.location?.role ?? "") && (
+            <p className="text-xs text-gray-400">{`By: ${row.creator?.full_name}`}</p>
+          )}
+        </div>
+      ),
     },
     {
       cellClassNames: "w-0",
