@@ -3,7 +3,7 @@
 import SubmitButton from "@/components/submit-button";
 
 import { useUserContext } from "@/contexts/user";
-import { Breadcrumb, Label, Select, TextInput } from "flowbite-react";
+import { Breadcrumb, Card, Label, Select, TextInput } from "flowbite-react";
 import { ChevronLeftIcon, WorkflowIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
@@ -25,144 +25,158 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
 
   return (
     <>
-      <h2 className="text-xl font-medium text-gray-400">Basic Information</h2>
-      <fieldset
-        disabled={pending}
-        className="grid gap-2 border-b border-gray-100 pb-2 dark:border-gray-700 sm:grid-cols-2 md:gap-6 md:pb-6"
-      >
-        <input type="hidden" name="business_location_id" value={locationId} />
-        <input type="hidden" name="business_id" value={businessId} />
-        <input type="hidden" name="creator_id" value={user.id} />
-        <div>
-          <Label htmlFor="full_name" className="mb-2 block">
-            Full Name
-          </Label>
-          <TextInput
-            id="full_name"
-            name="full_name"
-            required
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <Label htmlFor="phone" className="mb-2 block">
-            Phone
-          </Label>
-          <TextInput id="phone" name="phone" autoComplete="off" required />
-        </div>
-        <div>
-          <Label htmlFor="email" className="mb-2 block">
-            Email
-          </Label>
-          <TextInput
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="off"
-            required
-          />
-        </div>
-        <div className="sm:col-span-2">
-          <Label htmlFor="address" className="mb-2 block">
-            Address
-          </Label>
-          <TextInput id="address" name="address" autoComplete="off" required />
-        </div>
-        <div className="grid gap-2 sm:col-span-2 sm:grid-cols-3 md:gap-6">
+      <Card>
+        <h2 className="text-xl font-medium text-gray-400">Basic Information</h2>
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
+          <input type="hidden" name="business_location_id" value={locationId} />
+          <input type="hidden" name="business_id" value={businessId} />
+          <input type="hidden" name="creator_id" value={user.id} />
           <div>
-            <Label htmlFor="city" className="mb-2 block">
-              City
+            <Label htmlFor="full_name" className="mb-2 block">
+              Full Name
             </Label>
-            <TextInput id="city" name="city" autoComplete="off" required />
+            <TextInput
+              id="full_name"
+              name="full_name"
+              required
+              autoComplete="off"
+            />
           </div>
           <div>
-            <Label htmlFor="state" className="mb-2 block">
-              State
+            <Label htmlFor="phone" className="mb-2 block">
+              Phone
             </Label>
-            <Select id="state" name="state" defaultValue="" required>
-              <option value="" disabled>
-                Select a state
-              </option>
-              {Object.entries(US_STATES).map(([abbr, name]) => (
-                <option key={abbr} value={abbr}>
-                  {name}
+            <TextInput id="phone" name="phone" autoComplete="off" required />
+          </div>
+          <div>
+            <Label htmlFor="email" className="mb-2 block">
+              Email
+            </Label>
+            <TextInput
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="off"
+              required
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <Label htmlFor="address" className="mb-2 block">
+              Address
+            </Label>
+            <TextInput
+              id="address"
+              name="address"
+              autoComplete="off"
+              required
+            />
+          </div>
+          <div className="grid gap-2 sm:col-span-2 sm:grid-cols-3 md:gap-6">
+            <div>
+              <Label htmlFor="city" className="mb-2 block">
+                City
+              </Label>
+              <TextInput id="city" name="city" autoComplete="off" required />
+            </div>
+            <div>
+              <Label htmlFor="state" className="mb-2 block">
+                State
+              </Label>
+              <Select id="state" name="state" defaultValue="" required>
+                <option value="" disabled>
+                  Select a state
+                </option>
+                {Object.entries(US_STATES).map(([abbr, name]) => (
+                  <option key={abbr} value={abbr}>
+                    {name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="postal_code" className="mb-2 block">
+                Postal Code
+              </Label>
+              <TextInput
+                id="postal_code"
+                name="postal_code"
+                autoComplete="off"
+                required
+              />
+            </div>
+          </div>
+        </fieldset>
+      </Card>
+      <Card>
+        <h2 className="text-xl font-medium text-gray-400">Staff</h2>
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
+          <div>
+            <Label htmlFor="closer_id" className="mb-2 block">
+              Closer
+            </Label>
+            <Select
+              name="closer_id"
+              id="closer_id"
+              defaultValue={user.id}
+              required
+            >
+              <option value="">Select a closer</option>
+              {profiles.map((profile) => (
+                <option key={profile.profile_id} value={profile.profile_id}>
+                  {profile.profile?.full_name}
                 </option>
               ))}
             </Select>
           </div>
           <div>
-            <Label htmlFor="postal_code" className="mb-2 block">
-              Postal Code
+            <Label htmlFor="installer_id" className="mb-2 block">
+              Installer
             </Label>
-            <TextInput
-              id="postal_code"
-              name="postal_code"
-              autoComplete="off"
-              required
-            />
-          </div>
-        </div>
-      </fieldset>
-      <h2 className="text-xl font-medium text-gray-400">Staff</h2>
-      <fieldset
-        disabled={pending}
-        className="grid gap-2 border-b border-gray-100 pb-2 dark:border-gray-700 sm:grid-cols-2 md:gap-6 md:pb-6"
-      >
-        <div>
-          <Label htmlFor="closer_id" className="mb-2 block">
-            Closer
-          </Label>
-          <Select
-            name="closer_id"
-            id="closer_id"
-            defaultValue={user.id}
-            required
-          >
-            <option value="">Select a closer</option>
-            {profiles.map((profile) => (
-              <option key={profile.profile_id} value={profile.profile_id}>
-                {profile.profile?.full_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="installer_id" className="mb-2 block">
-            Installer
-          </Label>
-          <Select name="installer_id" id="installer_id" defaultValue="">
-            <option value="">Select a installer</option>
-            {profiles.map((profile) => (
-              <option key={profile.profile_id} value={profile.profile_id}>
-                {profile.profile?.full_name}
-              </option>
-            ))}
-          </Select>
-        </div>
-      </fieldset>
-      <h2 className="text-xl font-medium text-gray-400">
-        Additional Information
-      </h2>
-      <fieldset
-        disabled={pending}
-        className="grid gap-2 border-b border-gray-100 pb-2 dark:border-gray-700 sm:grid-cols-2 md:gap-6 md:pb-6"
-      >
-        <div>
-          <Label htmlFor="status" className="mb-2 block">
-            Status
-          </Label>
-          <Select name="status" id="status" defaultValue="new" required>
-            <option value="">Select a status</option>
-            {Object.entries(LOCATION_JOB_STATUS).map(
-              ([locationJobStatusKey, locationJobStatus]) => (
-                <option key={locationJobStatusKey} value={locationJobStatusKey}>
-                  {locationJobStatus.name}
+            <Select name="installer_id" id="installer_id" defaultValue="">
+              <option value="">Select a installer</option>
+              {profiles.map((profile) => (
+                <option key={profile.profile_id} value={profile.profile_id}>
+                  {profile.profile?.full_name}
                 </option>
-              ),
-            )}
-          </Select>
-        </div>
-      </fieldset>
+              ))}
+            </Select>
+          </div>
+        </fieldset>
+      </Card>
+      <Card>
+        <h2 className="text-xl font-medium text-gray-400">
+          Additional Information
+        </h2>
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
+          <div>
+            <Label htmlFor="status" className="mb-2 block">
+              Status
+            </Label>
+            <Select name="status" id="status" defaultValue="new" required>
+              <option value="">Select a status</option>
+              {Object.entries(LOCATION_JOB_STATUS).map(
+                ([locationJobStatusKey, locationJobStatus]) => (
+                  <option
+                    key={locationJobStatusKey}
+                    value={locationJobStatusKey}
+                  >
+                    {locationJobStatus.name}
+                  </option>
+                ),
+              )}
+            </Select>
+          </div>
+        </fieldset>
+      </Card>
     </>
   );
 };
