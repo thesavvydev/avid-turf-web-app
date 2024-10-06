@@ -89,7 +89,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
     <Card>
       <h6 className="text-lg font-semibold tracking-tighter">Messages</h6>
       <div
-        className="flex h-full max-h-80 flex-col-reverse gap-2 overflow-y-auto lg:gap-4"
+        className="flex h-full max-h-80 flex-col-reverse gap-4 overflow-y-auto"
         ref={ref}
       >
         {messages?.map((message) => {
@@ -121,7 +121,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
                     isAuthor
                       ? "from-blue-500 to-blue-600 text-blue-100"
                       : "from-gray-100 to-gray-200 dark:bg-gray-800 dark:from-gray-700 dark:to-gray-800",
-                    "relative w-full rounded bg-gradient-to-tr text-sm lg:p-3",
+                    "relative w-full rounded bg-gradient-to-tr p-2 text-sm lg:p-3",
                   )}
                 >
                   {message.message}
