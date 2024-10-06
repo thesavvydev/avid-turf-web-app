@@ -5,17 +5,34 @@ import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import useManageMenuItems from "./use-manage-menu-items";
+import { useParams, useRouter } from "next/navigation";
+import { useUserContext } from "@/contexts/user";
 
-const Brand = ({ isCollapsed = false }) => (
-  <p className="text-center">
-    <span className="font-black text-gray-500 text-inherit">
-      {isCollapsed ? "A" : "AVID"}
-    </span>
-    <span className="font-semibold text-primary-400">
-      {isCollapsed ? "T" : "TURF"}
-    </span>
-  </p>
-);
+const Brand = ({ isCollapsed = false }) => {
+  const { businessId, locationId } = useParams();
+  const router = useRouter();
+  const { user } = useUserContext();
+
+  return (
+    <p
+      className="cursor-pointer text-center hover:scale-110"
+      onClick={() => {
+        if (["manager", "admin"].includes(user.business?.role ?? "")) {
+          router.push(`/manage/${businessId}/dashboard`);
+        } else {
+          router.push(`/manage/${businessId}/location/${locationId}`);
+        }
+      }}
+    >
+      <span className="font-black text-gray-500 text-inherit">
+        {isCollapsed ? "A" : "AVID"}
+      </span>
+      <span className="font-semibold text-primary-400">
+        {isCollapsed ? "T" : "TURF"}
+      </span>
+    </p>
+  );
+};
 
 export default function ManageSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(true);

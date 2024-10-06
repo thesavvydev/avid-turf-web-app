@@ -37,26 +37,10 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
   }
 
   if (fields.profile_id) {
-    const { error: businessProfileUpsertError } = await supabase
-      .from("business_profiles")
-      .upsert({
-        business_id: fields.business_id as string,
-        profile_id: fields.profile_id as string,
-        role: "base" as Database["public"]["Enums"]["business_roles"],
-      });
-
-    if (businessProfileUpsertError) {
-      return formStateResponse({
-        ...state,
-        error: businessProfileUpsertError.message,
-      });
-    }
-
-    const { error } = await supabase.from("business_location_profiles").upsert({
+    const { error } = await supabase.from("business_profiles").upsert({
       business_id: fields.business_id as string,
-      location_id: Number(fields.location_id) as number,
       profile_id: fields.profile_id as string,
-      role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
+      role: fields.role as Database["public"]["Enums"]["business_roles"],
     });
 
     if (error) {
@@ -76,26 +60,10 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       return formStateResponse({ ...state, error: inviteError.message });
     }
 
-    const { error: businessProfileUpsertError } = await supabase
-      .from("business_profiles")
-      .upsert({
-        business_id: fields.business_id as string,
-        profile_id: data.user.id,
-        role: "base" as Database["public"]["Enums"]["business_roles"],
-      });
-
-    if (businessProfileUpsertError) {
-      return formStateResponse({
-        ...state,
-        error: businessProfileUpsertError.message,
-      });
-    }
-
-    const { error } = await supabase.from("business_location_profiles").upsert({
+    const { error } = await supabase.from("business_profiles").upsert({
       business_id: fields.business_id as string,
-      location_id: Number(fields.location_id) as number,
       profile_id: data.user.id,
-      role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
+      role: fields.role as Database["public"]["Enums"]["business_roles"],
     });
 
     if (error) {
@@ -106,17 +74,17 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
   return formStateResponse({ success: true, dismiss: true });
 }
 
-export async function UpdateEmployee<T>(...args: ServerActionWithState<T>) {
+export async function UpdateBusinessUser<T>(...args: ServerActionWithState<T>) {
   const supabase = createClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
   const { error } = await supabase
-    .from("business_location_profiles")
+    .from("business_profiles")
     .update({
-      role: fields.role as Database["public"]["Enums"]["location_profile_roles"],
+      role: fields.role as Database["public"]["Enums"]["business_roles"],
     })
-    .match({ location_id: fields.location_id, profile_id: fields.profile_id });
+    .match({ business_id: fields.business_id, profile_id: fields.profile_id });
 
   if (error) {
     return formStateResponse({ ...state, error: error.message });
@@ -125,14 +93,14 @@ export async function UpdateEmployee<T>(...args: ServerActionWithState<T>) {
   return formStateResponse({ success: true, dismiss: true });
 }
 
-export async function DeleteLocationEmployee(
-  location_id: number,
+export async function DeleteBusinessUser(
+  business_id: string,
   profile_id: string,
 ) {
   const supabase = createClient();
 
   return supabase
-    .from("business_location_profiles")
+    .from("business_profiles")
     .delete()
-    .match({ location_id, profile_id });
+    .match({ business_id, profile_id });
 }

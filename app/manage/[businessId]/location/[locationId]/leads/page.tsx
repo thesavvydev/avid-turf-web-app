@@ -194,21 +194,21 @@ export default async function Page({
     created_after = null,
     created_before = null,
   },
-  params: { businessId = "" },
+  params: { locationId = "" },
 }) {
   const supabase = createClient();
 
   const { data: all, count } = await supabase
     .from("business_location_leads")
     .select("status", { count: "exact" })
-    .eq("business_id", businessId);
+    .eq("business_location_id", locationId);
 
   const lastWeekDate = new Date(new Date().setDate(new Date().getDate() - 5));
 
   const { data: previousWeek } = await supabase
     .from("business_location_leads")
     .select("id,status")
-    .eq("business_id", businessId)
+    .eq("business_location_id", locationId)
     .lte("created_at", lastWeekDate.toISOString());
 
   const startRange =
@@ -224,7 +224,7 @@ export default async function Page({
     .match({
       ...(status ? { status } : {}),
       ...(source ? { source } : {}),
-      business_id: businessId,
+      business_location_id: locationId,
     })
     .range(startRange, endRange)
     .gte("created_at", new Date(created_after ?? "0").toISOString())
@@ -239,7 +239,7 @@ export default async function Page({
     .match({
       ...(status ? { status } : {}),
       ...(source ? { source } : {}),
-      business_id: businessId,
+      business_location_id: locationId,
     })
     .gte("created_at", new Date(created_after ?? "0").toISOString())
     .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString());

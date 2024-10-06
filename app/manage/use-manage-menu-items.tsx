@@ -5,6 +5,7 @@ import {
   BoneIcon,
   CalendarDaysIcon,
   HomeIcon,
+  UserCircle2,
   UserIcon,
   WorkflowIcon,
 } from "lucide-react";
@@ -16,7 +17,28 @@ export default function useManageMenuItems() {
   const { businessId, locationId } = useParams();
   const pathname = usePathname();
 
-  if (!businessId || !locationId) return [];
+  if (!businessId && !locationId) return [];
+
+  if (
+    ["manager", "admin"].includes(user.business?.role ?? "") &&
+    businessId &&
+    !locationId
+  ) {
+    return [
+      {
+        name: "Dashboard",
+        href: `/manage/${businessId}/dashboard`,
+        isActive: pathname === `/manage/${businessId}/dashboard`,
+        icon: HomeIcon,
+      },
+      {
+        name: "Users",
+        href: `/manage/${businessId}/users`,
+        isActive: pathname === `/manage/${businessId}/users`,
+        icon: UserCircle2,
+      },
+    ];
+  }
 
   return [
     {
