@@ -157,11 +157,11 @@ function JobStatusTiles({
             </div>
           </div>
           <div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <h6 className="whitespace-nowrap font-medium">{tile.name}</h6>
               <Link
                 href={`${tile.status ? `?status=${tile.status ?? ""}` : "?"}#jobs-table`}
-                className="rounded p-1 hover:bg-gray-50"
+                className="rounded p-1 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 <FilterIcon className="size-5" />
               </Link>
