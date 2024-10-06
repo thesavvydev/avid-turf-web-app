@@ -130,7 +130,6 @@ export default function ManageNav() {
           <Dropdown.Item>Settings</Dropdown.Item>
           <Dropdown.Item>Earnings</Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item href="/admin">Admin</Dropdown.Item>
           <Dropdown.Item href="/auth/signout">Sign out</Dropdown.Item>
         </Dropdown>
         <Navbar.Toggle />
