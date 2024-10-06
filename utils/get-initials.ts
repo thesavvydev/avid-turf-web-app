@@ -3,5 +3,5 @@ export default function getInitials(word: string) {
   const [firstInitial] = firstWord.split("");
   const [secondInitial] = secondWord.split("");
 
-  return `${firstInitial}${secondInitial}`;
+  return `${firstInitial ?? ""}${secondInitial ?? ""}`;
 }
