@@ -22,12 +22,19 @@ export default function SignInForm() {
           {state.error}
         </div>
       )}
-      <TextInput className="max-w-xs" required name="email" type="email" />
+      <TextInput
+        className="max-w-xs"
+        required
+        name="email"
+        type="email"
+        placeholder="Email"
+      />
       <TextInput
         className="max-w-xs"
         required
         name="password"
         type="password"
+        placeholder="Password"
       />
       <span className="self-end">
         <Linky href="/forgot-password">Forgot password?</Linky>
