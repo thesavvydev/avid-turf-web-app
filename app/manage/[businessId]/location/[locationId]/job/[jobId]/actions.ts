@@ -97,3 +97,37 @@ export async function DeleteJobMessage(message_id: number) {
 
   return;
 }
+
+export async function AddJobMedia<T>(...args: ServerActionWithState<T>) {
+  const supabase = createClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const { error } = await supabase.from("business_location_job_media").insert({
+    business_id: fields.business_id as string,
+    location_id: Number(fields.location_id),
+    job_id: Number(fields.job_id),
+    name: fields.name as string,
+    path: fields.path as string,
+  });
+
+  if (error) formStateResponse({ ...state, error: error.message });
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
+export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
+  const supabase = createClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const { error } = await supabase
+    .from("business_location_job_media")
+    .update({
+      name: fields.name as string,
+      path: fields.path as string,
+    })
+    .eq("id", fields.id);
+
+  if (error) formStateResponse({ ...state, error: error.message });
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}

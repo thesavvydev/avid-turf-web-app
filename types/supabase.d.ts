@@ -93,6 +93,58 @@ export type Database = {
         }
         Relationships: []
       }
+      business_location_job_media: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: number
+          job_id: number
+          location_id: number
+          name: string
+          path: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: number
+          job_id: number
+          location_id: number
+          name: string
+          path: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: number
+          job_id?: number
+          location_id?: number
+          name?: string
+          path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_job_media_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_media_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_media_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_job_messages: {
         Row: {
           author_id: string
@@ -636,8 +688,26 @@ export type Database = {
           id: string
         }[]
       }
+      is_business_profile: {
+        Args: {
+          biz_id: string
+        }
+        Returns: boolean
+      }
       is_global_admin: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_job_employee: {
+        Args: {
+          jobid: number
+        }
+        Returns: boolean
+      }
+      is_location_manager_or_admin: {
+        Args: {
+          locationid: number
+        }
         Returns: boolean
       }
       is_location_profile: {

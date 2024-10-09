@@ -6,6 +6,7 @@ export interface IJob extends Tables<"business_location_jobs"> {
   installer?: Tables<"profiles">;
   closer?: Tables<"profiles">;
   messages?: IJobMessage[];
+  media?: Tables<"business_location_job_media">[];
 }
 
 export interface IJobMessage extends Tables<"business_location_job_messages"> {

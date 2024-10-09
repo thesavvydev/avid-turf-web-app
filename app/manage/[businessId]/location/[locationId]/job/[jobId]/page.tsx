@@ -1,3 +1,4 @@
+import { IJob, IJobMessage } from "@/types/job";
 import { createClient } from "@/utils/supabase/server";
 import { Card, List, ListItem } from "flowbite-react";
 import { notFound } from "next/navigation";
@@ -5,25 +6,23 @@ import JobCustomerCard from "./job-customer-card";
 import JobEmployeesCard from "./job-employees-card";
 import JobHistoryTimeline from "./job-history-timeline";
 import JobLocationCard from "./job-location-card";
+import JobMediaCard from "./job-media-card";
 import JobMessagesCard from "./job-messages-card";
 import JobTimelineCard from "./job-timeline-card";
-import { IJob, IJobMessage } from "@/types/job";
 
 export default async function Page({ params: { jobId = "" } }) {
   const supabase = createClient();
-  const { data, error } = await supabase
+  const fetchJob = supabase
     .from("business_location_jobs")
     .select(
-      "*, customer: customer_id(*), closer: closer_id(*), installer: installer_id(*)",
+      "*, customer: customer_id(*), closer: closer_id(*), installer: installer_id(*), media: business_location_job_media(*)",
     )
     .eq("id", jobId)
     .limit(1)
     .returns<IJob>()
-    .maybeSingle();
-  if (error) throw error;
-  if (!data) notFound();
+    .single();
 
-  const { data: messages } = await supabase
+  const fetchMessages = supabase
     .from("business_location_job_messages")
     .select("*, author: author_id(*)")
     .eq("job_id", jobId)
@@ -31,29 +30,20 @@ export default async function Page({ params: { jobId = "" } }) {
     .limit(50)
     .returns<IJobMessage[]>();
 
+  const [{ data, error }, { data: messages }] = await Promise.all([
+    fetchJob,
+    fetchMessages,
+  ]);
+
+  if (error) throw error;
+  if (!data) notFound();
+
+  const job: IJob = data;
+
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
       <div className="lg:col-span-2">
-        <Card>
-          <h6 className="mb-6 text-lg font-semibold tracking-tighter">Media</h6>
-          <div className="flex flex-wrap gap-2">
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-            <div className="size-20 bg-gray-200 dark:bg-gray-700" />
-          </div>
-        </Card>
+        <JobMediaCard media={job.media ?? []} />
       </div>
 
       <div className="row-span-3">
@@ -70,15 +60,15 @@ export default async function Page({ params: { jobId = "" } }) {
                 <ListItem>View Invoice</ListItem>
               </List>
             </div>
-            <JobTimelineCard job={data} />
-            <JobCustomerCard job={data} />
-            <JobEmployeesCard job={data} />
+            <JobTimelineCard job={job} />
+            <JobCustomerCard job={job} />
+            <JobEmployeesCard job={job} />
           </div>
         </Card>
       </div>
 
       <JobMessagesCard messages={messages} />
-      <JobLocationCard job={data} />
+      <JobLocationCard job={job} />
       <div className="lg:col-span-2">
         <Card>
           <h6 className="mb-6 text-lg font-semibold tracking-tighter">
