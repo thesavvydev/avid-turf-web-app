@@ -131,3 +131,16 @@ export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
   if (error) formStateResponse({ ...state, error: error.message });
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
+
+export async function DeleteJobMedia(id: number) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("business_location_job_media")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+
+  return;
+}

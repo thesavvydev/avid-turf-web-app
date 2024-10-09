@@ -76,10 +76,10 @@ export default function EditMediaDrawer({
   return (
     <>
       <div
-        className="absolute right-2 top-2 z-10 hidden cursor-pointer rounded bg-white p-1 hover:bg-gray-100 group-hover/figure:flex dark:bg-gray-800 dark:hover:bg-gray-700"
+        className="cursor-pointer rounded bg-white p-1 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
         onClick={() => setIsOpen(true)}
       >
-        <SettingsIcon />
+        <SettingsIcon className="size-4" />
       </div>
       {isOpen && (
         <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
