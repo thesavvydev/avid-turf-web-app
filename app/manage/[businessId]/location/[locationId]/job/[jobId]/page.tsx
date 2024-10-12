@@ -42,9 +42,8 @@ export default async function Page({ params: { jobId = "" } }) {
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
-      <div className="lg:col-span-2">
-        <JobMediaCard media={job.media ?? []} />
-      </div>
+      <JobMessagesCard messages={messages} />
+      <JobLocationCard job={job} />
 
       <div className="row-span-3">
         <Card>
@@ -66,9 +65,9 @@ export default async function Page({ params: { jobId = "" } }) {
           </div>
         </Card>
       </div>
-
-      <JobMessagesCard messages={messages} />
-      <JobLocationCard job={job} />
+      <div className="lg:col-span-2">
+        <JobMediaCard media={job.media ?? []} />
+      </div>
       <div className="lg:col-span-2">
         <Card>
           <h6 className="mb-6 text-lg font-semibold tracking-tighter">

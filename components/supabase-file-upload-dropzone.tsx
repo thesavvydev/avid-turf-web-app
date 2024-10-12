@@ -40,7 +40,9 @@ export default function SupabaseFileUploadDropzone({
 
       const { data, error } = await supabase.storage
         .from(bucket)
-        .upload(`${filePath}/${file.name}`, file, { upsert: true });
+        .upload(`${filePath}/${new Date().toISOString()}-${file.name}`, file, {
+          upsert: true,
+        });
 
       if (error) return setError(error.message);
       if (!data?.path) return setError("No path found.");
