@@ -13,16 +13,19 @@ import SupabaseFileUploadDropzone from "@/components/supabase-file-upload-dropzo
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { AddJobMedia } from "./actions";
+import { useUserContext } from "@/contexts/user";
 
 function AddMediaDrawerFormFields() {
   const { businessId, locationId, jobId } = useParams();
   const { pending } = useFormStatus();
+  const { user } = useUserContext();
 
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input name="job_id" value={jobId} type="hidden" />
       <input name="location_id" value={locationId} type="hidden" />
       <input name="business_id" value={businessId} type="hidden" />
+      <input name="profile_id" value={user.id} type="hidden" />
       <div>
         <Label htmlFor="name" className="mb-2 block">
           Name

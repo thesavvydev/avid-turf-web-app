@@ -30,6 +30,14 @@ export async function UpdateJob<T>(...args: ServerActionWithState<T>) {
     return formStateResponse({ ...state, error: error.message });
   }
 
+  await supabase.from("business_logs").insert({
+    message: `Quick updated job`,
+    record_id: fields.id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
   return formStateResponse({ success: true, dismiss: true });
 }
 

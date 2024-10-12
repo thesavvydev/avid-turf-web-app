@@ -74,7 +74,7 @@ export default async function Page({ params: { jobId = "" } }) {
           <h6 className="mb-6 text-lg font-semibold tracking-tighter">
             History
           </h6>
-          <JobHistoryTimeline />
+          <JobHistoryTimeline job={job} />
         </Card>
       </div>
     </div>

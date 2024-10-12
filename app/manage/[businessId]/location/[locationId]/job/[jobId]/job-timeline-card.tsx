@@ -24,11 +24,11 @@ export default function JobTimelineCard({ job }: TJobTimelineCard) {
         </div>
         <div className="flex items-center gap-2 py-2">
           <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Scheduled
+            <CalendarIcon className="size-4" /> Instalation
           </dt>
           <dd className="text-nowrap">
             {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "--",
+              "Not Scheduled",
               "",
               formatAsReadableDate,
             )}
@@ -36,35 +36,11 @@ export default function JobTimelineCard({ job }: TJobTimelineCard) {
         </div>
         <div className="flex items-center gap-2 py-2">
           <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Service Complete
+            <CalendarIcon className="size-4" /> Billed
           </dt>
           <dd className="text-nowrap">
             {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "--",
-              "",
-              formatAsReadableDate,
-            )}
-          </dd>
-        </div>
-        <div className="flex items-center gap-2 py-2">
-          <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Service Approved
-          </dt>
-          <dd className="text-nowrap">
-            {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "--",
-              "",
-              formatAsReadableDate,
-            )}
-          </dd>
-        </div>
-        <div className="flex items-center gap-2 py-2">
-          <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Service Billed
-          </dt>
-          <dd className="text-nowrap">
-            {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "--",
+              "Not Scheduled",
               "",
               formatAsReadableDate,
             )}
@@ -76,7 +52,7 @@ export default function JobTimelineCard({ job }: TJobTimelineCard) {
           </dt>
           <dd className="text-nowrap">
             {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "--",
+              "Not Received",
               "",
               formatAsReadableDate,
             )}

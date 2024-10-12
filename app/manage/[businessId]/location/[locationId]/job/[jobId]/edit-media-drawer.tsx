@@ -2,15 +2,15 @@
 
 import ErrorAlert from "@/components/error-alert";
 import SubmitButton from "@/components/submit-button";
+import SupabaseFileUploadDropzone from "@/components/supabase-file-upload-dropzone";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { useUserContext } from "@/contexts/user";
+import { Tables } from "@/types/supabase";
 import { Drawer, Label, TextInput } from "flowbite-react";
 import { FileUpIcon, SettingsIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-
-import SupabaseFileUploadDropzone from "@/components/supabase-file-upload-dropzone";
-import { Tables } from "@/types/supabase";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobMedia } from "./actions";
@@ -22,10 +22,14 @@ function UpdateMediaDrawerFormFields({
 }) {
   const { businessId, locationId, jobId } = useParams();
   const { pending } = useFormStatus();
+  const { user } = useUserContext();
 
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input name="id" value={media.id} type="hidden" />
+      <input name="business_id" value={businessId} type="hidden" />
+      <input name="profile_id" value={user.id} type="hidden" />
+      <input name="job_id" value={jobId} type="hidden" />
       <div>
         <Label htmlFor="name" className="mb-2 block">
           Name

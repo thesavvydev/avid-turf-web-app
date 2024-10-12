@@ -12,6 +12,7 @@ import { UpdateJobCustomer } from "./actions";
 import ErrorAlert from "@/components/error-alert";
 import SubmitButton from "@/components/submit-button";
 import { useRouter } from "next/navigation";
+import { useUserContext } from "@/contexts/user";
 
 type TJobCustomerCard = {
   job: IJob;
@@ -19,10 +20,12 @@ type TJobCustomerCard = {
 
 function EditDrawerFormFields({ job }: { job: IJob }) {
   const { pending } = useFormStatus();
-
+  const { user } = useUserContext();
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input name="job_id" value={job.id} type="hidden" />
+      <input name="business_id" value={job.business_id} type="hidden" />
+      <input name="profile_id" value={user.id} type="hidden" />
       <div>
         <Label htmlFor="full_name" className="mb-2 block">
           Full Name

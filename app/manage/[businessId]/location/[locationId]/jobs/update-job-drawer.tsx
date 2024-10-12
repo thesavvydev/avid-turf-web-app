@@ -15,6 +15,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJob } from "./actions";
 import { useLocationContext } from "@/contexts/location";
+import { useUserContext } from "@/contexts/user";
 
 const FormFields = ({
   defaultValues,
@@ -25,10 +26,17 @@ const FormFields = ({
     location: { profiles },
   } = useLocationContext();
   const { pending } = useFormStatus();
+  const { user } = useUserContext();
 
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input type="hidden" name="id" value={defaultValues.id} />
+      <input type="hidden" name="profile_id" value={user.id} />
+      <input
+        type="hidden"
+        name="business_id"
+        value={defaultValues.business_id}
+      />
       <div>
         <Label htmlFor="address" className="mb-2 block">
           Address

@@ -69,30 +69,6 @@ export type Database = {
           },
         ]
       }
-      business_location_job_logs: {
-        Row: {
-          created_at: string
-          id: number
-          message: string | null
-          record_id: string | null
-          record_name: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          message?: string | null
-          record_id?: string | null
-          record_name?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          message?: string | null
-          record_id?: string | null
-          record_name?: string | null
-        }
-        Relationships: []
-      }
       business_location_job_media: {
         Row: {
           business_id: string
@@ -553,6 +529,54 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_logs: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: number
+          message: string
+          profile_id: string
+          record_id: string
+          record_table_name: string
+          snapshot: Json | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: number
+          message: string
+          profile_id: string
+          record_id: string
+          record_table_name: string
+          snapshot?: Json | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: number
+          message?: string
+          profile_id?: string
+          record_id?: string
+          record_table_name?: string
+          snapshot?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_logs_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_logs_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

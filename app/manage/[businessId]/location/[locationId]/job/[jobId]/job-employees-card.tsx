@@ -6,6 +6,8 @@ import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 import { useLocationContext } from "@/contexts/location";
+import { useUserContext } from "@/contexts/user";
+import { IJob } from "@/types/job";
 import getInitials from "@/utils/get-initials";
 import { Avatar, Drawer, Label, Select } from "flowbite-react";
 import { PencilIcon, UserPlus2Icon } from "lucide-react";
@@ -13,20 +15,26 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobEmployees } from "./actions";
-import { IJob } from "@/types/job";
 
 function EditDrawerFormFields({ job }: { job: IJob }) {
   const { pending } = useFormStatus();
   const { location } = useLocationContext();
+  const { user } = useUserContext();
 
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input name="job_id" value={job.id} type="hidden" />
+      <input name="business_id" value={job.business_id} type="hidden" />
+      <input name="profile_id" value={user.id} type="hidden" />
       <div>
         <Label htmlFor="closer_id" className="mb-2 block">
           Closer
         </Label>
-        <Select name="closer_id" defaultValue={job.closer_id ?? ""}>
+        <Select
+          name="closer_id"
+          id="closer_id"
+          defaultValue={job.closer_id ?? ""}
+        >
           <option value="" disabled>
             Select a closer
           </option>
@@ -41,7 +49,11 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
         <Label htmlFor="installer_id" className="mb-2 block">
           Installer
         </Label>
-        <Select name="installer_id" defaultValue={job.installer_id ?? ""}>
+        <Select
+          name="installer_id"
+          id="installer_id"
+          defaultValue={job.installer_id ?? ""}
+        >
           <option value="" disabled>
             Select a installer
           </option>
@@ -119,7 +131,7 @@ export default function JobEmployeesCard({ job }: { job: IJob }) {
           >
             {job.closer.full_name}
             <br />
-            <Label className="text-green-500">Closer</Label>
+            <p className="text-sm text-green-500">Closer</p>
           </Avatar>
         ) : (
           <div>No Closer</div>
@@ -133,7 +145,7 @@ export default function JobEmployeesCard({ job }: { job: IJob }) {
           >
             {job.installer.full_name}
             <br />
-            <Label className="text-amber-500">Installer</Label>
+            <p className="text-sm text-amber-500">Installer</p>
           </Avatar>
         ) : (
           <div>No Installer</div>

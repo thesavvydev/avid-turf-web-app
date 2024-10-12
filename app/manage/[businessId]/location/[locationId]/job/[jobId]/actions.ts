@@ -33,16 +33,27 @@ export async function UpdateJobCustomer<T>(...args: ServerActionWithState<T>) {
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
+  const updates = {
+    full_name: fields.full_name as string,
+    email: fields.email as string,
+    phone: fields.phone as string,
+  };
+
   const { error } = await supabase
     .from("business_location_jobs")
-    .update({
-      full_name: fields.full_name as string,
-      email: fields.email as string,
-      phone: fields.phone as string,
-    })
+    .update(updates)
     .eq("id", fields.job_id);
 
   if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
+    message: `Updated customer information`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
 
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
@@ -52,15 +63,26 @@ export async function UpdateJobEmployees<T>(...args: ServerActionWithState<T>) {
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
+  const updates = {
+    closer_id: fields.closer_id as string,
+    installer_id: fields.installer_id as string,
+  };
+
   const { error } = await supabase
     .from("business_location_jobs")
-    .update({
-      closer_id: fields.closer_id as string,
-      installer_id: fields.installer_id as string,
-    })
+    .update(updates)
     .eq("id", fields.job_id);
 
   if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
+    message: `Updated employees`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
 
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
@@ -70,17 +92,28 @@ export async function UpdateJobLocation<T>(...args: ServerActionWithState<T>) {
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
+  const updates = {
+    address: fields.address as string,
+    city: fields.city as string,
+    state: fields.state as string,
+    postal_code: fields.postal_code as string,
+  };
+
   const { error } = await supabase
     .from("business_location_jobs")
-    .update({
-      address: fields.address as string,
-      city: fields.city as string,
-      state: fields.state as string,
-      postal_code: fields.postal_code as string,
-    })
+    .update(updates)
     .eq("id", fields.job_id);
 
   if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
+    message: `Updated job location`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
 
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
@@ -103,15 +136,32 @@ export async function AddJobMedia<T>(...args: ServerActionWithState<T>) {
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
-  const { error } = await supabase.from("business_location_job_media").insert({
+  const insert = {
     business_id: fields.business_id as string,
     location_id: Number(fields.location_id),
     job_id: Number(fields.job_id),
     name: fields.name as string,
     path: fields.path as string,
+  };
+
+  const { data, error } = await supabase
+    .from("business_location_job_media")
+    .insert(insert)
+    .select("id")
+    .single();
+
+  if (error) return formStateResponse({ ...state, error: error.message });
+  if (!data) return formStateResponse({ ...state, error: "No record." });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(insert),
+    message: `Added new media`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
   });
 
-  if (error) formStateResponse({ ...state, error: error.message });
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
 
@@ -120,15 +170,30 @@ export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
+  const updates = {
+    name: fields.name as string,
+    path: fields.path as string,
+  };
+
   const { error } = await supabase
     .from("business_location_job_media")
-    .update({
-      name: fields.name as string,
-      path: fields.path as string,
-    })
+    .update(updates)
     .eq("id", fields.id);
 
-  if (error) formStateResponse({ ...state, error: error.message });
+  if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase
+    .from("business_logs")
+    .insert({
+      snapshot: JSON.stringify(updates),
+      message: `Updated media`,
+      record_id: fields.job_id as string,
+      record_table_name: "business_location_jobs",
+      business_id: fields.business_id as string,
+      profile_id: fields.profile_id as string,
+    })
+    .then(console.log);
+
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
 

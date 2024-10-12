@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobLocation } from "./actions";
 import { IJob } from "@/types/job";
+import { useUserContext } from "@/contexts/user";
 
 type TJobLocationCard = {
   job: IJob;
@@ -20,10 +21,12 @@ type TJobLocationCard = {
 
 function EditDrawerFormFields({ job }: { job: IJob }) {
   const { pending } = useFormStatus();
-
+  const { user } = useUserContext();
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input name="job_id" value={job.id} type="hidden" />
+      <input name="business_id" value={job.business_id} type="hidden" />
+      <input name="profile_id" value={user.id} type="hidden" />
       <div>
         <Label htmlFor="address" className="mb-2 block">
           Address
@@ -50,7 +53,7 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
         <Label htmlFor="state" className="mb-2 block">
           State
         </Label>
-        <Select name="state" defaultValue={job.state ?? ""}>
+        <Select id="state" name="state" defaultValue={job.state ?? ""}>
           <option value="" disabled>
             Select a state
           </option>
