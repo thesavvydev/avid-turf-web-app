@@ -37,7 +37,7 @@ export default async function Layout({ children }: PropsWithChildren) {
         <main className="relative mt-32 sm:mt-16 md:flex">
           <ManageSidebar />
           <div className="relative max-w-full flex-1 overflow-hidden">
-            <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+            <div className="container relative flex h-[calc(100vh-8rem)] flex-col gap-4 p-4 sm:h-[calc(100vh-4rem)] lg:gap-6 lg:p-6">
               {children}
             </div>
           </div>
