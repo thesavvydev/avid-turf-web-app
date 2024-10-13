@@ -1,18 +1,18 @@
 "use client";
 
-import { Avatar, Button, Drawer, Label, TextInput } from "flowbite-react";
-import { MailIcon, PencilIcon, PhoneIcon, UserPlus2Icon } from "lucide-react";
-import { IJob } from "@/types/job";
-import { useEffect, useState } from "react";
+import ErrorAlert from "@/components/error-alert";
+import SubmitButton from "@/components/submit-button";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { useUserContext } from "@/contexts/user";
+import { IJob } from "@/types/job";
+import { Avatar, Button, Drawer, Label, TextInput } from "flowbite-react";
+import { EditIcon, MailIcon, PhoneIcon, UserPlus2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobCustomer } from "./actions";
-import ErrorAlert from "@/components/error-alert";
-import SubmitButton from "@/components/submit-button";
-import { useRouter } from "next/navigation";
-import { useUserContext } from "@/contexts/user";
 
 type TJobCustomerCard = {
   job: IJob;
@@ -90,7 +90,7 @@ function EditDrawer({ job }: { job: IJob }) {
         className="shrink-0 cursor-pointer rounded-full p-2 opacity-0 hover:bg-gray-100 group-hover:opacity-100 dark:hover:bg-gray-700"
         onClick={() => setIsOpen(true)}
       >
-        <PencilIcon className="fill-gray-200" />
+        <EditIcon />
       </div>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
         <Drawer.Header

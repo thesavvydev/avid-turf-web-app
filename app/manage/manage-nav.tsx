@@ -1,114 +1,82 @@
 "use client";
 
-import { ConfirmModal } from "@/components/confirm-modal";
+import { useSidebarContext } from "@/contexts/sidebar";
 import { useUserContext } from "@/contexts/user";
 import {
   Avatar,
-  Button,
   DarkThemeToggle,
   Dropdown,
   Navbar,
   theme,
   Tooltip,
 } from "flowbite-react";
-import { PlusIcon, SettingsIcon, Trash2Icon } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import {
+  ChevronRightIcon,
+  SidebarCloseIcon,
+  SidebarOpenIcon,
+} from "lucide-react";
 import { twMerge } from "tailwind-merge";
-import { DeleteBusinessLocation } from "./actions";
-import NewLocationDrawer from "./new-location-drawer";
 import useManageMenuItems from "./use-manage-menu-items";
-import UpdateLocationDrawer from "./update-location-drawer";
 
 export default function ManageNav() {
-  const [isNewLocationDrawerOpen, setIsNewLocationDrawerOpen] = useState(false);
-  const [isUpdateLocationDrawerOpen, setIsUpdateLocationDrawerOpen] =
-    useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
   const menuItems = useManageMenuItems();
   const {
-    user: { full_name, locations, business },
+    user: { full_name, location, locations, business, businesses },
   } = useUserContext();
 
-  const { locationId, businessId } = useParams();
-  const selectedLocation = locations?.find(
-    (location) => location.id === Number(locationId),
-  );
-
-  const [, post] = pathname.split("location/");
-  const [, ...remainingParts] = post?.split("/") ?? [];
-  const postParts = remainingParts?.join("/");
+  const { toggle, isCollapsed } = useSidebarContext();
+  const SidebarIcon = isCollapsed ? SidebarOpenIcon : SidebarCloseIcon;
 
   return (
-    <Navbar fluid className="sm:bg-gray-50">
-      <div className="flex items-center gap-2">
-        <Dropdown
-          label={selectedLocation?.name ?? "Select a location"}
-          size="sm"
-          color="light"
-          className="z-20"
-        >
-          <Dropdown.Header>Select a Location</Dropdown.Header>
-          {locations?.map((location) => (
-            <Dropdown.Item
-              key={location.id}
-              href={`/manage/${businessId}/location/${location.id}/${postParts}`}
-            >
-              {location.name}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-        {isNewLocationDrawerOpen && (
-          <NewLocationDrawer
-            isOpen={isNewLocationDrawerOpen}
-            setIsOpen={setIsNewLocationDrawerOpen}
-          />
-        )}
-        {isUpdateLocationDrawerOpen && selectedLocation && (
-          <UpdateLocationDrawer
-            isOpen={isUpdateLocationDrawerOpen}
-            setIsOpen={setIsUpdateLocationDrawerOpen}
-            location={selectedLocation}
-          />
-        )}
-        {business?.role === "admin" && selectedLocation && (
-          <div className="hidden items-center lg:flex lg:gap-2">
-            <Tooltip content="Add Location" style="auto">
-              <Button
-                color="light"
-                onClick={() => setIsNewLocationDrawerOpen(true)}
-                size="xs"
+    <Navbar
+      fluid
+      className="fixed top-0 z-30 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+    >
+      <div className="flex grow items-center gap-2">
+        <Tooltip content={`${isCollapsed ? "Open" : "Close"} Sidebar`}>
+          <button
+            className="hidden cursor-pointer items-center px-2 md:flex"
+            onClick={toggle}
+          >
+            <SidebarIcon className="size-5" />
+          </button>
+        </Tooltip>
+        <div className="mb-2 mr-2 flex w-full grow items-center justify-center gap-2 rounded border border-gray-200 bg-gray-50 px-4 py-2 shadow-inner dark:border-gray-600 dark:bg-gray-700 sm:mb-0 md:w-auto md:grow-0">
+          <Dropdown
+            inline
+            arrowIcon={false}
+            label={business?.name ?? "Select a Business"}
+            color="light"
+            className="z-20"
+          >
+            <Dropdown.Header>Select a Business</Dropdown.Header>
+            {businesses?.map((business) => (
+              <Dropdown.Item
+                key={business.id}
+                href={`/manage/${business.id}/dashboard`}
               >
-                <PlusIcon className="size-4" />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Location Settings" style="auto">
-              <Button
-                color="light"
-                size="xs"
-                onClick={() => setIsUpdateLocationDrawerOpen(true)}
+                {business.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+          <ChevronRightIcon />
+          <Dropdown
+            label={location?.name ?? "Select a location"}
+            color="light"
+            className="z-20"
+            inline
+          >
+            <Dropdown.Header>Select a Location</Dropdown.Header>
+            {locations?.map((location) => (
+              <Dropdown.Item
+                key={location.id}
+                href={`/manage/${location.business_id}/location/${location.id}`}
               >
-                <SettingsIcon className="size-4" />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Delete Location" style="auto">
-              <ConfirmModal
-                matchStringConfirmation={selectedLocation.name}
-                description={`Are you sure you want to remove ${selectedLocation.name}? This action is not reversible.`}
-                onConfirmClick={async () => {
-                  await DeleteBusinessLocation(selectedLocation);
-                  router.refresh();
-                }}
-                trigger={(toggle) => (
-                  <Button color="light" size="xs" onClick={toggle}>
-                    <Trash2Icon className="size-4 text-red-500" />
-                  </Button>
-                )}
-              />
-            </Tooltip>
-          </div>
-        )}
+                {location.name}
+              </Dropdown.Item>
+            ))}
+          </Dropdown>
+        </div>
       </div>
       <div className="ml-auto flex gap-2 md:order-2 md:ml-0 md:gap-4">
         <Dropdown

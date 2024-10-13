@@ -6,14 +6,14 @@ import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 import { US_STATES } from "@/constants/us-states";
+import { useUserContext } from "@/contexts/user";
+import { IJob } from "@/types/job";
 import { Card, Drawer, Label, Select, TextInput } from "flowbite-react";
-import { MapPinIcon, PencilIcon } from "lucide-react";
+import { EditIcon, MapPinIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJobLocation } from "./actions";
-import { IJob } from "@/types/job";
-import { useUserContext } from "@/contexts/user";
 
 type TJobLocationCard = {
   job: IJob;
@@ -104,7 +104,7 @@ function EditDrawer({ job }: { job: IJob }) {
         className="shrink-0 cursor-pointer rounded-full p-2 opacity-0 hover:bg-gray-100 group-hover:opacity-100 dark:hover:bg-gray-700"
         onClick={() => setIsOpen(true)}
       >
-        <PencilIcon className="fill-gray-200" />
+        <EditIcon />
       </div>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
         <Drawer.Header

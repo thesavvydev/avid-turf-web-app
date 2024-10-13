@@ -10,7 +10,7 @@ import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
 import getInitials from "@/utils/get-initials";
 import { Avatar, Drawer, Label, Select } from "flowbite-react";
-import { PencilIcon, UserPlus2Icon } from "lucide-react";
+import { EditIcon, UserPlus2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
@@ -93,7 +93,7 @@ function EditDrawer({ job }: { job: IJob }) {
         className="shrink-0 cursor-pointer rounded-full p-2 opacity-0 hover:bg-gray-100 group-hover:opacity-100 dark:hover:bg-gray-700"
         onClick={() => setIsOpen(true)}
       >
-        <PencilIcon className="fill-gray-200" />
+        <EditIcon />
       </div>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
         <Drawer.Header

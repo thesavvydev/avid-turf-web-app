@@ -6,6 +6,7 @@ import { PropsWithChildren } from "react";
 import ManageSidebar from "./manage-sidebar";
 import ManageNav from "./manage-nav";
 import AppToasts from "./app-toasts";
+import { SidebarProvider } from "@/contexts/sidebar";
 
 export default async function Layout({ children }: PropsWithChildren) {
   const supabase = createClient();
@@ -31,16 +32,18 @@ export default async function Layout({ children }: PropsWithChildren) {
 
   return (
     <UserContextProvider user={data}>
-      <main className="relative md:flex">
-        <ManageSidebar />
-        <div className="relative max-w-full flex-1 overflow-hidden">
-          <ManageNav />
-          <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-            {children}
+      <SidebarProvider initialCollapsed>
+        <ManageNav />
+        <main className="relative mt-32 sm:mt-16 md:flex">
+          <ManageSidebar />
+          <div className="relative max-w-full flex-1 overflow-hidden">
+            <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+              {children}
+            </div>
           </div>
-        </div>
-      </main>
-      <AppToasts />
+        </main>
+        <AppToasts />
+      </SidebarProvider>
     </UserContextProvider>
   );
 }
