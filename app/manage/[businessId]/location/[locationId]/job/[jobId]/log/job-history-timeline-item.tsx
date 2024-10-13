@@ -13,7 +13,7 @@ type TLog = Tables<"business_logs"> & {
 };
 
 export default function JobHistoryTimelineItem({ log }: { log: TLog }) {
-  const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(true);
 
   return (
     <Timeline.Item key={log.id} className="mb-6">

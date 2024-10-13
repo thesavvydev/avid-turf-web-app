@@ -2,9 +2,7 @@ import { IJob, IJobMessage } from "@/types/job";
 import { createClient } from "@/utils/supabase/server";
 import { Card, List, ListItem } from "flowbite-react";
 import { notFound } from "next/navigation";
-import JobCustomerCard from "./job-customer-card";
 import JobEmployeesCard from "./job-employees-card";
-import JobHistoryTimeline from "./job-history-timeline";
 import JobLocationCard from "./job-location-card";
 import JobMediaCard from "./job-media-card";
 import JobMessagesCard from "./job-messages-card";
@@ -60,21 +58,12 @@ export default async function Page({ params: { jobId = "" } }) {
               </List>
             </div>
             <JobTimelineCard job={job} />
-            <JobCustomerCard job={job} />
             <JobEmployeesCard job={job} />
           </div>
         </Card>
       </div>
       <div className="lg:col-span-2">
         <JobMediaCard media={job.media ?? []} />
-      </div>
-      <div className="lg:col-span-2">
-        <Card>
-          <h6 className="mb-6 text-lg font-semibold tracking-tighter">
-            History
-          </h6>
-          <JobHistoryTimeline job={job} />
-        </Card>
       </div>
     </div>
   );
