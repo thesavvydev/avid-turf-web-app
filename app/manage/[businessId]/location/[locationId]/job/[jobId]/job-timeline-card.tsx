@@ -24,7 +24,7 @@ export default function JobTimelineCard({ job }: TJobTimelineCard) {
         </div>
         <div className="flex items-center gap-2 py-2">
           <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Instalation
+            <CalendarIcon className="size-4" /> Installation
           </dt>
           <dd className="text-nowrap">
             {formatEmptyOrUndefinedWithPlaceholder<string>(
