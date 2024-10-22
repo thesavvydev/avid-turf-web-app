@@ -5,6 +5,7 @@ import {
   BoneIcon,
   CalendarDaysIcon,
   HomeIcon,
+  MapPinIcon,
   UserCircle2,
   UserIcon,
   WorkflowIcon,
@@ -30,6 +31,12 @@ export default function useManageMenuItems() {
         href: `/manage/${businessId}/dashboard`,
         isActive: pathname === `/manage/${businessId}/dashboard`,
         icon: HomeIcon,
+      },
+      {
+        name: "Locations",
+        href: `/manage/${businessId}/locations`,
+        isActive: pathname === `/manage/${businessId}/locations`,
+        icon: MapPinIcon,
       },
       {
         name: "Users",
