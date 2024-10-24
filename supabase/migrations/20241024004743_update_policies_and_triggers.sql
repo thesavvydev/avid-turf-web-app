@@ -99,14 +99,3 @@ as permissive
 for all
 to authenticated
 using (true);
-
-
-create policy "Enable insert for authenticated users only"
-on "public"."profiles"
-as permissive
-for insert
-to authenticated
-with check (true);
-
-
-
