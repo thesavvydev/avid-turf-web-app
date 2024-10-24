@@ -1,7 +1,3 @@
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
-
 create type "public"."job_roles" as enum ('setter', 'installer', 'closer');
 
 create table "public"."business_location_job_profiles" (
