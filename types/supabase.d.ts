@@ -180,6 +180,65 @@ export type Database = {
           },
         ]
       }
+      business_location_job_profiles: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: number
+          job_id: number
+          location_id: number
+          profile_id: string
+          role: Database["public"]["Enums"]["job_roles"]
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: number
+          job_id: number
+          location_id: number
+          profile_id: string
+          role?: Database["public"]["Enums"]["job_roles"]
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: number
+          job_id?: number
+          location_id?: number
+          profile_id?: string
+          role?: Database["public"]["Enums"]["job_roles"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_job_profiles_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_profiles_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_profiles_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_jobs: {
         Row: {
           address: string | null
@@ -689,15 +748,7 @@ export type Database = {
           username?: string | null
           website?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -745,6 +796,7 @@ export type Database = {
       business_roles: "admin" | "manager" | "base"
       custom_field_models: "leads" | "jobs"
       custom_field_types: "text" | "date" | "number" | "select"
+      job_roles: "setter" | "installer" | "closer"
       lead_sources: "website-form" | "phone" | "email" | "referral" | "other"
       lead_statuses:
         | "new"
@@ -1165,5 +1217,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 

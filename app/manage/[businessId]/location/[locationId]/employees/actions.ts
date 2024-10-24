@@ -81,7 +81,7 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       .upsert({
         business_id: fields.business_id as string,
         profile_id: data.user.id,
-        role: "base" as Database["public"]["Enums"]["business_roles"],
+        role: fields.role as Database["public"]["Enums"]["business_roles"],
       });
 
     if (businessProfileUpsertError) {

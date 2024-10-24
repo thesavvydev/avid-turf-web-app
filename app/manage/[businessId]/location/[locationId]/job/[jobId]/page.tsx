@@ -13,7 +13,7 @@ export default async function Page({ params: { jobId = "" } }) {
   const fetchJob = supabase
     .from("business_location_jobs")
     .select(
-      "*, customer: customer_id(*), closer: closer_id(*), installer: installer_id(*), media: business_location_job_media(*)",
+      "*, customer: customer_id(*), media: business_location_job_media(*), profiles: business_location_job_profiles(*, profile: profile_id(*))",
     )
     .eq("id", jobId)
     .limit(1)
@@ -50,7 +50,6 @@ export default async function Page({ params: { jobId = "" } }) {
               <h6 className="text-lg font-semibold tracking-tighter">
                 Quick Links
               </h6>
-
               <List>
                 <ListItem>Send Contract</ListItem>
                 <ListItem>Add Appointment</ListItem>

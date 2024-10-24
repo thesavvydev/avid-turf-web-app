@@ -42,17 +42,33 @@ export default function JobHeader({ job }: { job: IJob }) {
       title: "Dashboard",
     },
     {
-      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/tasks`,
-      title: "Tasks",
+      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/scheduling`,
+      title: "Scheduling",
     },
     {
-      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/bids`,
-      title: "Bids",
+      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/time-sheets`,
+      title: "Time Sheets",
     },
     {
-      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/change-orders`,
-      title: "Change Orders",
+      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/documents`,
+      title: "Documents",
     },
+    {
+      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/invoices`,
+      title: "Invoices",
+    },
+    // {
+    //   href: `/manage/${businessId}/location/${locationId}/job/${jobId}/tasks`,
+    //   title: "Tasks",
+    // },
+    // {
+    //   href: `/manage/${businessId}/location/${locationId}/job/${jobId}/bids`,
+    //   title: "Bids",
+    // },
+    // {
+    //   href: `/manage/${businessId}/location/${locationId}/job/${jobId}/change-orders`,
+    //   title: "Change Orders",
+    // },
     {
       href: `/manage/${businessId}/location/${locationId}/job/${jobId}/log`,
       title: "Log",

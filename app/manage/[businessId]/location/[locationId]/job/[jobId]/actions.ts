@@ -2,6 +2,7 @@
 
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
+import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
 
 export async function CreateJobMessage<T>(...args: ServerActionWithState<T>) {
@@ -78,6 +79,66 @@ export async function UpdateJobEmployees<T>(...args: ServerActionWithState<T>) {
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(updates),
     message: `Updated employees`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
+export async function AddJobProfile<T>(...args: ServerActionWithState<T>) {
+  const supabase = createClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const insert = {
+    business_id: fields.business_id as string,
+    location_id: Number(fields.location_id) as number,
+    profile_id: fields.profile_id as string,
+    job_id: Number(fields.job_id) as number,
+    role: fields.role as Database["public"]["Enums"]["job_roles"],
+  };
+
+  const { error } = await supabase
+    .from("business_location_job_profiles")
+    .insert(insert);
+
+  if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(insert),
+    message: `Added employee`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
+export async function UpdateJobProfile<T>(...args: ServerActionWithState<T>) {
+  const supabase = createClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const update = {
+    profile_id: fields.profile_id as string,
+    role: fields.role as Database["public"]["Enums"]["job_roles"],
+  };
+
+  const { error } = await supabase
+    .from("business_location_job_profiles")
+    .update(update)
+    .eq("id", fields.id);
+
+  if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(update),
+    message: `Updated employee`,
     record_id: fields.job_id as string,
     record_table_name: "business_location_jobs",
     business_id: fields.business_id as string,
@@ -195,6 +256,19 @@ export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
     .then(console.log);
 
   return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
+export async function DeleteJobProfile(id: number) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("business_location_job_profiles")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+
+  return;
 }
 
 export async function DeleteJobMedia(id: number) {

@@ -7,6 +7,7 @@ import {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
+import { useUserContext } from "@/contexts/user";
 import { Tables } from "@/types/supabase";
 import { Drawer, Label, Select, TextInput } from "flowbite-react";
 import { UserPlus2Icon } from "lucide-react";
@@ -14,17 +15,12 @@ import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { UpdateJob } from "./actions";
-import { useLocationContext } from "@/contexts/location";
-import { useUserContext } from "@/contexts/user";
 
 const FormFields = ({
   defaultValues,
 }: {
   defaultValues: Tables<"business_location_jobs">;
 }) => {
-  const {
-    location: { profiles },
-  } = useLocationContext();
   const { pending } = useFormStatus();
   const { user } = useUserContext();
 
@@ -77,36 +73,6 @@ const FormFields = ({
           defaultValue={defaultValues.postal_code ?? ""}
         />
       </div>
-      <div>
-        <Label htmlFor="closer_id" className="mb-2 block">
-          Closer
-        </Label>
-        <Select name="closer_id" defaultValue={defaultValues.closer_id ?? ""}>
-          <option value="">Select a closer</option>
-          {profiles.map(({ profile_id, profile }) => (
-            <option key={profile_id} value={profile_id}>
-              {profile.full_name}
-            </option>
-          ))}
-        </Select>
-      </div>
-      <div>
-        <Label htmlFor="installer_id" className="mb-2 block">
-          Installer
-        </Label>
-        <Select
-          name="installer_id"
-          defaultValue={defaultValues.installer_id ?? ""}
-        >
-          <option value="">Select a closer</option>
-          {profiles.map(({ profile_id, profile }) => (
-            <option key={profile_id} value={profile_id}>
-              {profile.full_name}
-            </option>
-          ))}
-        </Select>
-      </div>
-
       <div>
         <Label htmlFor="status" className="mb-2 block">
           Status

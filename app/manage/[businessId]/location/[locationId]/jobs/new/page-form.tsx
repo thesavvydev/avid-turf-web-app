@@ -3,20 +3,119 @@
 import SubmitButton from "@/components/submit-button";
 
 import { useUserContext } from "@/contexts/user";
-import { Breadcrumb, Card, Label, Select, TextInput } from "flowbite-react";
-import { ChevronLeftIcon, WorkflowIcon } from "lucide-react";
+import {
+  Breadcrumb,
+  Button,
+  Card,
+  Label,
+  Select,
+  TextInput,
+} from "flowbite-react";
+import { ChevronLeftIcon, Trash2Icon, WorkflowIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
 
+import { ConfirmModal } from "@/components/confirm-modal";
 import ErrorAlert from "@/components/error-alert";
 import PageHeaderWithActions from "@/components/page-header-with-actions";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
+import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
 import { US_STATES } from "@/constants/us-states";
 import { Tables } from "@/types/supabase";
+import { useState } from "react";
 import { AddJob } from "./action";
-import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
+
+const EmployeesCard = ({ profiles }: { profiles: TProfile[] }) => {
+  const [employees, setEmployees] = useState([""]);
+  const { user } = useUserContext();
+  const { pending } = useFormStatus();
+
+  return (
+    <Card>
+      <h2 className="text-xl font-medium text-gray-400">Employees</h2>
+      <fieldset
+        disabled={pending}
+        className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+      >
+        {employees.map((_, number) => (
+          <div
+            key={number}
+            className="group relative grid gap-2 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+          >
+            <div className="absolute right-4 top-4 hidden group-hover:block">
+              <ConfirmModal
+                trigger={(toggle) => (
+                  <Trash2Icon
+                    className="size-4 cursor-pointer text-red-400 hover:size-5"
+                    onClick={toggle}
+                  />
+                )}
+                description="Are you sure you want to remove this employee?"
+                onConfirmClick={() =>
+                  setEmployees((prevState) =>
+                    prevState.filter((_, index) => index !== number),
+                  )
+                }
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor={`employees__${number}__profile_id`}
+                className="mb-2 block"
+              >
+                Employee
+              </Label>
+              <Select
+                name={`employees__${number}__profile_id`}
+                id={`employees__${number}__profile_id`}
+                defaultValue={user.id}
+                required
+              >
+                <option value="">Select an employee</option>
+                {profiles.map((profile) => (
+                  <option key={profile.profile_id} value={profile.profile_id}>
+                    {profile.profile?.full_name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <Label
+                htmlFor={`employees__${number}__role`}
+                className="mb-2 block"
+              >
+                Role
+              </Label>
+              <Select
+                name={`employees__${number}__role`}
+                id={`employees__${number}__role`}
+                required
+              >
+                <option value="">Select a role</option>
+                {Object.entries(JOB_PROFILE_ROLES).map(([roleKey, role]) => (
+                  <option key={roleKey} value={roleKey}>
+                    {role.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </div>
+        ))}
+      </fieldset>
+      <div>
+        <Button
+          color="light"
+          onClick={() => setEmployees((prevState) => [...prevState, ""])}
+        >
+          Add employee
+        </Button>
+      </div>
+    </Card>
+  );
+};
 
 const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
   const { businessId, locationId } = useParams();
@@ -110,45 +209,7 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
           </div>
         </fieldset>
       </Card>
-      <Card>
-        <h2 className="text-xl font-medium text-gray-400">Staff</h2>
-        <fieldset
-          disabled={pending}
-          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
-        >
-          <div>
-            <Label htmlFor="closer_id" className="mb-2 block">
-              Closer
-            </Label>
-            <Select
-              name="closer_id"
-              id="closer_id"
-              defaultValue={user.id}
-              required
-            >
-              <option value="">Select a closer</option>
-              {profiles.map((profile) => (
-                <option key={profile.profile_id} value={profile.profile_id}>
-                  {profile.profile?.full_name}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="installer_id" className="mb-2 block">
-              Installer
-            </Label>
-            <Select name="installer_id" id="installer_id" defaultValue="">
-              <option value="">Select a installer</option>
-              {profiles.map((profile) => (
-                <option key={profile.profile_id} value={profile.profile_id}>
-                  {profile.profile?.full_name}
-                </option>
-              ))}
-            </Select>
-          </div>
-        </fieldset>
-      </Card>
+      <EmployeesCard profiles={profiles} />
       <Card>
         <h2 className="text-xl font-medium text-gray-400">
           Additional Information
@@ -211,11 +272,7 @@ export default function PageForm({ profiles }: TPageForm) {
           </Breadcrumb>
         )}
       />
-      {state.error && (
-        <div className="col-span-2">
-          <ErrorAlert message={state.error} />
-        </div>
-      )}
+      {state.error && <ErrorAlert message={state.error} />}
       <form action={action} className="grid gap-4 sm:gap-6">
         <FormFields profiles={profiles} />
         <div>

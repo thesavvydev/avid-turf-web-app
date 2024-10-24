@@ -9,21 +9,17 @@ export async function UpdateJob<T>(...args: ServerActionWithState<T>) {
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
+  const updates = {
+    address: fields.address as string,
+    city: fields.city as string,
+    state: fields.state as string,
+    postal_code: fields.postal_code as string,
+    status: fields.status as Database["public"]["Enums"]["location_job_status"],
+  };
+
   const { error } = await supabase
     .from("business_location_jobs")
-    .update({
-      address: fields.address as string,
-      city: fields.city as string,
-      state: fields.state as string,
-      postal_code: fields.postal_code as string,
-      closer_id: fields.closer_id as string,
-      status:
-        fields.status as Database["public"]["Enums"]["location_job_status"],
-      ...(fields.installer_id
-        ? { installer_id: fields.installer_id as string }
-        : {}),
-      ...(fields.closer_id ? { closer_id: fields.closer_id as string } : {}),
-    })
+    .update(updates)
     .eq("id", fields.id as string);
 
   if (error) {
@@ -31,6 +27,7 @@ export async function UpdateJob<T>(...args: ServerActionWithState<T>) {
   }
 
   await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
     message: `Quick updated job`,
     record_id: fields.id as string,
     record_table_name: "business_location_jobs",

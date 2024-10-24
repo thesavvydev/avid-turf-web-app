@@ -72,6 +72,7 @@ export default function SearchOrInviteUserDrawer({
             <TextInput
               id="email"
               name="email"
+              type="email"
               placeholder="name@example.com"
               required
               disabled={state.data?.id}

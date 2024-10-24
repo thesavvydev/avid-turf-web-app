@@ -5,38 +5,50 @@ import SubmitButton from "@/components/submit-button";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { useLocationContext } from "@/contexts/location";
-import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
 import getInitials from "@/utils/get-initials";
 import { Avatar, Drawer, Label, Select } from "flowbite-react";
-import { EditIcon, UserPlus2Icon } from "lucide-react";
+import { SettingsIcon, Trash2Icon, UserPlus2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { UpdateJobEmployees } from "./actions";
+import { AddJobProfile, DeleteJobProfile, UpdateJobProfile } from "./actions";
+import { ConfirmModal } from "@/components/confirm-modal";
+import { Tables } from "@/types/supabase";
 
-function EditDrawerFormFields({ job }: { job: IJob }) {
+function DrawerFormFields({
+  job,
+  profile,
+}: {
+  job: IJob;
+  profile?: Tables<"business_location_job_profiles">;
+}) {
   const { pending } = useFormStatus();
   const { location } = useLocationContext();
-  const { user } = useUserContext();
 
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
+      <input name="id" value={profile?.id ?? ""} type="hidden" />
       <input name="job_id" value={job.id} type="hidden" />
       <input name="business_id" value={job.business_id} type="hidden" />
-      <input name="profile_id" value={user.id} type="hidden" />
+      <input
+        name="location_id"
+        value={job.business_location_id}
+        type="hidden"
+      />
       <div>
-        <Label htmlFor="closer_id" className="mb-2 block">
-          Closer
+        <Label htmlFor="profile_id" className="mb-2 block">
+          Employee
         </Label>
         <Select
-          name="closer_id"
-          id="closer_id"
-          defaultValue={job.closer_id ?? ""}
+          name="profile_id"
+          id="profile_id"
+          defaultValue={profile?.profile_id ?? ""}
         >
           <option value="" disabled>
-            Select a closer
+            Select a profile
           </option>
           {location.profiles.map((profile) => (
             <option key={profile.profile_id} value={profile.profile_id}>
@@ -46,37 +58,30 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
         </Select>
       </div>
       <div>
-        <Label htmlFor="installer_id" className="mb-2 block">
-          Installer
+        <Label htmlFor="role" className="mb-2 block">
+          Role
         </Label>
-        <Select
-          name="installer_id"
-          id="installer_id"
-          defaultValue={job.installer_id ?? ""}
-        >
+        <Select name="role" id="role" defaultValue={profile?.role ?? ""}>
           <option value="" disabled>
-            Select a installer
+            Select a role
           </option>
-          {location.profiles.map((profile) => (
-            <option key={profile.profile_id} value={profile.profile_id}>
-              {profile.profile.full_name}
+          {Object.entries(JOB_PROFILE_ROLES).map(([roleKey, role]) => (
+            <option key={roleKey} value={roleKey}>
+              {role.name}
             </option>
           ))}
         </Select>
       </div>
-      <SubmitButton pendingText="Creating Job">
-        <UserPlus2Icon className="mr-2" />
-        Update Employees
-      </SubmitButton>
+      <SubmitButton pendingText="Saving employee">Save Employees</SubmitButton>
     </fieldset>
   );
 }
 
-function EditDrawer({ job }: { job: IJob }) {
+function AddDrawer({ job }: { job: IJob }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [state, action] = useFormState(
-    UpdateJobEmployees<TInitialFormState>,
+    AddJobProfile<TInitialFormState>,
     initialFormState,
   );
 
@@ -93,63 +98,124 @@ function EditDrawer({ job }: { job: IJob }) {
         className="shrink-0 cursor-pointer rounded-full p-2 opacity-0 hover:bg-gray-100 group-hover:opacity-100 dark:hover:bg-gray-700"
         onClick={() => setIsOpen(true)}
       >
-        <EditIcon />
+        <UserPlus2Icon />
       </div>
-      <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
-        <Drawer.Header
-          title="Update employees"
-          titleIcon={() => <UserPlus2Icon className="mr-2" />}
-        />
-        <Drawer.Items>
-          {state.error && (
-            <div className="my-4">
-              <ErrorAlert message={state.error} />
-            </div>
-          )}
-          <form action={action} className="my-4">
-            <EditDrawerFormFields job={job} />
-          </form>
-        </Drawer.Items>
-      </Drawer>
+      {isOpen && (
+        <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
+          <Drawer.Header
+            title="Add employee"
+            titleIcon={() => <UserPlus2Icon className="mr-2" />}
+          />
+          <Drawer.Items>
+            {state.error && (
+              <div className="my-4">
+                <ErrorAlert message={state.error} />
+              </div>
+            )}
+            <form action={action} className="my-4">
+              <DrawerFormFields job={job} />
+            </form>
+          </Drawer.Items>
+        </Drawer>
+      )}
+    </>
+  );
+}
+
+function UpdateProfileDrawer({
+  job,
+  profile,
+}: {
+  job: IJob;
+  profile?: Tables<"business_location_job_profiles">;
+}) {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [state, action] = useFormState(
+    UpdateJobProfile<TInitialFormState>,
+    initialFormState,
+  );
+
+  useEffect(() => {
+    if (state.success) {
+      router.refresh();
+      state.dismiss && setIsOpen(() => false);
+    }
+  }, [state.success, state.dismiss, router, setIsOpen]);
+
+  return (
+    <>
+      <SettingsIcon
+        className="cursor-pointer"
+        onClick={() => setIsOpen(true)}
+      />
+      {isOpen && (
+        <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
+          <Drawer.Header
+            title="Update employee"
+            titleIcon={() => <UserPlus2Icon className="mr-2" />}
+          />
+          <Drawer.Items>
+            {state.error && (
+              <div className="my-4">
+                <ErrorAlert message={state.error} />
+              </div>
+            )}
+            <form action={action} className="my-4">
+              <DrawerFormFields job={job} profile={profile} />
+            </form>
+          </Drawer.Items>
+        </Drawer>
+      )}
     </>
   );
 }
 
 export default function JobEmployeesCard({ job }: { job: IJob }) {
+  const router = useRouter();
   return (
     <div className="group grid gap-4">
       <div className="flex items-center justify-between gap-2">
         <h6 className="text-lg font-semibold tracking-tighter">Employees</h6>
-        <EditDrawer job={job} />
+        <AddDrawer job={job} />
       </div>
-      <div className="flex flex-col items-start gap-4 lg:gap-6">
-        {job.closer ? (
-          <Avatar
-            rounded
-            bordered
-            placeholderInitials={getInitials(job.closer.full_name ?? "")}
-          >
-            {job.closer.full_name}
-            <br />
-            <p className="text-sm text-green-500">Closer</p>
-          </Avatar>
-        ) : (
-          <div>No Closer</div>
-        )}
+      <div className="flex flex-col gap-2 lg:gap-4">
+        {job.profiles?.map((profile) => {
+          const profileJobRole = JOB_PROFILE_ROLES[profile.role] ?? {};
+          return (
+            <div
+              className="flex items-center justify-between gap-2 bg-gray-50 p-4 dark:bg-gray-900"
+              key={profile.id}
+            >
+              <Avatar
+                color={profileJobRole.color}
+                placeholderInitials={getInitials(
+                  profile.profile.full_name ?? "",
+                )}
+              >
+                <p className="font-light">{profile.profile.full_name}</p>
+                <p className="text-sm font-semibold">{profileJobRole.name}</p>
+              </Avatar>
+              <div className="grid grid-cols-2 gap-2">
+                <UpdateProfileDrawer job={job} profile={profile} />
 
-        {job.installer ? (
-          <Avatar
-            rounded
-            bordered
-            placeholderInitials={getInitials(job.installer.full_name ?? "")}
-          >
-            {job.installer.full_name}
-            <br />
-            <p className="text-sm text-amber-500">Installer</p>
-          </Avatar>
-        ) : (
-          <div>No Installer</div>
-        )}
+                <ConfirmModal
+                  description={`Are you sure you want to remove ${profile.profile.full_name} as a ${profileJobRole.name} on this job?`}
+                  trigger={(toggle) => (
+                    <Trash2Icon
+                      className="cursor-pointer text-red-400"
+                      onClick={toggle}
+                    />
+                  )}
+                  onConfirmClick={async () => {
+                    await DeleteJobProfile(profile.id);
+                    router.refresh();
+                  }}
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
