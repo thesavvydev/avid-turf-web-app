@@ -94,7 +94,7 @@ const FormFields = ({
           defaultValue={defaultValues.postal_code ?? ""}
         />
       </div>
-      <SubmitButton pendingText="Creating User">
+      <SubmitButton pendingText="Saving location">
         <MapPinIcon className="mr-2" />
         Update location
       </SubmitButton>

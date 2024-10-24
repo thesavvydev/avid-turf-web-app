@@ -72,7 +72,9 @@ function DrawerFormFields({
           ))}
         </Select>
       </div>
-      <SubmitButton pendingText="Saving employee">Save Employees</SubmitButton>
+      <SubmitButton pendingText="Saving employee...">
+        Save Employees
+      </SubmitButton>
     </fieldset>
   );
 }

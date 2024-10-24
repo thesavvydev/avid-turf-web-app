@@ -39,7 +39,7 @@ function AddMediaDrawerFormFields() {
         required
       />
 
-      <SubmitButton pendingText="Creating Job">
+      <SubmitButton pendingText="Uploading media...">
         <FileUpIcon className="mr-2" />
         Upload media
       </SubmitButton>

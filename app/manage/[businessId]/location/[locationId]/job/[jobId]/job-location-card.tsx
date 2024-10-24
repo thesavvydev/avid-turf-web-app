@@ -75,7 +75,7 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
           defaultValue={job.postal_code ?? ""}
         />
       </div>
-      <SubmitButton pendingText="Creating Job">
+      <SubmitButton pendingText="Saving location...">
         <MapPinIcon className="mr-2" />
         Update Location
       </SubmitButton>

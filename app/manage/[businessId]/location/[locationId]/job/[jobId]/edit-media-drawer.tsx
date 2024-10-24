@@ -50,7 +50,7 @@ function UpdateMediaDrawerFormFields({
         required
       />
 
-      <SubmitButton pendingText="Creating Job">
+      <SubmitButton pendingText="Saving media...">
         <FileUpIcon className="mr-2" />
         Update media
       </SubmitButton>

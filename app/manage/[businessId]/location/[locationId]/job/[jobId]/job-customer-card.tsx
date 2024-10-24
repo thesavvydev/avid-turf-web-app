@@ -61,7 +61,7 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
           defaultValue={job.email ?? ""}
         />
       </div>
-      <SubmitButton pendingText="Creating Job">
+      <SubmitButton pendingText="Updating customer...">
         <UserPlus2Icon className="mr-2" />
         Update Customer
       </SubmitButton>
