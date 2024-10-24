@@ -79,7 +79,7 @@ export default function JobHeader({ job }: { job: IJob }) {
 
   return (
     <>
-      <div className="sm:-mb-4">
+      <header className="space-y-4 text-gray-500 dark:text-gray-300">
         <Breadcrumb aria-label="Default breadcrumb example">
           <Breadcrumb.Item
             href={`/manage/${businessId}/location/${locationId}/jobs`}
@@ -88,16 +88,14 @@ export default function JobHeader({ job }: { job: IJob }) {
             Back to Jobs
           </Breadcrumb.Item>
         </Breadcrumb>
-      </div>
-      <header className="p-2 text-gray-500 dark:text-gray-300">
         <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
           <h1 className="text-3xl font-semibold">{`Job #${jobId}${activePageTabTitle ? ` - ${activePageTabTitle.title}` : ""}`}</h1>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap gap-2">
             <UpdateCustomerDrawer
               job={job}
               trigger={(setIsUpdateCustomerDrawerVisible) => (
                 <Tooltip content={job.full_name}>
-                  <Button color="light" className="group">
+                  <Button color="light" className="group whitespace-nowrap">
                     <UserIcon className="mr-2 size-5 group-hover:hidden" />
                     <SettingsIcon
                       className="mr-2 hidden size-5 group-hover:block"
@@ -124,7 +122,6 @@ export default function JobHeader({ job }: { job: IJob }) {
                 <PhoneCallIcon className="hidden size-5 group-hover:block" />
               </Button>
             </Tooltip>
-
             <Dropdown
               label={LOCATION_JOB_STATUS[job.status].name}
               color={LOCATION_JOB_STATUS[job.status].color}
