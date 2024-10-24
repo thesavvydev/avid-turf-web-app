@@ -98,15 +98,16 @@ export default function JobHeader({ job }: { job: IJob }) {
               trigger={(setIsUpdateCustomerDrawerVisible) => (
                 <Tooltip content={job.full_name}>
                   <Button color="light" className="group">
-                    <UserIcon className="size-5 group-hover:hidden" />
+                    <UserIcon className="mr-2 size-5 group-hover:hidden" />
                     <SettingsIcon
-                      className="hidden size-5 group-hover:block"
+                      className="mr-2 hidden size-5 group-hover:block"
                       onClick={() =>
                         setIsUpdateCustomerDrawerVisible(
                           (prevState) => !prevState,
                         )
                       }
                     />
+                    {job.full_name}
                   </Button>
                 </Tooltip>
               )}
