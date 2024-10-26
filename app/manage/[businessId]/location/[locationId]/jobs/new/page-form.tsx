@@ -8,6 +8,7 @@ import {
   Button,
   Card,
   Label,
+  Radio,
   Select,
   TextInput,
 } from "flowbite-react";
@@ -22,7 +23,7 @@ import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
-import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
+import { JOB_TYPES } from "@/constants/job-types";
 import { US_STATES } from "@/constants/us-states";
 import { Tables } from "@/types/supabase";
 import { useState } from "react";
@@ -125,7 +126,9 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
   return (
     <>
       <Card>
-        <h2 className="text-xl font-medium text-gray-400">Basic Information</h2>
+        <h2 className="text-xl font-medium text-gray-400">
+          Customer Information
+        </h2>
         <fieldset
           disabled={pending}
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
@@ -209,35 +212,86 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
           </div>
         </fieldset>
       </Card>
-      <EmployeesCard profiles={profiles} />
       <Card>
-        <h2 className="text-xl font-medium text-gray-400">
-          Additional Information
-        </h2>
+        <h2 className="text-xl font-medium text-gray-400">Job Information</h2>
         <fieldset
           disabled={pending}
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
         >
-          <div>
-            <Label htmlFor="status" className="mb-2 block">
-              Status
+          <div className="col-span-2">
+            <Label htmlFor="type" className="mb-2 block">
+              Type
             </Label>
-            <Select name="status" id="status" defaultValue="new" required>
-              <option value="">Select a status</option>
-              {Object.entries(LOCATION_JOB_STATUS).map(
-                ([locationJobStatusKey, locationJobStatus]) => (
-                  <option
-                    key={locationJobStatusKey}
-                    value={locationJobStatusKey}
-                  >
-                    {locationJobStatus.name}
-                  </option>
-                ),
-              )}
+            <Select id="type" name="type" defaultValue="" required>
+              <option value="" disabled>
+                Select a type
+              </option>
+              {Object.entries(JOB_TYPES).map(([jobTypeKey, jobType]) => (
+                <option key={jobTypeKey} value={jobTypeKey}>
+                  {jobType.name}
+                </option>
+              ))}
             </Select>
           </div>
+          <div>
+            <Label htmlFor="total_sq_ft" className="mb-2 block">
+              Total Sq Ft
+            </Label>
+            <TextInput
+              type="number"
+              id="total_sq_ft"
+              name="total_sq_ft"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <Label htmlFor="price_per_sq_ft" className="mb-2 block">
+              Price Per Sq Ft
+            </Label>
+            <TextInput
+              type="number"
+              id="price_per_sq_ft"
+              name="price_per_sq_ft"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <Label htmlFor="total_cost" className="mb-2 block">
+              Total Cost
+            </Label>
+            <TextInput
+              type="number"
+              id="total_cost"
+              name="total_cost"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <Label htmlFor="down_payment_collected" className="mb-2 block">
+              Down Payment Collected
+            </Label>
+            <TextInput
+              type="number"
+              id="down_payment_collected"
+              name="down_payment_collected"
+              autoComplete="off"
+              defaultValue={500}
+            />
+          </div>
+          <fieldset className="col-span-2 flex max-w-md flex-col gap-4">
+            <legend className="mb-4">Financing</legend>
+            <div className="flex items-center gap-2">
+              <Radio id="yes" name="financing" value="yes" defaultChecked />
+              <Label htmlFor="yes">Yes</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Radio id="no" name="financing" value="no" />
+              <Label htmlFor="no">No</Label>
+            </div>
+          </fieldset>
         </fieldset>
       </Card>
+      <EmployeesCard profiles={profiles} />
     </>
   );
 };

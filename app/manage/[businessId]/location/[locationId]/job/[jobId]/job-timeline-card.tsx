@@ -4,6 +4,7 @@ import {
 } from "@/utils/formatter";
 import { CalendarIcon } from "lucide-react";
 import { IJob } from "@/types/job";
+import { Card } from "flowbite-react";
 
 type TJobTimelineCard = {
   job: IJob;
@@ -11,7 +12,7 @@ type TJobTimelineCard = {
 
 export default function JobTimelineCard({ job }: TJobTimelineCard) {
   return (
-    <div className="grid gap-4 border-b border-dashed border-gray-200 pb-4 dark:border-gray-700 lg:gap-6 lg:pb-6">
+    <Card className="grid gap-4">
       <h6 className="text-lg font-semibold tracking-tighter">Timeline</h6>
       <dl className="grid divide-y divide-gray-200 dark:divide-gray-700">
         <div className="flex items-center gap-2 py-2">
@@ -34,31 +35,7 @@ export default function JobTimelineCard({ job }: TJobTimelineCard) {
             )}
           </dd>
         </div>
-        <div className="flex items-center gap-2 py-2">
-          <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Billed
-          </dt>
-          <dd className="text-nowrap">
-            {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "Not Scheduled",
-              "",
-              formatAsReadableDate,
-            )}
-          </dd>
-        </div>
-        <div className="flex items-center gap-2 py-2">
-          <dt className="flex grow items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="size-4" /> Payment Received
-          </dt>
-          <dd className="text-nowrap">
-            {formatEmptyOrUndefinedWithPlaceholder<string>(
-              "Not Received",
-              "",
-              formatAsReadableDate,
-            )}
-          </dd>
-        </div>
       </dl>
-    </div>
+    </Card>
   );
 }

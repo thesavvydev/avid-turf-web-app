@@ -9,7 +9,7 @@ import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { useLocationContext } from "@/contexts/location";
 import { IJob } from "@/types/job";
 import getInitials from "@/utils/get-initials";
-import { Avatar, Drawer, Label, Select } from "flowbite-react";
+import { Avatar, Card, Drawer, Label, Select } from "flowbite-react";
 import { SettingsIcon, Trash2Icon, UserPlus2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,6 +17,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { AddJobProfile, DeleteJobProfile, UpdateJobProfile } from "./actions";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Tables } from "@/types/supabase";
+import { twMerge } from "tailwind-merge";
 
 function DrawerFormFields({
   job,
@@ -176,7 +177,7 @@ function UpdateProfileDrawer({
 export default function JobEmployeesCard({ job }: { job: IJob }) {
   const router = useRouter();
   return (
-    <div className="group grid gap-4">
+    <Card className="group">
       <div className="flex items-center justify-between gap-2">
         <h6 className="text-lg font-semibold tracking-tighter">Employees</h6>
         <AddDrawer job={job} />
@@ -186,7 +187,10 @@ export default function JobEmployeesCard({ job }: { job: IJob }) {
           const profileJobRole = JOB_PROFILE_ROLES[profile.role] ?? {};
           return (
             <div
-              className="flex items-center justify-between gap-2 bg-gray-50 p-4 dark:bg-gray-900"
+              className={twMerge(
+                "group/profile flex items-center justify-between gap-2 border-l-4 bg-gray-50 p-4 dark:bg-gray-900",
+                profileJobRole.borderColor,
+              )}
               key={profile.id}
             >
               <Avatar
@@ -198,7 +202,7 @@ export default function JobEmployeesCard({ job }: { job: IJob }) {
                 <p className="font-light">{profile.profile.full_name}</p>
                 <p className="text-sm font-semibold">{profileJobRole.name}</p>
               </Avatar>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 opacity-0 group-hover/profile:opacity-100">
                 <UpdateProfileDrawer job={job} profile={profile} />
 
                 <ConfirmModal
@@ -219,6 +223,6 @@ export default function JobEmployeesCard({ job }: { job: IJob }) {
           );
         })}
       </div>
-    </div>
+    </Card>
   );
 }

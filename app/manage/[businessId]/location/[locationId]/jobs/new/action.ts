@@ -23,6 +23,12 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     postal_code: fields.postal_code as string,
     state: fields.state as string,
     status: fields.status as Database["public"]["Enums"]["location_job_status"],
+    type: fields.type as Database["public"]["Enums"]["job_types"],
+    total_sq_ft: Number(fields.total_sq_ft) as number,
+    total_cost: Number(fields.total_cost) as number,
+    price_per_sq_ft: Number(fields.price_per_sq_ft) as number,
+    down_payment_collected: Number(fields.down_payment_collected) as number,
+    financing: fields.financing === "yes",
   };
 
   const employeesDictionary = Object.entries(fields).reduce<{

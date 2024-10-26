@@ -249,16 +249,22 @@ export type Database = {
           created_at: string
           creator_id: string
           customer_id: string | null
+          down_payment_collected: number | null
           email: string | null
+          financing: boolean
           full_name: string
           id: number
           installer_id: string | null
           lead_id: number | null
           phone: string | null
           postal_code: string | null
+          price_per_sq_ft: number | null
           setter_id: string | null
           state: string | null
           status: Database["public"]["Enums"]["location_job_status"]
+          total_cost: number | null
+          total_sq_ft: number | null
+          type: Database["public"]["Enums"]["job_types"]
         }
         Insert: {
           address?: string | null
@@ -269,16 +275,22 @@ export type Database = {
           created_at?: string
           creator_id: string
           customer_id?: string | null
+          down_payment_collected?: number | null
           email?: string | null
+          financing?: boolean
           full_name: string
           id?: number
           installer_id?: string | null
           lead_id?: number | null
           phone?: string | null
           postal_code?: string | null
+          price_per_sq_ft?: number | null
           setter_id?: string | null
           state?: string | null
           status?: Database["public"]["Enums"]["location_job_status"]
+          total_cost?: number | null
+          total_sq_ft?: number | null
+          type?: Database["public"]["Enums"]["job_types"]
         }
         Update: {
           address?: string | null
@@ -289,16 +301,22 @@ export type Database = {
           created_at?: string
           creator_id?: string
           customer_id?: string | null
+          down_payment_collected?: number | null
           email?: string | null
+          financing?: boolean
           full_name?: string
           id?: number
           installer_id?: string | null
           lead_id?: number | null
           phone?: string | null
           postal_code?: string | null
+          price_per_sq_ft?: number | null
           setter_id?: string | null
           state?: string | null
           status?: Database["public"]["Enums"]["location_job_status"]
+          total_cost?: number | null
+          total_sq_ft?: number | null
+          type?: Database["public"]["Enums"]["job_types"]
         }
         Relationships: [
           {
@@ -796,7 +814,13 @@ export type Database = {
       business_roles: "admin" | "manager" | "base"
       custom_field_models: "leads" | "jobs"
       custom_field_types: "text" | "date" | "number" | "select"
-      job_roles: "setter" | "installer" | "closer"
+      job_roles:
+        | "setter"
+        | "installer"
+        | "closer"
+        | "project_manager"
+        | "crew_lead"
+      job_types: "turf" | "desert" | "both"
       lead_sources: "website-form" | "phone" | "email" | "referral" | "other"
       lead_statuses:
         | "new"

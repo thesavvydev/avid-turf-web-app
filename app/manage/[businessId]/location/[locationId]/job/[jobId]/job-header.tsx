@@ -1,22 +1,22 @@
 "use client";
 
-import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
 import { IJob } from "@/types/job";
 import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
 import { Breadcrumb, Button, Dropdown, Tooltip } from "flowbite-react";
 import {
   ChevronLeftIcon,
+  HardHatIcon,
   MailIcon,
   PhoneCallIcon,
   PhoneIcon,
   SendIcon,
   SettingsIcon,
-  UserIcon,
 } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
 import PageTabs from "@/components/page-tabs";
+import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
 import UpdateCustomerDrawer from "./update-customer-drawer";
 
 export default function JobHeader({ job }: { job: IJob }) {
@@ -83,34 +83,40 @@ export default function JobHeader({ job }: { job: IJob }) {
         <Breadcrumb aria-label="Default breadcrumb example">
           <Breadcrumb.Item
             href={`/manage/${businessId}/location/${locationId}/jobs`}
-            icon={() => <ChevronLeftIcon className="mr-2" />}
+            icon={() => <ChevronLeftIcon className="mr-1" />}
           >
             Back to Jobs
           </Breadcrumb.Item>
         </Breadcrumb>
         <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
-          <h1 className="text-3xl font-semibold">{`Job #${jobId}${activePageTabTitle ? ` - ${activePageTabTitle.title}` : ""}`}</h1>
+          <hgroup>
+            <span className="text-3xl font-semibold">{job.full_name}</span>
+            <h1 className="flex items-center gap-1 text-sm text-gray-400">
+              <HardHatIcon className="size-5" />
+              {`Job #${jobId}${activePageTabTitle ? ` ${activePageTabTitle.title}` : ""}`}
+            </h1>
+          </hgroup>
           <div className="flex flex-wrap gap-2">
             <UpdateCustomerDrawer
               job={job}
               trigger={(setIsUpdateCustomerDrawerVisible) => (
                 <Tooltip content={job.full_name}>
-                  <Button color="light" className="group whitespace-nowrap">
-                    <UserIcon className="mr-2 size-5 group-hover:hidden" />
-                    <SettingsIcon
-                      className="mr-2 hidden size-5 group-hover:block"
-                      onClick={() =>
-                        setIsUpdateCustomerDrawerVisible(
-                          (prevState) => !prevState,
-                        )
-                      }
-                    />
-                    {job.full_name}
+                  <Button
+                    color="light"
+                    className="group whitespace-nowrap"
+                    onClick={() =>
+                      setIsUpdateCustomerDrawerVisible(
+                        (prevState) => !prevState,
+                      )
+                    }
+                  >
+                    <SettingsIcon className="mr-1 size-5" />
+                    Edit
                   </Button>
                 </Tooltip>
               )}
             />
-            <Tooltip content="Email">
+            <Tooltip content={`Email ${job.email}`}>
               <Button color="light" className="group">
                 <MailIcon className="size-5 group-hover:hidden" />
                 <SendIcon className="hidden size-5 group-hover:block" />

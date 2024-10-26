@@ -136,30 +136,15 @@ export default function JobLocationCard({ job }: TJobLocationCard) {
       <div className="flex flex-col items-start gap-4 lg:gap-6">
         <div className="grid aspect-video w-full place-items-center rounded bg-gray-100 dark:bg-gray-700">
           <MapPinIcon className="size-14" />
+          street view or aerial
         </div>
         <dl className="grid gap-4">
           <div className="grid items-center gap-4 xl:grid-cols-2">
             <dt className="text-gray-400">Address</dt>
             <dd className="text-gray-600 dark:text-gray-300">
               {job.address ?? "No Address"}
-            </dd>
-          </div>
-          <div className="grid items-center gap-4 xl:grid-cols-2">
-            <dt className="text-gray-400">City</dt>
-            <dd className="text-gray-600 dark:text-gray-300">
-              {job.city ?? "No city"}
-            </dd>
-          </div>
-          <div className="grid items-center gap-4 xl:grid-cols-2">
-            <dt className="text-gray-400">State</dt>
-            <dd className="text-gray-600 dark:text-gray-300">
-              {job.state ?? "No state"}
-            </dd>
-          </div>
-          <div className="grid items-center gap-4 xl:grid-cols-2">
-            <dt className="text-gray-400">Postal Code</dt>
-            <dd className="text-gray-600 dark:text-gray-300">
-              {job.postal_code ?? "No postal code"}
+              <br />
+              {`${job.city ?? "No city"}, ${job.state ?? "No state"} ${job.postal_code ?? "No postal code"}`}
             </dd>
           </div>
         </dl>

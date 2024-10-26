@@ -87,9 +87,9 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
 
   return (
     <Card>
-      <h6 className="text-lg font-semibold tracking-tighter">Messages</h6>
+      <h6 className="text-lg font-semibold tracking-tighter">Notes</h6>
       <div
-        className="flex h-full max-h-80 flex-col-reverse gap-4 overflow-y-auto"
+        className="flex h-full flex-col-reverse gap-4 overflow-y-auto"
         ref={ref}
       >
         {messages?.map((message) => {

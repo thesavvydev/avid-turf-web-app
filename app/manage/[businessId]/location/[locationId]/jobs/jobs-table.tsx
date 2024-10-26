@@ -2,12 +2,13 @@
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import Linky from "@/components/linky";
+import { JOB_TYPES } from "@/constants/job-types";
 import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
 import { useLocationContext } from "@/contexts/location";
 import { useUserContext } from "@/contexts/user";
+import { IJob } from "@/types/job";
 import { Database, Tables } from "@/types/supabase";
-import { formatAsCompactNumber } from "@/utils/formatter";
-import getInitials from "@/utils/get-initials";
+import { formatAsCompactNumber, formatAsCurrency } from "@/utils/formatter";
 import {
   Alert,
   Avatar,
@@ -51,7 +52,6 @@ import { twMerge } from "tailwind-merge";
 import { DeleteJob } from "./actions";
 import JobMessagesDrawer from "./job-messages-drawer";
 import UpdateJobDrawer from "./update-job-drawer";
-import { IJob } from "@/types/job";
 
 const JobsTableContext = createContext<{
   jobs: IJob[];
@@ -584,52 +584,28 @@ function Content() {
       ),
     },
     {
-      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
-      field: "address",
-      header: "Address",
-      render: (row) => (
-        <p>
-          {`${row.address}`}
-          <br />
-          {`${row.city ? `${row.city}, ` : ""}${row.state ? `${row.state} ` : ""}${row.postal_code ? row.postal_code : ""}`}
-        </p>
-      ),
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      field: "type",
+      header: "Type",
+      render: (row) => JOB_TYPES[row.type].name,
     },
     {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
-      field: "closer",
-      header: "Closer",
-      render: (row) =>
-        row.closer ? (
-          <Tooltip content={row.closer.full_name}>
-            <Avatar
-              placeholderInitials={getInitials(row.closer.full_name ?? "")}
-              rounded
-              {...(row.closer.avatar_url ? { img: row.closer.avatar_url } : {})}
-            />
-          </Tooltip>
-        ) : (
-          ""
-        ),
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap text-right",
+      field: "total_sq_ft",
+      header: "Total Sq Ft",
+      render: (row) => row.total_sq_ft,
     },
     {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
-      field: "installer",
-      header: "Installer",
-      render: (row) =>
-        row.installer ? (
-          <Tooltip content={row.installer.full_name}>
-            <Avatar
-              placeholderInitials={getInitials(row.installer.full_name ?? "")}
-              rounded
-              {...(row.installer?.avatar_url
-                ? { img: row.installer.avatar_url }
-                : {})}
-            />
-          </Tooltip>
-        ) : (
-          ""
-        ),
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap text-right",
+      field: "price_per_sq_ft",
+      header: "Price Per Sq Ft",
+      render: (row) => formatAsCurrency(Number(row.price_per_sq_ft)),
+    },
+    {
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap text-right",
+      field: "total_cost",
+      header: "Total Cost",
+      render: (row) => formatAsCurrency(Number(row.total_cost)),
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
