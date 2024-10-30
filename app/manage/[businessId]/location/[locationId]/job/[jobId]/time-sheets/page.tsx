@@ -244,7 +244,7 @@ export default function Page() {
                         <Table.Cell>
                           <a
                             href="#"
-                            className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                            className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                           >
                             Edit
                           </a>
