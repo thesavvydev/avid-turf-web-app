@@ -1,8 +1,5 @@
 "use client";
-import {
-  formatAsCompactNumber,
-  formatMinutesToHoursAndMinutes,
-} from "@/utils/formatter";
+import { formatMinutesToHoursAndMinutes } from "@/utils/formatter";
 import dayjs from "dayjs";
 import { Card, Table } from "flowbite-react";
 import {
@@ -56,7 +53,7 @@ const timesheets = [
     },
     start_datetime: "2024-10-28 08:00:00",
     end_datetime: "2024-10-28 12:00:00",
-    paid: false,
+    paid: true,
   },
   {
     id: 6,
@@ -67,7 +64,7 @@ const timesheets = [
     },
     start_datetime: "2024-10-27 08:00:00",
     end_datetime: "2024-10-27 16:30:00",
-    paid: false,
+    paid: true,
   },
   {
     id: 5,
@@ -93,32 +90,47 @@ export default function Page() {
     return dictionary;
   }, {});
 
+  const { paid, unpaid } = timesheets.reduce(
+    (dictionary, timesheet) => {
+      const minutes = dayjs(timesheet.end_datetime).diff(
+        dayjs(timesheet.start_datetime),
+        "minutes",
+      );
+
+      dictionary[timesheet.paid ? "paid" : "unpaid"] += minutes;
+
+      return dictionary;
+    },
+    {
+      paid: 0,
+      unpaid: 0,
+    },
+  );
+
   return (
     <>
-      <div className="flex w-full max-w-full items-center gap-4 divide-x divide-gray-100 overflow-scroll lg:gap-6">
+      <div className="flex items-center gap-4 lg:gap-6">
         {[
           {
-            name: "Hours Unpaid",
+            name: "Unpaid",
             status: "unpaid",
-            value: 36,
-            classNames: "fill-red-600/20 stroke-red-600",
-            progressClassNames: "text-red-700 dark:text-red-800 ",
+            value: unpaid,
+            classNames: "fill-red-400/20 stroke-red-400",
+            progressClassNames: "text-red-400",
             icon: PiggyBankIcon,
-            progress: 0.3 * 100,
           },
           {
-            name: "Hours Paid",
+            name: "Paid",
             status: "paid",
-            value: 8,
-            classNames: "fill-green-600/20 stroke-green-600",
-            progressClassNames: "text-green-700 dark:text-green-800 ",
+            value: paid,
+            classNames: "fill-green-400/20 stroke-green-400",
+            progressClassNames: "text-green-400",
             icon: BanknoteIcon,
-            progress: 0.85 * 100,
           },
         ].map((tile) => (
           <div
             key={tile.name}
-            className="flex grow items-center justify-center gap-4 rounded-lg border border-gray-100 bg-white px-4 py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:gap-6 lg:py-6"
+            className="flex grow items-center justify-center gap-4 rounded-lg border border-gray-100 bg-white px-4 py-4 shadow-sm shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:gap-6 lg:py-6"
           >
             <div className="relative size-16 flex-shrink-0">
               <svg
@@ -139,16 +151,8 @@ export default function Page() {
                   cy="18"
                   r="14"
                   fill="none"
-                  className={twMerge(
-                    "stroke-current text-lime-600 dark:text-lime-500",
-                    tile.progressClassNames,
-                  )}
-                  strokeWidth="2"
-                  strokeDasharray="100"
-                  strokeDashoffset={
-                    Number.isNaN(tile.progress) ? 100 : Number(tile.progress)
-                  }
-                  strokeLinecap="round"
+                  className={twMerge("stroke-current", tile.progressClassNames)}
+                  strokeWidth={2}
                 />
               </svg>
 
@@ -166,7 +170,7 @@ export default function Page() {
                 <h6 className="whitespace-nowrap font-medium">{tile.name}</h6>
               </div>
               <p className="text-4xl text-gray-400">
-                {formatAsCompactNumber(Number(tile.value))}
+                {formatMinutesToHoursAndMinutes(Number(tile.value))}
               </p>
             </div>
           </div>
@@ -236,9 +240,9 @@ export default function Page() {
                         </Table.Cell>
                         <Table.Cell>
                           {timesheet.paid ? (
-                            <CheckCircleIcon />
+                            <CheckCircleIcon className="text-green-400" />
                           ) : (
-                            <XCircleIcon />
+                            <XCircleIcon className="text-red-400" />
                           )}
                         </Table.Cell>
                         <Table.Cell>
