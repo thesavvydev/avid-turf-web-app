@@ -6,7 +6,13 @@ import {
 } from "@/utils/formatter";
 import dayjs from "dayjs";
 import { Card, Table } from "flowbite-react";
-import { CheckCircleIcon, HourglassIcon, XCircleIcon } from "lucide-react";
+import {
+  BanknoteIcon,
+  CheckCircleIcon,
+  HourglassIcon,
+  PiggyBankIcon,
+  XCircleIcon,
+} from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
 const timesheets = [
@@ -91,32 +97,30 @@ export default function Page() {
 
   return (
     <>
-      <div className="flex w-full max-w-full items-center divide-x divide-gray-100 overflow-scroll rounded-lg border border-gray-100 bg-white py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:py-6">
+      <div className="flex w-full max-w-full items-center gap-4 divide-x divide-gray-100 overflow-scroll lg:gap-6">
         {[
           {
-            name: "Cancelled",
-            status: "cancelled",
-            value: 1,
-            weekly_change: 0,
+            name: "Hours Unpaid",
+            status: "unpaid",
+            value: 36,
             classNames: "fill-red-600/20 stroke-red-600",
             progressClassNames: "text-red-700 dark:text-red-800 ",
-            icon: HourglassIcon,
-            progress: 0.2 * 100,
+            icon: PiggyBankIcon,
+            progress: 0.3 * 100,
           },
           {
-            name: "Success",
-            status: "success",
-            value: 2,
-            weekly_change: 0,
+            name: "Hours Paid",
+            status: "paid",
+            value: 8,
             classNames: "fill-green-600/20 stroke-green-600",
             progressClassNames: "text-green-700 dark:text-green-800 ",
-            icon: HourglassIcon,
-            progress: 0.2 * 100,
+            icon: BanknoteIcon,
+            progress: 0.85 * 100,
           },
         ].map((tile) => (
           <div
             key={tile.name}
-            className="flex grow items-center justify-center gap-4 px-4 lg:gap-6"
+            className="flex grow items-center justify-center gap-4 rounded-lg border border-gray-100 bg-white px-4 py-4 shadow-lg shadow-gray-100 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900 lg:gap-6 lg:py-6"
           >
             <div className="relative size-16 flex-shrink-0">
               <svg
@@ -163,20 +167,8 @@ export default function Page() {
               <div className="flex items-center gap-2">
                 <h6 className="whitespace-nowrap font-medium">{tile.name}</h6>
               </div>
-              <p className="text-gray-400">
+              <p className="text-4xl text-gray-400">
                 {formatAsCompactNumber(Number(tile.value))}
-              </p>
-              <p className="whitespace-nowrap text-xs">
-                Weekly Change{" "}
-                <span
-                  className={twMerge(
-                    tile.weekly_change > 0
-                      ? "text-green-500 dark:text-green-300"
-                      : "text-red-500 dark:text-red-300",
-                  )}
-                >
-                  {formatAsPercentage(tile.weekly_change)}
-                </span>
               </p>
             </div>
           </div>
