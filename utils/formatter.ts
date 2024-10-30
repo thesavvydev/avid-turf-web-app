@@ -64,3 +64,10 @@ export function formatEmptyOrUndefinedWithPlaceholder<T>(
 
   return formatter(value);
 }
+
+export function formatMinutesToHoursAndMinutes(minutes: number = 0) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  return `${hours} hrs${remainingMinutes > 0 ? `, ${remainingMinutes} mins` : ""}`;
+}
