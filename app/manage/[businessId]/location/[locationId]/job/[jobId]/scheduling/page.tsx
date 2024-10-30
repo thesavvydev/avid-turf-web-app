@@ -1,3 +1,5 @@
+import JobWeekView from "./job-week-view";
+
 export default function Page() {
-  return <div>Scheduling page</div>;
+  return <JobWeekView />;
 }
