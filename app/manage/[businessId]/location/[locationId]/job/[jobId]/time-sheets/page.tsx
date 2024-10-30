@@ -1,7 +1,6 @@
 "use client";
 import {
   formatAsCompactNumber,
-  formatAsPercentage,
   formatMinutesToHoursAndMinutes,
 } from "@/utils/formatter";
 import dayjs from "dayjs";
@@ -9,7 +8,6 @@ import { Card, Table } from "flowbite-react";
 import {
   BanknoteIcon,
   CheckCircleIcon,
-  HourglassIcon,
   PiggyBankIcon,
   XCircleIcon,
 } from "lucide-react";
