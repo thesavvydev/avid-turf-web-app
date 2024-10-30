@@ -12,24 +12,14 @@ import { twMerge } from "tailwind-merge";
 const mockEvents = [
   {
     id: 1,
-    name: "Excavate",
-    start_datetime: "2024-10-27 08:00:00",
-    end_datetime: "2024-10-27 10:30:00",
-    type: "work",
+    name: "Closing",
+    start_datetime: "2024-10-27 13:00:00",
+    end_datetime: "2024-10-27 14:30:00",
+    type: "closing",
     profiles: [
       {
         id: "uuid",
         full_name: "Jon Jones",
-        avatar: null,
-      },
-      {
-        id: "uuid",
-        full_name: "Donald Biden",
-        avatar: null,
-      },
-      {
-        id: "uuid",
-        full_name: "Erica Mendez",
         avatar: null,
       },
     ],
@@ -37,9 +27,9 @@ const mockEvents = [
   {
     id: 2,
     name: "Excavate",
-    start_datetime: "2024-10-28 06:00:00",
-    end_datetime: "2024-10-28 08:30:00",
-    type: "work",
+    start_datetime: "2024-10-28 08:00:00",
+    end_datetime: "2024-10-28 16:30:00",
+    type: "excavate",
     profiles: [
       {
         id: "uuid",
@@ -60,10 +50,10 @@ const mockEvents = [
   },
   {
     id: 3,
-    name: "Base Gravel",
-    start_datetime: "2024-10-29 09:30:00",
-    end_datetime: "2024-10-29 13:00:00",
-    type: "work",
+    name: "Install",
+    start_datetime: "2024-10-29 10:00:00",
+    end_datetime: "2024-10-29 17:00:00",
+    type: "install",
     profiles: [
       {
         id: "uuid",
@@ -83,35 +73,11 @@ const mockEvents = [
     ],
   },
   {
-    id: 4,
-    name: "Turf",
-    start_datetime: "2024-10-29 13:30:00",
-    end_datetime: "2024-10-29 18:00:00",
-    type: "work",
-    profiles: [
-      {
-        id: "uuid",
-        full_name: "Jon Jones",
-        avatar: null,
-      },
-      {
-        id: "uuid",
-        full_name: "Donald Biden",
-        avatar: null,
-      },
-      {
-        id: "uuid",
-        full_name: "Erica Mendez",
-        avatar: null,
-      },
-    ],
-  },
-  {
-    id: 5,
-    name: "Turf",
-    start_datetime: "2024-10-27 13:30:00",
-    end_datetime: "2024-10-27 18:00:00",
-    type: "work",
+    id: 6,
+    name: "Install",
+    start_datetime: "2024-10-30 08:00:00",
+    end_datetime: "2024-10-30 16:30:00",
+    type: "install",
     profiles: [
       {
         id: "uuid",
@@ -131,6 +97,29 @@ const mockEvents = [
     ],
   },
 ];
+
+const EVENT_TYPE_STYLE_PROPERTIES = {
+  install: {
+    background:
+      "bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700",
+    title: "text-yellow-700 dark:text-yellow-400",
+    time: "text-yellow-500 group-hover:text-yellow-700 dark:text-yellow-600 dark:group-hover:text-yellow-500",
+  },
+  excavate: {
+    background:
+      "bg-red-50 hover:bg-red-100 dark:bg-red-800 dark:hover:bg-red-700",
+    title: "text-red-700 dark:text-red-400",
+    time: "text-red-500 group-hover:text-red-700 dark:text-red-600 dark:group-hover:text-red-500",
+  },
+  closing: {
+    background:
+      "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-800 dark:hover:bg-emerald-700",
+    title: "text-emerald-700 dark:text-emerald-400",
+    time: "text-emerald-500 group-hover:text-emerald-700 dark:text-emerald-600 dark:group-hover:text-emerald-500",
+  },
+};
+
+type TEventTypeStyleProperty = keyof typeof EVENT_TYPE_STYLE_PROPERTIES;
 
 const calculateGridRowStartAndSpan = (start: string, end: string) => {
   const rowPadding = 2;
@@ -319,6 +308,10 @@ export default function JobWeekView() {
                 }}
               >
                 {mockEvents.map((event) => {
+                  const styles =
+                    EVENT_TYPE_STYLE_PROPERTIES[
+                      event.type as TEventTypeStyleProperty
+                    ] ?? EVENT_TYPE_STYLE_PROPERTIES.closing;
                   const { gridRowStart, gridRowSpan } =
                     calculateGridRowStartAndSpan(
                       event.start_datetime,
@@ -340,9 +333,17 @@ export default function JobWeekView() {
                     >
                       <a
                         href="#"
-                        className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-primary-50 p-2 text-xs leading-5 hover:bg-primary-100 dark:bg-primary-800 dark:hover:bg-primary-700"
+                        className={twMerge(
+                          styles.background,
+                          "group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5",
+                        )}
                       >
-                        <p className="order-1 font-semibold text-primary-700 dark:text-primary-400">
+                        <p
+                          className={twMerge(
+                            styles.title,
+                            "order-1 font-semibold",
+                          )}
+                        >
                           {event.name}
                         </p>
                         <div className="order-2 mt-2 flex flex-wrap items-center gap-1">
@@ -362,7 +363,7 @@ export default function JobWeekView() {
                             </Tooltip>
                           ))}
                         </div>
-                        <p className="text-primary-500 group-hover:text-primary-700 dark:text-primary-600 dark:group-hover:text-primary-500">
+                        <p className={styles.time}>
                           <time
                             dateTime={dayjs(event.start_datetime).format(
                               "YYYY-MM-DDTHH:mm",
