@@ -1,7 +1,7 @@
 "use client";
 import { formatMinutesToHoursAndMinutes } from "@/utils/formatter";
 import dayjs from "dayjs";
-import { Card, Table } from "flowbite-react";
+import { Button, Card, Table } from "flowbite-react";
 import {
   BanknoteIcon,
   CheckCircleIcon,
@@ -175,6 +175,10 @@ export default function Page() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-end">
+        <Button color="primary">Add Time</Button>
       </div>
 
       {Object.entries(employeeTimesheetDictionary).map(

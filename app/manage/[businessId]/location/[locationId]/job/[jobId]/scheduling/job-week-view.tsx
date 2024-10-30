@@ -205,7 +205,7 @@ export default function JobWeekView() {
           <Dropdown.Item>Week</Dropdown.Item>
           <Dropdown.Item>Month</Dropdown.Item>
         </Dropdown>
-        <Button size="sm" color="light">
+        <Button size="sm" color="primary">
           Add Event
         </Button>
       </div>
