@@ -4,16 +4,16 @@ import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 import { useUserContext } from "@/contexts/user";
+import { IJobMessage } from "@/types/job";
 import { createClient } from "@/utils/supabase/client";
-import { Avatar, Button, Card, Spinner, Textarea } from "flowbite-react";
+import { Avatar, Button, Card, Spinner, TextInput } from "flowbite-react";
 import { SendIcon, Trash2Icon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { twMerge } from "tailwind-merge";
 import { CreateJobMessage, DeleteJobMessage } from "./actions";
-import { IJobMessage } from "@/types/job";
 
+import getInitials from "@/utils/get-initials";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -27,18 +27,12 @@ function SendMessageButton() {
   const { pending } = useFormStatus();
 
   return (
-    <div className="absolute right-2 top-2 opacity-0 group-focus-within:opacity-100">
-      <Button
-        disabled={pending}
-        size="xs"
-        tabIndex={1}
-        color="light"
-        type="submit"
-      >
+    <div>
+      <Button disabled={pending} color="light" type="submit" size="sm">
         {pending ? (
           <Spinner size="sm" />
         ) : (
-          <SendIcon className="size-5 text-gray-400" />
+          <SendIcon className="text-gray-400" />
         )}
       </Button>
     </div>
@@ -56,7 +50,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
   );
 
   const ref = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const messageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const channel = supabase
@@ -71,8 +65,8 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
         },
         () => {
           router.refresh();
-          if (textareaRef.current) {
-            textareaRef.current.value = "";
+          if (messageInputRef.current) {
+            messageInputRef.current.value = "";
           }
         },
       )
@@ -83,52 +77,42 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
     return () => {
       channel.unsubscribe();
     };
-  }, [jobId, router, textareaRef, ref, supabase]);
+  }, [jobId, router, messageInputRef, ref, supabase]);
 
   return (
     <Card>
       <h6 className="text-lg font-semibold tracking-tighter">Notes</h6>
       <div
-        className="flex h-full flex-col-reverse gap-4 overflow-y-auto"
+        className="flex h-full w-full flex-col-reverse gap-4 overflow-y-auto"
         ref={ref}
       >
         {messages?.map((message) => {
           const isAuthor = user.id === message.author_id;
 
           return (
-            <div
-              className={twMerge(
-                isAuthor ? "items-end justify-end" : "items-start",
-                "group flex gap-2",
-              )}
-              id={`message-${message.id}`}
-              key={message.id}
-            >
-              {isAuthor ? null : <Avatar size="sm" rounded />}
-              <div className="flex w-[65%] flex-col gap-1">
-                <p
-                  className={twMerge(
-                    isAuthor ? "text-right" : "",
-                    "text-xs text-gray-400",
-                  )}
-                >
-                  {message.author
-                    ? `${message.author.full_name}, ${dayjs(message.created_at).fromNow()} `
-                    : "posted seconds ago"}
-                </p>
-                <p
-                  className={twMerge(
-                    isAuthor
-                      ? "from-blue-500 to-blue-600 text-blue-100"
-                      : "from-gray-100 to-gray-200 dark:bg-gray-800 dark:from-gray-700 dark:to-gray-800",
-                    "relative w-full rounded bg-gradient-to-tr p-2 text-sm lg:p-3",
-                  )}
-                >
-                  {message.message}
+            <div key={message.id} className="flex w-full items-start gap-3">
+              <Avatar
+                placeholderInitials={getInitials(
+                  message.author?.full_name ?? "",
+                )}
+                rounded
+                size="md"
+              />
+              <div className="group grid w-full gap-2 rounded bg-gray-50 p-3 dark:bg-gray-700">
+                <div className="relative flex justify-between gap-2">
+                  <p className="font-semibold">{message.author?.full_name}</p>
+                  <time
+                    className="text-xs text-gray-400"
+                    dateTime={dayjs(message.created_at).format(
+                      "YYYY-MM-DDTHH:mm",
+                    )}
+                  >
+                    {dayjs(message.created_at).fromNow()}
+                  </time>
                   {isAuthor && (
                     <button
                       aria-label="Delete"
-                      className="absolute right-2 top-2 hidden cursor-pointer rounded bg-white/30 p-1 hover:bg-white group-hover:block dark:bg-gray-800/30 dark:hover:bg-gray-800"
+                      className="absolute right-0 top-5 hidden cursor-pointer rounded bg-white/30 p-1 hover:bg-white group-hover:block dark:bg-gray-800/30 dark:hover:bg-gray-800"
                     >
                       <ConfirmModal
                         description={`Are you sure you want to remove this message?`}
@@ -138,13 +122,14 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
                         }}
                         trigger={(toggle) => (
                           <span onClick={toggle}>
-                            <Trash2Icon className="size-4 text-red-500 dark:text-red-600" />
+                            <Trash2Icon className="text-red-500 dark:text-red-600" />
                           </span>
                         )}
                       />
                     </button>
                   )}
-                </p>
+                </div>
+                <p className="text-gray-400">{message.message}</p>
               </div>
             </div>
           );
@@ -155,14 +140,21 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
         <input name="location_id" value={locationId} type="hidden" />
         <input name="job_id" value={jobId} type="hidden" />
         <input name="author_id" value={user.id} type="hidden" />
-        <Textarea
-          ref={textareaRef}
-          rows={3}
-          className="resize-none rounded-sm pr-14"
-          tabIndex={0}
-          name="message"
-        />
-        <SendMessageButton />
+        <div className="group flex items-center gap-3">
+          <Avatar
+            placeholderInitials={getInitials(user.full_name ?? "")}
+            size="md"
+            rounded
+          />
+          <TextInput
+            autoComplete="off"
+            ref={messageInputRef}
+            className="w-full rounded-sm"
+            tabIndex={0}
+            name="message"
+          />
+          <SendMessageButton />
+        </div>
       </form>
     </Card>
   );
