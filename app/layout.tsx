@@ -28,7 +28,7 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body className="h-full bg-gray-50 text-gray-500 dark:bg-gray-900 dark:text-gray-300">
+      <body className="bg-gray-50 text-gray-500 dark:bg-gray-900 dark:text-gray-300">
         <Flowbite theme={{ theme: customTheme }}>{children}</Flowbite>
       </body>
     </html>
