@@ -17,12 +17,20 @@ import {
 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import useManageMenuItems from "./use-manage-menu-items";
+import { useBusinessContext } from "@/contexts/business";
+import { useParams } from "next/navigation";
 
 export default function ManageNav() {
   const menuItems = useManageMenuItems();
   const {
-    user: { full_name, location, locations, business, businesses },
+    user: { full_name, businesses },
   } = useUserContext();
+
+  const { business } = useBusinessContext();
+  const { locationId } = useParams();
+  const location = business.locations.find(
+    (location) => location.id === Number(locationId),
+  );
 
   const { toggle, isCollapsed } = useSidebarContext();
   const SidebarIcon = isCollapsed ? SidebarOpenIcon : SidebarCloseIcon;
@@ -45,17 +53,17 @@ export default function ManageNav() {
           <Dropdown
             inline
             arrowIcon={false}
-            label={business?.name ?? "Select a Business"}
+            label={business.name}
             color="light"
             className="z-20"
           >
             <Dropdown.Header>Select a Business</Dropdown.Header>
-            {businesses?.map((business) => (
+            {businesses?.map((userBusiness) => (
               <Dropdown.Item
-                key={business.id}
-                href={`/manage/${business.id}/dashboard`}
+                key={userBusiness.id}
+                href={`/manage/${userBusiness.id}/dashboard`}
               >
-                {business.name}
+                {userBusiness.name}
               </Dropdown.Item>
             ))}
           </Dropdown>
@@ -67,12 +75,12 @@ export default function ManageNav() {
             inline
           >
             <Dropdown.Header>Select a Location</Dropdown.Header>
-            {locations?.map((location) => (
+            {business.locations?.map((businessLocation) => (
               <Dropdown.Item
-                key={location.id}
-                href={`/manage/${location.business_id}/location/${location.id}`}
+                key={businessLocation.id}
+                href={`/manage/${businessLocation.business_id}/location/${businessLocation.id}`}
               >
-                {location.name}
+                {businessLocation.name}
               </Dropdown.Item>
             ))}
           </Dropdown>

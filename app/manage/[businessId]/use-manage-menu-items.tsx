@@ -2,8 +2,6 @@
 
 import { useUserContext } from "@/contexts/user";
 import {
-  // BoneIcon,
-  // CalendarDaysIcon,
   HomeIcon,
   MapPinIcon,
   UserCircle2,
@@ -18,13 +16,16 @@ export default function useManageMenuItems() {
   const { businessId, locationId } = useParams();
   const pathname = usePathname();
 
-  if (!businessId && !locationId) return [];
+  const isBusinessManagement = ["manager", "admin"].includes(
+    user.business?.role ?? "",
+  );
+  const isLocationManagement = ["manager", "admin"].includes(
+    user.location?.role ?? "",
+  );
 
-  if (
-    ["manager", "admin"].includes(user.business?.role ?? "") &&
-    businessId &&
-    !locationId
-  ) {
+  if (!businessId) return [];
+
+  if (!locationId) {
     return [
       {
         name: "Dashboard",
@@ -38,12 +39,16 @@ export default function useManageMenuItems() {
         isActive: pathname === `/manage/${businessId}/locations`,
         icon: MapPinIcon,
       },
-      {
-        name: "Users",
-        href: `/manage/${businessId}/users`,
-        isActive: pathname === `/manage/${businessId}/users`,
-        icon: UserCircle2,
-      },
+      ...(isBusinessManagement
+        ? [
+            {
+              name: "Users",
+              href: `/manage/${businessId}/users`,
+              isActive: pathname === `/manage/${businessId}/users`,
+              icon: UserCircle2,
+            },
+          ]
+        : []),
     ];
   }
 
@@ -54,14 +59,6 @@ export default function useManageMenuItems() {
       isActive: pathname === `/manage/${businessId}/location/${locationId}`,
       icon: HomeIcon,
     },
-    // {
-    //   name: "Leads",
-    //   href: `/manage/${businessId}/location/${locationId}/leads`,
-    //   isActive: pathname.startsWith(
-    //     `/manage/${businessId}/location/${locationId}/leads`,
-    //   ),
-    //   icon: BoneIcon,
-    // },
     {
       name: "Jobs",
       href: `/manage/${businessId}/location/${locationId}/jobs`,
@@ -70,15 +67,7 @@ export default function useManageMenuItems() {
       ),
       icon: WorkflowIcon,
     },
-    // {
-    //   name: "Appointments",
-    //   href: `/manage/${businessId}/location/${locationId}/appointments`,
-    //   isActive: pathname.startsWith(
-    //     `/manage/${businessId}/location/${locationId}/appointment`,
-    //   ),
-    //   icon: CalendarDaysIcon,
-    // },
-    ...(["admin", "manager"].includes(user.location?.role as string)
+    ...(isLocationManagement
       ? [
           {
             name: "Employees",
