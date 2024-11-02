@@ -1,4 +1,5 @@
 "use client";
+
 import { ConfirmModal } from "@/components/confirm-modal";
 import initialFormState, {
   TInitialFormState,
@@ -83,7 +84,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
     <Card>
       <h6 className="text-lg font-semibold tracking-tighter">Notes</h6>
       <div
-        className="flex h-full w-full flex-col-reverse gap-4 overflow-y-auto"
+        className="flex h-full max-h-96 w-full flex-col-reverse gap-4 overflow-y-auto"
         ref={ref}
       >
         {messages?.map((message) => {
