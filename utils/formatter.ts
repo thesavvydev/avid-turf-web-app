@@ -9,6 +9,15 @@ export function formatAsPercentage(
   });
 }
 
+export function formatAsReadableNumber(
+  value: number,
+  options?: Intl.NumberFormatOptions,
+) {
+  return Number(value).toLocaleString(undefined, {
+    ...options,
+  });
+}
+
 export function formatAsCompactNumber(
   value: number,
   options?: Intl.NumberFormatOptions,
@@ -52,6 +61,7 @@ export function formatAsReadableDate(
     year: "numeric",
     month: "short",
     day: "2-digit",
+    ...options,
   });
 }
 
