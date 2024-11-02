@@ -135,7 +135,6 @@ function UsersTableProvider({
       : true;
 
   const locationFilter = (item: IUser) => {
-    console.log({ item, location_id });
     return location_id
       ? item.profile?.locations.find(
           (location) => location.location_id === Number(location_id),
@@ -143,7 +142,6 @@ function UsersTableProvider({
       : true;
   };
 
-  console.log({ location_id });
   const filteredUsers = users.filter(searchFilter).filter(locationFilter);
 
   const value = useMemo(
