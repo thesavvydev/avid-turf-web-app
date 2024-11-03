@@ -346,10 +346,7 @@ const FormFields = ({ profiles, products }: TPageForm) => {
         <h2 className="text-xl font-medium text-gray-400">
           Product Information
         </h2>
-        <fieldset
-          disabled={pending}
-          className="grid gap-2 pb-2 md:gap-6 md:pb-6"
-        >
+        <fieldset disabled={pending} className="grid gap-2 md:mt-2 md:gap-6">
           <JobProductsFormFields products={products} />
         </fieldset>
       </Card>
