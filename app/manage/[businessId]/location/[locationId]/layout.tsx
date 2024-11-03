@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 export default async function Layout(
-  props: PropsWithChildren<{ params: { locationId: string } }>,
+  props: PropsWithChildren<{ params: Promise<{ locationId: string }> }>,
 ) {
   const params = await props.params;
 

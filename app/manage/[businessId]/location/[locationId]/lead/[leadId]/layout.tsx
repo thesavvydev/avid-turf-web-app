@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 
 type TLayout = PropsWithChildren & {
-  params: { locationId: string; leadId: string };
+  params: Promise<{ locationId: string; leadId: string }>;
 };
 
 export default async function Layout(props: TLayout) {

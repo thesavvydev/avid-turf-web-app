@@ -1,9 +1,8 @@
-import { useActionState } from "react";
 "use client";
 
 import SubmitButton from "@/components/submit-button";
-
 import { TextInput } from "flowbite-react";
+import { useActionState } from "react";
 import { signUpAction } from "./actions";
 
 const initialFormState: { error?: string } = {};
