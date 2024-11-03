@@ -1,6 +1,6 @@
-import { useActionState } from "react";
 "use client";
 
+import { useActionState } from "react";
 import Linky from "@/components/linky";
 import SubmitButton from "@/components/submit-button";
 import { TextInput } from "flowbite-react";
