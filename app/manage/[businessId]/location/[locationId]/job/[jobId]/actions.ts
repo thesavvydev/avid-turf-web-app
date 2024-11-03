@@ -317,8 +317,6 @@ export async function UpdateJobProducts<T>(...args: ServerActionWithState<T>) {
     product_id: Number(product.product_id),
   }));
 
-  // console.log({ productsUpsert });
-  // return formStateResponse({ error: "testing" });
   await DeleteJobProducts(deleteJobProductIds);
 
   const { error: upsertJobProductsError } = await supabase
@@ -346,7 +344,7 @@ export async function UpdateJobProducts<T>(...args: ServerActionWithState<T>) {
   const { error: updateJobCommissionError } = await supabase
     .from("business_location_jobs")
     .update(commissionUpdates)
-    .eq("id", fields.job_id as string);
+    .eq("id", Number(fields.job_id));
 
   if (updateJobCommissionError) {
     return formStateResponse({

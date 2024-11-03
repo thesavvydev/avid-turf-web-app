@@ -343,10 +343,10 @@ export default function JobProductsFormFields({
           </Table.Cell>
           <Table.Cell colSpan={2}>
             <TextInput
-              defaultValue={commission}
               name="commission"
               onChange={(e) => setCommission(Number(e.target.value))}
               type="number"
+              value={commission}
             />
           </Table.Cell>
         </Table.Row>
@@ -362,10 +362,10 @@ export default function JobProductsFormFields({
           <Table.Cell className="px-2">
             <p className="text-lg">Commission</p>
             <TextInput
-              defaultValue={commission}
               name="commission"
               onChange={(e) => setCommission(Number(e.target.value))}
               type="number"
+              value={commission}
             />
           </Table.Cell>
         </Table.Row>
