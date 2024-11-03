@@ -12,8 +12,8 @@ import getInitials from "@/utils/get-initials";
 import { Avatar, Card, Drawer, Label, Select } from "flowbite-react";
 import { SettingsIcon, Trash2Icon, UserPlus2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { AddJobProfile, DeleteJobProfile, UpdateJobProfile } from "./actions";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Tables } from "@/types/supabase";
@@ -83,7 +83,7 @@ function DrawerFormFields({
 function AddDrawer({ job }: { job: IJob }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     AddJobProfile<TInitialFormState>,
     initialFormState,
   );
@@ -134,7 +134,7 @@ function UpdateProfileDrawer({
 }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateJobProfile<TInitialFormState>,
     initialFormState,
   );

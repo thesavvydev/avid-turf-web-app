@@ -6,7 +6,7 @@ import {
 } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database, Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -14,7 +14,7 @@ import { redirect } from "next/navigation";
 export async function AddBusinessLocation<T>(
   ...args: ServerActionWithState<T>
 ) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
 
   const fields = Object.fromEntries(formData);
@@ -63,7 +63,7 @@ export async function AddBusinessLocation<T>(
 export async function UpdateBusinessLocation<T>(
   ...args: ServerActionWithState<T>
 ) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
 
   const fields = Object.fromEntries(formData);
@@ -94,9 +94,9 @@ export async function UpdateBusinessLocation<T>(
 export async function DeleteBusinessLocation(
   location: Tables<"business_locations">,
 ) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   await supabase.from("business_locations").delete().eq("id", location.id);
 
-  const origin = headers().get("origin");
+  const origin = (await headers()).get("origin");
   return redirect(`${origin}/manage/${location.business_id}/location`);
 }

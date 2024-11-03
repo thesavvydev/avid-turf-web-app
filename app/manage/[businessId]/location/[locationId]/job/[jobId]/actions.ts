@@ -3,11 +3,11 @@
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function CreateJobMessage<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -31,7 +31,7 @@ export async function CreateJobMessage<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function UpdateJobCustomer<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -61,7 +61,7 @@ export async function UpdateJobCustomer<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function AddJobProfile<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -92,7 +92,7 @@ export async function AddJobProfile<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function UpdateJobProfile<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -121,7 +121,7 @@ export async function UpdateJobProfile<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function UpdateJobLocation<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -152,7 +152,7 @@ export async function UpdateJobLocation<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function DeleteJobMessage(message_id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("business_location_job_messages")
@@ -165,7 +165,7 @@ export async function DeleteJobMessage(message_id: number) {
 }
 
 export async function AddJobMedia<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -199,7 +199,7 @@ export async function AddJobMedia<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -231,7 +231,7 @@ export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function DeleteJobProfile(id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("business_location_job_profiles")
@@ -244,7 +244,7 @@ export async function DeleteJobProfile(id: number) {
 }
 
 export async function DeleteJobMedia(id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("business_location_job_media")
@@ -257,7 +257,7 @@ export async function DeleteJobMedia(id: number) {
 }
 
 export async function DeleteJobProduct(id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("business_location_job_products")
@@ -270,7 +270,7 @@ export async function DeleteJobProduct(id: number) {
 }
 
 export async function DeleteJobProducts(ids: string[]) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("business_location_job_products")
@@ -283,7 +283,7 @@ export async function DeleteJobProducts(ids: string[]) {
 }
 
 export async function UpdateJobProducts<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
   const startingJobIds = (fields.job_product_ids as string).split(",");

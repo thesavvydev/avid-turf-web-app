@@ -11,8 +11,8 @@ import { BUSINESS_PROFILE_ROLES } from "@/constants/business-profile-roles";
 import { Avatar, Drawer, Label, Select } from "flowbite-react";
 import { UserCogIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { UpdateBusinessUser } from "./actions";
 import { IUser } from "./page";
 
@@ -66,7 +66,7 @@ export default function UpdateUserDrawer({
 }: UpdateUserDrawerType) {
   const router = useRouter();
   const handleClose = () => setIsOpen(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateBusinessUser<TInitialFormState>,
     initialFormState,
   );

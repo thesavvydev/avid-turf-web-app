@@ -11,8 +11,8 @@ import { Tables } from "@/types/supabase";
 import { Drawer, Label, TextInput } from "flowbite-react";
 import { FileUpIcon, SettingsIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { UpdateJobMedia } from "./actions";
 
 function UpdateMediaDrawerFormFields({
@@ -65,7 +65,7 @@ export default function EditMediaDrawer({
 }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateJobMedia<TInitialFormState>,
     initialFormState,
   );

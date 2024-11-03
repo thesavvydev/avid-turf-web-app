@@ -2,10 +2,10 @@
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 export async function UpdateJob<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -39,12 +39,12 @@ export async function UpdateJob<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function DeleteJob(id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   return supabase.from("business_location_jobs").delete().eq("id", id);
 }
 
 export async function CreateJobMessage<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -68,7 +68,7 @@ export async function CreateJobMessage<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function DeleteJobMessage(message_id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase
     .from("business_location_job_messages")

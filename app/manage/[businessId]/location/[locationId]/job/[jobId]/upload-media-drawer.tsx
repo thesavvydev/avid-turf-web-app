@@ -10,8 +10,8 @@ import { FileUpIcon, PlusIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 import SupabaseFileUploadDropzone from "@/components/supabase-file-upload-dropzone";
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { AddJobMedia } from "./actions";
 import { useUserContext } from "@/contexts/user";
 
@@ -50,7 +50,7 @@ function AddMediaDrawerFormFields() {
 export default function UploadMediaDrawer() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     AddJobMedia<TInitialFormState>,
     initialFormState,
   );

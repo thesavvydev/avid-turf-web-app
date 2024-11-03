@@ -1,3 +1,4 @@
+import { useActionState } from "react";
 "use client";
 
 import SubmitButton from "@/components/submit-button";
@@ -14,7 +15,7 @@ import {
 } from "flowbite-react";
 import { ChevronLeftIcon, UserPlus2Icon } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 
 import ErrorAlert from "@/components/error-alert";
 import PageHeaderWithActions from "@/components/page-header-with-actions";
@@ -200,7 +201,7 @@ const FormFields = () => {
 
 export default function Page() {
   const { businessId, locationId } = useParams();
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     AddLead<TInitialFormState>,
     initialFormState,
   );

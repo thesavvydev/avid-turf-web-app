@@ -12,8 +12,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Avatar, Button, Drawer, Spinner, Textarea } from "flowbite-react";
 import { SendIcon, Trash2Icon, UserPlus2Icon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import {
+  Dispatch,
+  SetStateAction,
+  useActionState,
+  useEffect,
+  useRef,
+} from "react";
+import { useFormStatus } from "react-dom";
 import { twMerge } from "tailwind-merge";
 import { CreateJobMessage, DeleteJobMessage } from "./actions";
 
@@ -57,7 +63,7 @@ export default function JobMessagesDrawer({
   const router = useRouter();
   const { businessId, locationId } = useParams();
   const { user } = useUserContext();
-  const [, action] = useFormState(
+  const [, action] = useActionState(
     CreateJobMessage<TInitialFormState>,
     initialFormState,
   );

@@ -1,5 +1,5 @@
 import { Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import { Card, Timeline } from "flowbite-react";
 import { notFound } from "next/navigation";
@@ -9,12 +9,14 @@ type TLog = Tables<"business_logs"> & {
   profile: Tables<"profiles">;
 };
 
-export default async function Page({
-  params: { jobId },
-}: {
-  params: { jobId: string };
+export default async function Page(props: {
+  params: Promise<{ jobId: string }>;
 }) {
-  const supabase = createClient();
+  const params = await props.params;
+
+  const { jobId } = params;
+
+  const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("business_logs")
     .select("*, profile: profile_id(*)")

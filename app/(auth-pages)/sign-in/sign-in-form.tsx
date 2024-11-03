@@ -1,16 +1,16 @@
+import { useActionState } from "react";
 "use client";
 
 import Linky from "@/components/linky";
 import SubmitButton from "@/components/submit-button";
 import { TextInput } from "flowbite-react";
-import { useFormState } from "react-dom";
 import { signInAction } from "./actions";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
 
 export default function SignInForm() {
-  const [state, dispatch] = useFormState(
+  const [state, dispatch] = useActionState(
     signInAction<TInitialFormState>,
     initialFormState,
   );

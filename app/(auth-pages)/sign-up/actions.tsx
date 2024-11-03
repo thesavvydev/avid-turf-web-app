@@ -1,7 +1,7 @@
 "use server";
 
 import { encodedRedirect } from "@/utils/encoded-redirect";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 
 export const signUpAction = async (
@@ -10,8 +10,8 @@ export const signUpAction = async (
 ) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
-  const supabase = createClient();
-  const origin = headers().get("origin");
+  const supabase = await createSupabaseServerClient();
+  const origin = (await headers()).get("origin");
 
   if (!email || !password) {
     return { error: "Email and password are required" };

@@ -1,9 +1,9 @@
+import { useActionState } from "react";
 "use client";
 
 import SubmitButton from "@/components/submit-button";
 
 import { TextInput } from "flowbite-react";
-import { useFormState } from "react-dom";
 import { signUpAction } from "./actions";
 
 const initialFormState: { error?: string } = {};
@@ -19,7 +19,7 @@ const EmailInput = () => {
 };
 
 export default function SignUpForm() {
-  const [state, dispatch] = useFormState(signUpAction, initialFormState);
+  const [state, dispatch] = useActionState(signUpAction, initialFormState);
 
   return (
     <form action={dispatch} className="flex flex-col gap-4">

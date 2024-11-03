@@ -15,10 +15,11 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useActionState,
   useEffect,
   useState,
 } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { UpdateJobCustomer } from "./actions";
 
 function EditDrawerFormFields({ job }: { job: IJob }) {
@@ -81,7 +82,7 @@ export default function UpdateCustomerDrawer({
 }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateJobCustomer<TInitialFormState>,
     initialFormState,
   );

@@ -10,8 +10,13 @@ import { useUserContext } from "@/contexts/user";
 import { Drawer, Label, Select, TextInput } from "flowbite-react";
 import { MapPinIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import { useFormState } from "react-dom";
+import {
+  Dispatch,
+  SetStateAction,
+  useActionState,
+  useCallback,
+  useEffect,
+} from "react";
 import { AddBusinessLocation } from "./actions";
 
 export default function NewLocationDrawer({
@@ -24,7 +29,7 @@ export default function NewLocationDrawer({
   const { businessId } = useParams();
   const { user } = useUserContext();
   const handleClose = useCallback(() => setIsOpen(false), [setIsOpen]);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     AddBusinessLocation<TInitialFormState>,
     initialFormState,
   );

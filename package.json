@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "lint": "next lint",
     "start": "next start",
     "update-local-types": "npx --yes supabase gen types --lang=typescript --local > types/supabase.d.ts",
@@ -23,21 +23,21 @@
     "framer-motion": "^11.3.31",
     "geist": "^1.2.1",
     "lucide-react": "^0.436.0",
-    "next": "latest",
+    "next": "15.0.2",
     "prettier": "^3.3.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "19.0.0-rc-02c0e824-20241028",
+    "react-dom": "19.0.0-rc-02c0e824-20241028",
     "react-sortablejs": "^6.1.4",
     "sharp": "^0.33.5",
     "sortablejs": "^1.15.3"
   },
   "devDependencies": {
     "@types/node": "20.10.6",
-    "@types/react": "18.2.46",
-    "@types/react-dom": "18.2.18",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/sortablejs": "^1.15.8",
     "eslint": "8.57.0",
-    "eslint-config-next": "14.2.9",
+    "eslint-config-next": "15.0.2",
     "eslint-config-prettier": "^9.1.0",
     "postcss": "8.4.33",
     "prettier-plugin-tailwindcss": "^0.6.6",
@@ -45,5 +45,9 @@
     "tailwindcss": "3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.3.3"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   }
 }

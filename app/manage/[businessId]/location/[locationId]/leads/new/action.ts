@@ -2,12 +2,12 @@
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function AddLead<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -40,7 +40,7 @@ export async function AddLead<T>(...args: ServerActionWithState<T>) {
     return formStateResponse({ ...state, error: error.message });
   }
 
-  const origin = headers().get("origin");
+  const origin = (await headers()).get("origin");
   return redirect(
     `${origin}/manage/${fields.business_id}/location/${fields.location_id}/lead/${data.id}`,
   );

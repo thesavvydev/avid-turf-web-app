@@ -1,5 +1,5 @@
 import { BusinessContextProvider, IBusiness } from "@/contexts/business";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import { notFound } from "next/navigation";
 import { PropsWithChildren } from "react";
@@ -8,11 +8,16 @@ import ManageNav from "./manage-nav";
 import AppToasts from "./app-toasts";
 import { SidebarProvider } from "@/contexts/sidebar";
 
-export default async function Layout({
-  children,
-  params: { businessId },
-}: PropsWithChildren<{ params: { businessId: string } }>) {
-  const supabase = createClient();
+export default async function Layout(
+  props: PropsWithChildren<{ params: { businessId: string } }>,
+) {
+  const params = await props.params;
+
+  const { businessId } = params;
+
+  const { children } = props;
+
+  const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("businesses")
     .select(

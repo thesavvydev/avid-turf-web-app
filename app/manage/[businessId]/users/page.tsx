@@ -1,5 +1,5 @@
 import { Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import UsersTable from "./users-table";
 import UsersHeader from "./users-header";
 
@@ -15,11 +15,19 @@ export interface IUser extends Tables<"business_profiles"> {
   profile?: IUserProfile;
 }
 
-export default async function Page({
-  params: { businessId = "" },
-  searchParams: { page = 0, per_page = 10, role = "" },
+export default async function Page(props: {
+  params: Promise<{ businessId: string }>;
+  searchParams: Promise<{ page: number; per_page: number; role: string }>;
 }) {
-  const supabase = createClient();
+  const searchParams = await props.searchParams;
+
+  const { page = 0, per_page = 10, role = "" } = searchParams;
+
+  const params = await props.params;
+
+  const { businessId = "" } = params;
+
+  const supabase = await createSupabaseServerClient();
   const startRange =
     page > 1
       ? Number(page - 1) * Number(per_page)
