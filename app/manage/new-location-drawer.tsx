@@ -38,7 +38,7 @@ export default function NewLocationDrawer({
   useEffect(() => {
     if (state.success && state.data) {
       router.refresh();
-      state.dismiss && handleClose();
+      if (state.dismiss) handleClose();
     }
   }, [state.success, state.dismiss, router, handleClose, state.data]);
 

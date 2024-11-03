@@ -294,19 +294,19 @@ function DateRangeFilter() {
     <>
       <Datepicker
         id="created_after"
-        onSelectedDateChanged={(date) =>
+        onChange={(date) =>
           handleUpdateSearchParam(
             "created_after",
-            new Date(date).toLocaleDateString(),
+            new Date(date ?? "").toLocaleDateString(),
           )
         }
       />
       <Datepicker
         id="created_before"
-        onSelectedDateChanged={(date) =>
+        onChange={(date) =>
           handleUpdateSearchParam(
             "created_before",
-            new Date(date).toLocaleDateString(),
+            new Date(date ?? "").toLocaleDateString(),
           )
         }
       />

@@ -58,7 +58,7 @@ export default function UploadMediaDrawer() {
   useEffect(() => {
     if (state.success) {
       router.refresh();
-      state.dismiss && setIsOpen(() => false);
+      if (state.dismiss) setIsOpen(() => false);
     }
   }, [state.success, state.dismiss, router, setIsOpen]);
 
