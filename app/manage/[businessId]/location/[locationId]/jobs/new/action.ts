@@ -23,7 +23,6 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     postal_code: fields.postal_code as string,
     state: fields.state as string,
     status: fields.status as Database["public"]["Enums"]["location_job_status"],
-    type: fields.type as Database["public"]["Enums"]["job_types"],
     down_payment_collected: Number(fields.down_payment_collected),
     commission: Number(fields.commission),
     payment_type:

@@ -324,7 +324,6 @@ export type Database = {
           postal_code: string | null
           state: string | null
           status: Database["public"]["Enums"]["location_job_status"]
-          type: Database["public"]["Enums"]["job_types"]
           water_rebate_company: string | null
         }
         Insert: {
@@ -349,7 +348,6 @@ export type Database = {
           postal_code?: string | null
           state?: string | null
           status?: Database["public"]["Enums"]["location_job_status"]
-          type?: Database["public"]["Enums"]["job_types"]
           water_rebate_company?: string | null
         }
         Update: {
@@ -374,7 +372,6 @@ export type Database = {
           postal_code?: string | null
           state?: string | null
           status?: Database["public"]["Enums"]["location_job_status"]
-          type?: Database["public"]["Enums"]["job_types"]
           water_rebate_company?: string | null
         }
         Relationships: [
@@ -691,6 +688,7 @@ export type Database = {
           measurement: string
           name: string
           price_per_measurement: number
+          units_in_stock: number | null
         }
         Insert: {
           business_id?: string | null
@@ -700,6 +698,7 @@ export type Database = {
           measurement?: string
           name: string
           price_per_measurement: number
+          units_in_stock?: number | null
         }
         Update: {
           business_id?: string | null
@@ -709,6 +708,7 @@ export type Database = {
           measurement?: string
           name?: string
           price_per_measurement?: number
+          units_in_stock?: number | null
         }
         Relationships: [
           {
@@ -922,7 +922,6 @@ export type Database = {
         | "closer"
         | "project_manager"
         | "crew_lead"
-      job_types: "turf" | "desert" | "both"
       lead_sources: "website-form" | "phone" | "email" | "referral" | "other"
       lead_statuses:
         | "new"

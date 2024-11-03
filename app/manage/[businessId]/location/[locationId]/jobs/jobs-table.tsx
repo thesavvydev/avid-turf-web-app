@@ -2,7 +2,6 @@
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import Linky from "@/components/linky";
-import { JOB_TYPES } from "@/constants/job-types";
 import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
 import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
@@ -516,12 +515,6 @@ function Content() {
           </div>
         </Avatar>
       ),
-    },
-    {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
-      field: "type",
-      header: "Type",
-      render: (row) => JOB_TYPES[row.type].name,
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",

@@ -25,7 +25,6 @@ import initialFormState, {
 } from "@/constants/initial-form-state";
 import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
-import { JOB_TYPES } from "@/constants/job-types";
 import { US_STATES } from "@/constants/us-states";
 import { Tables } from "@/types/supabase";
 import { useActionState, useState } from "react";
@@ -349,26 +348,9 @@ const FormFields = ({ profiles, products }: TPageForm) => {
         </h2>
         <fieldset
           disabled={pending}
-          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+          className="grid gap-2 pb-2 md:gap-6 md:pb-6"
         >
-          <div className="sm:col-span-2">
-            <Label htmlFor="type" className="mb-2 block">
-              Type
-            </Label>
-            <Select id="type" name="type" defaultValue="" required>
-              <option value="" disabled>
-                Select a type
-              </option>
-              {Object.entries(JOB_TYPES).map(([jobTypeKey, jobType]) => (
-                <option key={jobTypeKey} value={jobTypeKey}>
-                  {jobType.name}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div className="sm:col-span-2">
-            <JobProductsFormFields products={products} />
-          </div>
+          <JobProductsFormFields products={products} />
         </fieldset>
       </Card>
       <Card>
