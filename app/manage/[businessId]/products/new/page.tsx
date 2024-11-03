@@ -122,7 +122,7 @@ export default function Page() {
       <form action={action} className="grid gap-4 sm:gap-6">
         <FormFields />
         <div>
-          <SubmitButton pendingText="Creating Job">
+          <SubmitButton pendingText="Creating product">
             <BoxIcon className="mr-2" />
             Create Product
           </SubmitButton>
