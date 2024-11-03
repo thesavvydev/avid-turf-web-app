@@ -19,10 +19,12 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
   const productsTotal = job.products?.reduce((dictionary, product) => {
     dictionary +=
       Number(product.number_of_units) *
-      Number(product.product.price_per_measurement);
+      (Number(product.product.price_per_measurement) +
+        Number(product.lead_price_addon));
 
     return dictionary;
   }, 0);
+
   return (
     <Table>
       <Table.Head>
@@ -32,6 +34,9 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
         </Table.HeadCell>
         <Table.HeadCell className="hidden text-right sm:table-cell">
           Per Unit
+        </Table.HeadCell>
+        <Table.HeadCell className="hidden w-0 text-right sm:table-cell">
+          Lead Price
         </Table.HeadCell>
         <Table.HeadCell className="px-2 text-right sm:px-6">
           Total
@@ -60,10 +65,14 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
             <Table.Cell className="hidden text-right sm:table-cell sm:text-base">
               {formatAsReadableNumber(jobProduct.product.price_per_measurement)}
             </Table.Cell>
+            <Table.Cell className="hidden text-right sm:table-cell sm:text-base">
+              {formatAsCurrency(Number(jobProduct.lead_price_addon))}
+            </Table.Cell>
             <Table.Cell className="px-2 text-right sm:px-4 sm:text-base">
               {formatAsCurrency(
                 Number(jobProduct.number_of_units) *
-                  Number(jobProduct.product.price_per_measurement),
+                  (Number(jobProduct.product.price_per_measurement) +
+                    Number(jobProduct.lead_price_addon)),
               )}
             </Table.Cell>
           </Table.Row>
