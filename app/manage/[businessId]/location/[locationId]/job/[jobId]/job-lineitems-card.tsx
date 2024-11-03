@@ -35,7 +35,7 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
         <Table.HeadCell className="hidden text-right sm:table-cell">
           Per Unit
         </Table.HeadCell>
-        <Table.HeadCell className="hidden w-0 text-right sm:table-cell">
+        <Table.HeadCell className="hidden w-0 whitespace-nowrap text-right sm:table-cell">
           Lead Price
         </Table.HeadCell>
         <Table.HeadCell className="px-2 text-right sm:px-6">
