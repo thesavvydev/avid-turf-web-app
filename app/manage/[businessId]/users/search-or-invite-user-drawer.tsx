@@ -16,8 +16,13 @@ import {
 } from "flowbite-react";
 import { UserPlusIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import { useFormState } from "react-dom";
+import {
+  Dispatch,
+  SetStateAction,
+  useActionState,
+  useCallback,
+  useEffect,
+} from "react";
 import { SearchOrInviteUser } from "./actions";
 
 type TSearchOrInviteUserDrawer = {
@@ -31,7 +36,7 @@ export default function SearchOrInviteUserDrawer({
 }: TSearchOrInviteUserDrawer) {
   const router = useRouter();
   const { businessId } = useParams();
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     SearchOrInviteUser<TInitialFormState>,
     initialFormState,
   );

@@ -1,9 +1,9 @@
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const {
     data: { user },
     error,

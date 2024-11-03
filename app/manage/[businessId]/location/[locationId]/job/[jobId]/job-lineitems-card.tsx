@@ -12,8 +12,7 @@ import { IJob } from "@/types/job";
 import { formatAsCurrency, formatAsReadableNumber } from "@/utils/formatter";
 import { Card, Table } from "flowbite-react";
 import { SettingsIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
 import { UpdateJobProducts } from "./actions";
 
 const JobLineitemsTable = ({ job }: { job: IJob }) => {
@@ -109,7 +108,7 @@ const ManageLineitemsForm = ({
   close: () => void;
   job: IJob;
 }) => {
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateJobProducts<TInitialFormState>,
     initialFormState,
   );

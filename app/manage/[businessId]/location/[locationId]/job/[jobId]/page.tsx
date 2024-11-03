@@ -1,7 +1,7 @@
 import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { IJob, IJobMessage } from "@/types/job";
 import { formatAsCurrency } from "@/utils/formatter";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { Card, List, ListItem } from "flowbite-react";
 import { notFound } from "next/navigation";
 import JobEmployeesCard from "./job-employees-card";
@@ -11,8 +11,16 @@ import JobMediaCard from "./job-media-card";
 import JobMessagesCard from "./job-messages-card";
 import JobTimelineCard from "./job-timeline-card";
 
-export default async function Page({ params: { jobId = "" } }) {
-  const supabase = createClient();
+type TProps = {
+  params: Promise<{ jobId: string }>;
+};
+
+export default async function Page(props: TProps) {
+  const params = await props.params;
+
+  const { jobId = "" } = params;
+
+  const supabase = await createSupabaseServerClient();
 
   const fetchJob = supabase
     .from("business_location_jobs")

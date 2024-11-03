@@ -37,12 +37,12 @@ const mockEvents = [
         avatar: null,
       },
       {
-        id: "uuid",
+        id: "uuid 1",
         full_name: "Donald Biden",
         avatar: null,
       },
       {
-        id: "uuid",
+        id: "uuid 2",
         full_name: "Erica Mendez",
         avatar: null,
       },
@@ -56,17 +56,17 @@ const mockEvents = [
     type: "install",
     profiles: [
       {
-        id: "uuid",
+        id: "uuid 1",
         full_name: "Jon Jones",
         avatar: null,
       },
       {
-        id: "uuid",
+        id: "uuid 2",
         full_name: "Jon Jones",
         avatar: null,
       },
       {
-        id: "uuid",
+        id: "uuid 3",
         full_name: "Jake Hall",
         avatar: null,
       },
@@ -80,17 +80,17 @@ const mockEvents = [
     type: "install",
     profiles: [
       {
-        id: "uuid",
+        id: "uuid 1",
         full_name: "Jon Jones",
         avatar: null,
       },
       {
-        id: "uuid",
+        id: "uuid 2",
         full_name: "Shawn Dell",
         avatar: null,
       },
       {
-        id: "uuid",
+        id: "uuid 3",
         full_name: "Dave Hammer",
         avatar: null,
       },

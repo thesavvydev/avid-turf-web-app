@@ -10,8 +10,8 @@ import { createClient } from "@/utils/supabase/client";
 import { Avatar, Button, Card, Spinner, TextInput } from "flowbite-react";
 import { SendIcon, Trash2Icon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
 import { CreateJobMessage, DeleteJobMessage } from "./actions";
 
 import getInitials from "@/utils/get-initials";
@@ -45,7 +45,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
   const router = useRouter();
   const { businessId, locationId, jobId } = useParams();
   const { user } = useUserContext();
-  const [, action] = useFormState(
+  const [, action] = useActionState(
     CreateJobMessage<TInitialFormState>,
     initialFormState,
   );

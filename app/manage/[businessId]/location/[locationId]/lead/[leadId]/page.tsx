@@ -1,6 +1,6 @@
 import Linky from "@/components/linky";
 import { formatAsCompactCurrency, formatAsCurrency } from "@/utils/formatter";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import {
   Badge,
   Card,
@@ -25,12 +25,14 @@ import {
 } from "lucide-react";
 import { notFound } from "next/navigation";
 
-export default async function Page({
-  params: { leadId },
-}: {
-  params: { leadId: string };
+export default async function Page(props: {
+  params: Promise<{ leadId: string }>;
 }) {
-  const supabase = createClient();
+  const params = await props.params;
+
+  const { leadId } = params;
+
+  const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("business_location_leads")
     .select("*")

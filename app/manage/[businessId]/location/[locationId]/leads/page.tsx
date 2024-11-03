@@ -1,7 +1,7 @@
 import { TLeadStatus } from "@/constants/lead-statuses";
 import { Database, Tables } from "@/types/supabase";
 import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import {
   ArchiveIcon,
   CaptionsOffIcon,
@@ -185,18 +185,35 @@ function LeadStatusTiles({
   );
 }
 
-export default async function Page({
-  searchParams: {
+export default async function Page(props: {
+  params: Promise<{
+    locationId: string;
+  }>;
+  searchParams: Promise<{
+    page: number;
+    per_page: number;
+    status: string;
+    source: string;
+    created_after: string;
+    created_before: string;
+  }>;
+}) {
+  const params = await props.params;
+
+  const { locationId = "" } = params;
+
+  const searchParams = await props.searchParams;
+
+  const {
     page = 0,
     per_page = 10,
     status = null,
     source = null,
     created_after = null,
     created_before = null,
-  },
-  params: { locationId = "" },
-}) {
-  const supabase = createClient();
+  } = searchParams;
+
+  const supabase = await createSupabaseServerClient();
 
   const { data: all, count } = await supabase
     .from("business_location_leads")

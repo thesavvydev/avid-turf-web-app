@@ -2,12 +2,12 @@
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database, Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function AddJob<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -147,7 +147,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     profile_id: fields.creator_id as string,
   });
 
-  const origin = headers().get("origin");
+  const origin = (await headers()).get("origin");
   return redirect(
     `${origin}/manage/${fields.business_id}/location/${fields.business_location_id}/job/${data.id}`,
   );

@@ -1,5 +1,5 @@
 import { Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { Card } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +14,7 @@ async function MediaList({
   media: Tables<"business_location_job_media">[];
   mediaPaths: string[];
 }) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase.storage
     .from("businesses")

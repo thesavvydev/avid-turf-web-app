@@ -14,7 +14,7 @@ import {
 } from "flowbite-react";
 import { ChevronLeftIcon, Trash2Icon, WorkflowIcon } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import ErrorAlert from "@/components/error-alert";
@@ -28,7 +28,7 @@ import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { JOB_TYPES } from "@/constants/job-types";
 import { US_STATES } from "@/constants/us-states";
 import { Tables } from "@/types/supabase";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { AddJob } from "./action";
 
 const EmployeesCard = ({ profiles }: { profiles: TProfile[] }) => {
@@ -433,7 +433,7 @@ type TPageForm = {
 
 export default function PageForm({ profiles, products }: TPageForm) {
   const { businessId, locationId } = useParams();
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     AddJob<TInitialFormState>,
     initialFormState,
   );

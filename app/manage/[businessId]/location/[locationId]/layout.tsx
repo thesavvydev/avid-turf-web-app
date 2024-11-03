@@ -1,13 +1,18 @@
 import { ILocation, LocationContextProvider } from "@/contexts/location";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { PropsWithChildren } from "react";
 
-export default async function Layout({
-  children,
-  params: { locationId },
-}: PropsWithChildren<{ params: { locationId: string } }>) {
-  const supabase = createClient();
+export default async function Layout(
+  props: PropsWithChildren<{ params: { locationId: string } }>,
+) {
+  const params = await props.params;
+
+  const { locationId } = params;
+
+  const { children } = props;
+
+  const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("business_locations")
     .select(

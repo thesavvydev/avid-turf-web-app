@@ -1,11 +1,11 @@
 import UserContextProvider from "@/contexts/user";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 import { PropsWithChildren } from "react";
 
 export default async function Layout({ children }: PropsWithChildren) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const {
     data: { user },
     error,

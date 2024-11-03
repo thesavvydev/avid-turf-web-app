@@ -1,17 +1,20 @@
 import { PropsWithChildren } from "react";
 import LeadHeader from "./lead-header";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 
 type TLayout = PropsWithChildren & {
   params: { locationId: string; leadId: string };
 };
 
-export default async function Layout({
-  params: { leadId },
-  children,
-}: TLayout) {
-  const supabase = createClient();
+export default async function Layout(props: TLayout) {
+  const params = await props.params;
+
+  const { leadId } = params;
+
+  const { children } = props;
+
+  const supabase = await createSupabaseServerClient();
   const { data: lead, error } = await supabase
     .from("business_location_leads")
     .select("*")

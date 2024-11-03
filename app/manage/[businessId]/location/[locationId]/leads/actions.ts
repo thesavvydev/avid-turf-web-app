@@ -2,10 +2,10 @@
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 export async function UpdateLead<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -28,6 +28,6 @@ export async function UpdateLead<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function DeleteLead(id: number) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   return supabase.from("business_location_leads").delete().eq("id", id);
 }

@@ -3,11 +3,11 @@
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 
 export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -47,8 +47,8 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       return formStateResponse({ ...state, error: error.message });
     }
   } else if (fields.inviting_new) {
-    const supabaseAdmin = createClient({ admin: true });
-    const origin = headers().get("origin");
+    const supabaseAdmin = await createSupabaseServerClient({ admin: true });
+    const origin = (await headers()).get("origin");
 
     const { data, error: inviteError } =
       await supabaseAdmin.auth.admin.inviteUserByEmail(fields.email as string, {
@@ -75,7 +75,7 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
 }
 
 export async function UpdateBusinessUser<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
@@ -97,7 +97,7 @@ export async function DeleteBusinessUser(
   business_id: string,
   profile_id: string,
 ) {
-  const supabase = createClient();
+  const supabase = await createSupabaseServerClient();
 
   return supabase
     .from("business_profiles")

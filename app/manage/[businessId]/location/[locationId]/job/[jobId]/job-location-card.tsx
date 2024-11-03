@@ -11,8 +11,8 @@ import { IJob } from "@/types/job";
 import { Card, Drawer, Label, Select, TextInput } from "flowbite-react";
 import { EditIcon, MapPinIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { UpdateJobLocation } from "./actions";
 
 type TJobLocationCard = {
@@ -86,7 +86,7 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
 function EditDrawer({ job }: { job: IJob }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateJobLocation<TInitialFormState>,
     initialFormState,
   );

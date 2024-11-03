@@ -2,7 +2,7 @@ import { IJob } from "@/types/job";
 import { Database, Tables } from "@/types/supabase";
 import { formatAsCompactNumber, formatAsPercentage } from "@/utils/formatter";
 import { percentageChange } from "@/utils/percentage-change";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import {
   CaptionsOffIcon,
   FilterIcon,
@@ -186,17 +186,31 @@ function JobStatusTiles({
   );
 }
 
-export default async function Page({
-  searchParams: {
+export default async function Page(props: {
+  params: Promise<{ locationId: string }>;
+  searchParams: Promise<{
+    page: number;
+    per_page: number;
+    created_after: string;
+    created_before: string;
+    status: string;
+  }>;
+}) {
+  const params = await props.params;
+
+  const { locationId = "" } = params;
+
+  const searchParams = await props.searchParams;
+
+  const {
     page = 0,
     per_page = 10,
     created_after = null,
     created_before = null,
     status = "",
-  },
-  params: { locationId = "" },
-}) {
-  const supabase = createClient();
+  } = searchParams;
+
+  const supabase = await createSupabaseServerClient();
 
   const startRange =
     page > 1

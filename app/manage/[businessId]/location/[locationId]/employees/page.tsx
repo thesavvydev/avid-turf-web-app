@@ -1,16 +1,26 @@
 import { Tables } from "@/types/supabase";
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import EmployeesHeader from "./employees-header";
 import EmployeesTable from "./employees-table";
 export interface IEmployee extends Tables<"business_location_profiles"> {
   profile?: Tables<"profiles">;
 }
 
-export default async function Page({
-  params: { locationId = "" },
-  searchParams: { page = 0, per_page = 10, role = "" },
-}) {
-  const supabase = createClient();
+type TPageProps = {
+  searchParams: Promise<{ page?: number; per_page?: number; role?: string }>;
+  params: Promise<{ locationId: string }>;
+};
+
+export default async function Page(props: TPageProps) {
+  const searchParams = await props.searchParams;
+
+  const { page = 0, per_page = 10, role = "" } = searchParams;
+
+  const params = await props.params;
+
+  const { locationId = "" } = params;
+
+  const supabase = await createSupabaseServerClient();
   const startRange =
     page > 1
       ? Number(page - 1) * Number(per_page)

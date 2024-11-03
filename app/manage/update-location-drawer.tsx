@@ -10,8 +10,8 @@ import { Tables } from "@/types/supabase";
 import { Drawer, Label, Select, TextInput } from "flowbite-react";
 import { MapPinIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { UpdateBusinessLocation } from "./actions";
 
 const FormFields = ({
@@ -115,7 +115,7 @@ export default function UpdateLocationDrawer({
 }: UpdateLocationDrawerType) {
   const router = useRouter();
   const handleClose = () => setIsOpen(false);
-  const [state, action] = useFormState(
+  const [state, action] = useActionState(
     UpdateBusinessLocation<TInitialFormState>,
     initialFormState,
   );

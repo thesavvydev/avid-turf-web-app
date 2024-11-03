@@ -1,14 +1,16 @@
-import { createClient } from "@/utils/supabase/server";
+import { createSupabaseServerClient } from "@/utils/supabase/server";
 import PageForm from "./page-form";
 
 type TPage = {
-  params: { locationId: string; businessId: string };
+  params: Promise<{ locationId: string; businessId: string }>;
 };
 
-export default async function Page({
-  params: { businessId, locationId },
-}: TPage) {
-  const supabase = createClient();
+export default async function Page(props: TPage) {
+  const params = await props.params;
+
+  const { businessId, locationId } = params;
+
+  const supabase = await createSupabaseServerClient();
   const { data: profiles, error } = await supabase
     .from("business_location_profiles")
     .select("*, profile: profiles(id,full_name)")

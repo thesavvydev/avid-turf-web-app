@@ -31,7 +31,7 @@ export default function JobHeader({ job }: { job: IJob }) {
       await supabase
         .from("business_location_jobs")
         .update({ status })
-        .eq("id", jobId);
+        .eq("id", jobId as string);
 
       router.refresh();
     };
@@ -57,18 +57,6 @@ export default function JobHeader({ job }: { job: IJob }) {
       href: `/manage/${businessId}/location/${locationId}/job/${jobId}/invoices`,
       title: "Invoices",
     },
-    // {
-    //   href: `/manage/${businessId}/location/${locationId}/job/${jobId}/tasks`,
-    //   title: "Tasks",
-    // },
-    // {
-    //   href: `/manage/${businessId}/location/${locationId}/job/${jobId}/bids`,
-    //   title: "Bids",
-    // },
-    // {
-    //   href: `/manage/${businessId}/location/${locationId}/job/${jobId}/change-orders`,
-    //   title: "Change Orders",
-    // },
     {
       href: `/manage/${businessId}/location/${locationId}/job/${jobId}/log`,
       title: "Log",
