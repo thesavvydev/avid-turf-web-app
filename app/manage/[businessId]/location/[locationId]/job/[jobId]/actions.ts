@@ -309,13 +309,17 @@ export async function UpdateJobProducts<T>(...args: ServerActionWithState<T>) {
     (startingJobId) => !updateProductIds.includes(Number(startingJobId)),
   );
 
-  const productsUpsert = Object.values(productsDictionary).map((product) => ({
-    ...product,
-    business_id: fields.business_id as string,
-    location_id: Number(fields.location_id),
-    job_id: Number(fields.job_id),
-    product_id: Number(product.product_id),
-  }));
+  const productsUpsert = Object.values(productsDictionary).flatMap((product) =>
+    product.product_id
+      ? {
+          ...product,
+          business_id: fields.business_id as string,
+          location_id: Number(fields.location_id),
+          job_id: Number(fields.job_id),
+          product_id: Number(product.product_id),
+        }
+      : [],
+  );
 
   await DeleteJobProducts(deleteJobProductIds);
 

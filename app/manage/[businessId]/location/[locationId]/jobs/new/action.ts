@@ -119,13 +119,17 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     profile_id: fields.creator_id as string,
   });
 
-  const productsInsert = Object.values(productsDictionary).map((product) => ({
-    ...product,
-    business_id: fields.business_id as string,
-    location_id: Number(fields.business_location_id),
-    job_id: data.id,
-    product_id: Number(product.product_id),
-  }));
+  const productsInsert = Object.values(productsDictionary).flatMap((product) =>
+    product.product_id
+      ? {
+          ...product,
+          business_id: fields.business_id as string,
+          location_id: Number(fields.business_location_id),
+          job_id: data.id,
+          product_id: Number(product.product_id),
+        }
+      : [],
+  );
 
   const { error: insertJobProductsError } = await supabase
     .from("business_location_job_products")
