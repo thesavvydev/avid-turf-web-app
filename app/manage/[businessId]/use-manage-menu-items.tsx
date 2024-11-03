@@ -2,6 +2,7 @@
 
 import { useUserContext } from "@/contexts/user";
 import {
+  BoxIcon,
   HomeIcon,
   MapPinIcon,
   UserCircle2,
@@ -38,6 +39,12 @@ export default function useManageMenuItems() {
         href: `/manage/${businessId}/locations`,
         isActive: pathname === `/manage/${businessId}/locations`,
         icon: MapPinIcon,
+      },
+      {
+        name: "Products",
+        href: `/manage/${businessId}/products`,
+        isActive: pathname === `/manage/${businessId}/products`,
+        icon: BoxIcon,
       },
       ...(isBusinessManagement
         ? [

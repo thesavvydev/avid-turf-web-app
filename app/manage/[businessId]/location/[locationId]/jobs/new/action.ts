@@ -14,7 +14,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
   const insert = {
     address: fields.address as string,
     business_id: fields.business_id as string,
-    business_location_id: Number(fields.business_location_id) as number,
+    business_location_id: Number(fields.business_location_id),
     city: fields.city as string,
     creator_id: fields.creator_id as string,
     email: fields.email as string,
@@ -24,11 +24,16 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     state: fields.state as string,
     status: fields.status as Database["public"]["Enums"]["location_job_status"],
     type: fields.type as Database["public"]["Enums"]["job_types"],
-    total_sq_ft: Number(fields.total_sq_ft) as number,
-    total_cost: Number(fields.total_cost) as number,
-    price_per_sq_ft: Number(fields.price_per_sq_ft) as number,
-    down_payment_collected: Number(fields.down_payment_collected) as number,
-    financing: fields.financing === "yes",
+    down_payment_collected: Number(fields.down_payment_collected),
+    commission: Number(fields.commission),
+    payment_type:
+      fields.payment_type as Database["public"]["Enums"]["job_payment_types"],
+    hoa_approval_required: fields.hoa_approval_required === "yes",
+    hoa_contact_name: fields.hoa_contact_name as string,
+    hoa_contact_email: fields.hoa_contact_email as string,
+    hoa_contact_phone: fields.hoa_contact_phone as string,
+    has_water_rebate: fields.has_water_rebate === "yes",
+    water_rebate_company: fields.water_rebate_company as string,
   };
 
   const employeesDictionary = Object.entries(fields).reduce<{
@@ -37,6 +42,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
       "profile_id" | "role"
     >;
   }>((dictionary, [key, value]) => {
+    if (!key.includes("employees__")) return dictionary;
     const [_, tempId, field] = key.split("__");
     if (!tempId) return dictionary;
     dictionary[tempId] = dictionary[tempId] ?? {};
@@ -48,6 +54,22 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     } else {
       dictionary[tempId].profile_id = value as string;
     }
+
+    return dictionary;
+  }, {});
+
+  const productsDictionary = Object.entries(fields).reduce<{
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  }>((dictionary, [key, value]) => {
+    if (!key.includes("product__")) return dictionary;
+    const [_, tempId, field] = key.split("__");
+    if (!tempId) return dictionary;
+    dictionary[tempId] = dictionary[tempId] ?? {};
+
+    if (!field) return dictionary;
+    dictionary[tempId][field] = value;
 
     return dictionary;
   }, {});
@@ -91,6 +113,34 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(employeesInsert),
     message: `Added employees to job`,
+    record_id: data.id.toString(),
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.creator_id as string,
+  });
+
+  const productsInsert = Object.values(productsDictionary).map((product) => ({
+    ...product,
+    business_id: fields.business_id as string,
+    location_id: Number(fields.business_location_id),
+    job_id: data.id,
+    product_id: Number(product.product_id),
+  }));
+
+  const { error: insertJobProductsError } = await supabase
+    .from("business_location_job_products")
+    .insert(productsInsert);
+
+  if (insertJobProductsError) {
+    return formStateResponse({
+      ...state,
+      error: insertJobProductsError.message,
+    });
+  }
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(productsInsert),
+    message: `Added products to job`,
     record_id: data.id.toString(),
     record_table_name: "business_location_jobs",
     business_id: fields.business_id as string,

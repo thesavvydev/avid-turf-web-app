@@ -13,9 +13,7 @@ import {
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import JobsHeader from "./jobs-header";
-import JobMessageCard from "./jobs-message-card";
 import JobsTable from "./jobs-table";
-import JobsUpcomingCard from "./jobs-upcoming-card";
 
 export const metadata = {
   title: "Jobs",
@@ -195,8 +193,6 @@ export default async function Page({
     created_after = null,
     created_before = null,
     status = "",
-    closer_id = "",
-    installer_id = "",
   },
   params: { locationId = "" },
 }) {
@@ -224,14 +220,12 @@ export default async function Page({
   const fetchTableData = supabase
     .from("business_location_jobs")
     .select(
-      "*,creator: profiles!creator_id(id,full_name,avatar_url),  closer: profiles!closer_id(id,full_name,avatar_url), installer: profiles!installer_id(id,full_name,avatar_url), messages: business_location_job_messages(*,author: author_id(*))",
+      "*,creator: profiles!creator_id(id,full_name,avatar_url), messages: business_location_job_messages(*,author: author_id(*))",
       { count: "exact" },
     )
     .match({
       business_location_id: locationId,
       ...(status ? { status } : {}),
-      ...(closer_id ? { closer_id } : {}),
-      ...(installer_id ? { installer_id } : {}),
     })
     .range(startRange, endRange)
     .gte("created_at", new Date(created_after ?? "0").toISOString())
@@ -239,29 +233,14 @@ export default async function Page({
     .order("created_at", { ascending: false })
     .returns<IJob[]>();
 
-  const fetchLatestJobMessages = supabase
-    .from("business_location_jobs")
-    .select(
-      "id, messages: business_location_job_messages(*,author: author_id(*))",
-    )
-    .eq("business_location_id", locationId)
-    .order("created_at", {
-      ascending: false,
-      referencedTable: "messages",
-    })
-    .limit(10)
-    .returns<IJob[]>();
-
   const [
     { data: all, count },
     { data: previousWeek },
     { data, error, count: paginatedTotal },
-    { data: latestJobsWithMessages },
   ] = await Promise.all([
     fetchAllJobs,
     fetchAllPreviousWeekJobs,
     fetchTableData,
-    fetchLatestJobMessages,
   ]);
 
   if (error) throw error;
@@ -291,19 +270,6 @@ export default async function Page({
         jobsCount={count ?? 0}
         statusCounts={statusCounts}
       />
-      <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
-        <div className="lg:col-span-4">
-          <JobMessageCard
-            jobs={
-              latestJobsWithMessages?.filter((job) => job.messages?.length) ??
-              []
-            }
-          />
-        </div>
-        <div className="lg:col-span-8">
-          <JobsUpcomingCard />
-        </div>
-      </div>
       <JobsTable
         jobsCount={count ?? 0}
         jobs={data ?? []}

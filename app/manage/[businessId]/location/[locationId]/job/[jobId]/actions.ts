@@ -4,6 +4,7 @@ import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
 import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export async function CreateJobMessage<T>(...args: ServerActionWithState<T>) {
   const supabase = createClient();
@@ -50,35 +51,6 @@ export async function UpdateJobCustomer<T>(...args: ServerActionWithState<T>) {
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(updates),
     message: `Updated customer information`,
-    record_id: fields.job_id as string,
-    record_table_name: "business_location_jobs",
-    business_id: fields.business_id as string,
-    profile_id: fields.profile_id as string,
-  });
-
-  return formStateResponse({ ...state, success: true, dismiss: true });
-}
-
-export async function UpdateJobEmployees<T>(...args: ServerActionWithState<T>) {
-  const supabase = createClient();
-  const [state, formData] = args;
-  const fields = Object.fromEntries(formData);
-
-  const updates = {
-    closer_id: fields.closer_id as string,
-    installer_id: fields.installer_id as string,
-  };
-
-  const { error } = await supabase
-    .from("business_location_jobs")
-    .update(updates)
-    .eq("id", fields.job_id);
-
-  if (error) return formStateResponse({ ...state, error: error.message });
-
-  await supabase.from("business_logs").insert({
-    snapshot: JSON.stringify(updates),
-    message: `Updated employees`,
     record_id: fields.job_id as string,
     record_table_name: "business_location_jobs",
     business_id: fields.business_id as string,
@@ -282,4 +254,119 @@ export async function DeleteJobMedia(id: number) {
   if (error) throw error;
 
   return;
+}
+
+export async function DeleteJobProduct(id: number) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("business_location_job_products")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+
+  return;
+}
+
+export async function DeleteJobProducts(ids: string[]) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("business_location_job_products")
+    .delete()
+    .in("id", ids);
+
+  if (error) throw error;
+
+  return;
+}
+
+export async function UpdateJobProducts<T>(...args: ServerActionWithState<T>) {
+  const supabase = createClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+  const startingJobIds = (fields.job_product_ids as string).split(",");
+
+  const productsDictionary = Object.entries(fields).reduce<{
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  }>((dictionary, [key, value]) => {
+    if (!key.includes("product__")) return dictionary;
+    const [_, tempId, field] = key.split("__");
+
+    dictionary[tempId] = dictionary[tempId] ?? {};
+    dictionary[tempId][field] = value;
+
+    return dictionary;
+  }, {});
+
+  const updateProductIds = Object.values(productsDictionary).map((p) =>
+    Number(p.id),
+  );
+  const deleteJobProductIds = startingJobIds.filter(
+    (startingJobId) => !updateProductIds.includes(Number(startingJobId)),
+  );
+
+  const productsUpsert = Object.values(productsDictionary).map((product) => ({
+    ...product,
+    business_id: fields.business_id as string,
+    location_id: Number(fields.location_id),
+    job_id: Number(fields.job_id),
+    product_id: Number(product.product_id),
+  }));
+
+  // console.log({ productsUpsert });
+  // return formStateResponse({ error: "testing" });
+  await DeleteJobProducts(deleteJobProductIds);
+
+  const { error: upsertJobProductsError } = await supabase
+    .from("business_location_job_products")
+    .upsert(productsUpsert);
+
+  if (upsertJobProductsError) {
+    return formStateResponse({
+      ...state,
+      error: upsertJobProductsError.message,
+    });
+  }
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(productsUpsert),
+    message: `Updated job products`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  const commissionUpdates = { commission: Number(fields.commission) };
+
+  const { error: updateJobCommissionError } = await supabase
+    .from("business_location_jobs")
+    .update(commissionUpdates)
+    .eq("id", fields.job_id as string);
+
+  if (updateJobCommissionError) {
+    return formStateResponse({
+      ...state,
+      error: updateJobCommissionError.message,
+    });
+  }
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(commissionUpdates),
+    message: `Updated job commission`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  revalidatePath(
+    `/manage/${fields.business_id}/location/${fields.location_id}/job/${fields.job_id}`,
+  );
+
+  return formStateResponse({ ...state, success: true });
 }

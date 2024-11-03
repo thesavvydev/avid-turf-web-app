@@ -8,8 +8,9 @@ interface IBusinessProfile extends Partial<Tables<"business_profiles">> {
 }
 
 export interface IBusiness extends Partial<Tables<"businesses">> {
-  profiles: IBusinessProfile[];
   locations: Partial<Tables<"business_locations">>[];
+  products: Tables<"business_products">[];
+  profiles: IBusinessProfile[];
 }
 
 type TBusinessProviderContext = {
@@ -19,8 +20,9 @@ type TBusinessProviderContext = {
 const initialContext = {
   business: {
     id: "biz",
-    profiles: [],
     locations: [],
+    products: [],
+    profiles: [],
   },
 };
 

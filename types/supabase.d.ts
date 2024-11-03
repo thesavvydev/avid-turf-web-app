@@ -180,6 +180,68 @@ export type Database = {
           },
         ]
       }
+      business_location_job_products: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: number
+          job_id: number
+          lead_price_addon: number | null
+          location_id: number
+          number_of_units: number
+          product_id: number
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: number
+          job_id: number
+          lead_price_addon?: number | null
+          location_id: number
+          number_of_units?: number
+          product_id: number
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: number
+          job_id?: number
+          lead_price_addon?: number | null
+          location_id?: number
+          number_of_units?: number
+          product_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_job_products_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_products_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_products_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "business_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_job_profiles: {
         Row: {
           business_id: string
@@ -245,78 +307,75 @@ export type Database = {
           business_id: string
           business_location_id: number
           city: string | null
-          closer_id: string | null
+          commission: number
           created_at: string
           creator_id: string
-          customer_id: string | null
           down_payment_collected: number | null
           email: string | null
-          financing: boolean
           full_name: string
+          has_water_rebate: boolean
+          hoa_approval_required: boolean
+          hoa_contact_email: string | null
+          hoa_contact_name: string | null
+          hoa_contact_phone: string | null
           id: number
-          installer_id: string | null
-          lead_id: number | null
+          payment_type: Database["public"]["Enums"]["job_payment_types"]
           phone: string | null
           postal_code: string | null
-          price_per_sq_ft: number | null
-          setter_id: string | null
           state: string | null
           status: Database["public"]["Enums"]["location_job_status"]
-          total_cost: number | null
-          total_sq_ft: number | null
           type: Database["public"]["Enums"]["job_types"]
+          water_rebate_company: string | null
         }
         Insert: {
           address?: string | null
           business_id: string
           business_location_id: number
           city?: string | null
-          closer_id?: string | null
+          commission?: number
           created_at?: string
           creator_id: string
-          customer_id?: string | null
           down_payment_collected?: number | null
           email?: string | null
-          financing?: boolean
           full_name: string
+          has_water_rebate?: boolean
+          hoa_approval_required?: boolean
+          hoa_contact_email?: string | null
+          hoa_contact_name?: string | null
+          hoa_contact_phone?: string | null
           id?: number
-          installer_id?: string | null
-          lead_id?: number | null
+          payment_type?: Database["public"]["Enums"]["job_payment_types"]
           phone?: string | null
           postal_code?: string | null
-          price_per_sq_ft?: number | null
-          setter_id?: string | null
           state?: string | null
           status?: Database["public"]["Enums"]["location_job_status"]
-          total_cost?: number | null
-          total_sq_ft?: number | null
           type?: Database["public"]["Enums"]["job_types"]
+          water_rebate_company?: string | null
         }
         Update: {
           address?: string | null
           business_id?: string
           business_location_id?: number
           city?: string | null
-          closer_id?: string | null
+          commission?: number
           created_at?: string
           creator_id?: string
-          customer_id?: string | null
           down_payment_collected?: number | null
           email?: string | null
-          financing?: boolean
           full_name?: string
+          has_water_rebate?: boolean
+          hoa_approval_required?: boolean
+          hoa_contact_email?: string | null
+          hoa_contact_name?: string | null
+          hoa_contact_phone?: string | null
           id?: number
-          installer_id?: string | null
-          lead_id?: number | null
+          payment_type?: Database["public"]["Enums"]["job_payment_types"]
           phone?: string | null
           postal_code?: string | null
-          price_per_sq_ft?: number | null
-          setter_id?: string | null
           state?: string | null
           status?: Database["public"]["Enums"]["location_job_status"]
-          total_cost?: number | null
-          total_sq_ft?: number | null
           type?: Database["public"]["Enums"]["job_types"]
+          water_rebate_company?: string | null
         }
         Relationships: [
           {
@@ -327,13 +386,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_location_jobs_closer_id_fkey"
-            columns: ["closer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "business_location_jobs_creator_id_fkey"
             columns: ["creator_id"]
             isOneToOne: false
@@ -341,38 +393,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_location_jobs_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "business_location_jobs_installer_id_fkey"
-            columns: ["installer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "business_location_jobs_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "business_location_leads"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "business_location_jobs_location_id_fkey"
             columns: ["business_location_id"]
             isOneToOne: false
             referencedRelation: "business_locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "business_location_jobs_setter_id_fkey"
-            columns: ["setter_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -658,6 +682,44 @@ export type Database = {
           },
         ]
       }
+      business_products: {
+        Row: {
+          business_id: string | null
+          created_at: string
+          id: number
+          image: string | null
+          measurement: string
+          name: string
+          price_per_measurement: number
+        }
+        Insert: {
+          business_id?: string | null
+          created_at?: string
+          id?: number
+          image?: string | null
+          measurement?: string
+          name: string
+          price_per_measurement: number
+        }
+        Update: {
+          business_id?: string | null
+          created_at?: string
+          id?: number
+          image?: string | null
+          measurement?: string
+          name?: string
+          price_per_measurement?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_products_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_profiles: {
         Row: {
           business_id: string
@@ -773,6 +835,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      business_profile_has_role: {
+        Args: {
+          bid: string
+          r: string
+        }
+        Returns: boolean
+      }
       get_user_id_by_email: {
         Args: {
           email: string
@@ -780,6 +849,31 @@ export type Database = {
         Returns: {
           id: string
         }[]
+      }
+      has_business_profile: {
+        Args: {
+          bid: string
+        }
+        Returns: boolean
+      }
+      has_job_profile: {
+        Args: {
+          jid: number
+        }
+        Returns: boolean
+      }
+      has_location_profile: {
+        Args: {
+          lid: number
+        }
+        Returns: boolean
+      }
+      has_role_at_any_business_location: {
+        Args: {
+          r: string
+          bid: string
+        }
+        Returns: boolean
       }
       is_business_profile: {
         Args: {
@@ -809,11 +903,19 @@ export type Database = {
         }
         Returns: boolean
       }
+      location_profile_has_role: {
+        Args: {
+          lid: number
+          r: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       business_roles: "admin" | "manager" | "base"
       custom_field_models: "leads" | "jobs"
       custom_field_types: "text" | "date" | "number" | "select"
+      job_payment_types: "cash" | "credit" | "finance"
       job_roles:
         | "setter"
         | "installer"

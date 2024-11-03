@@ -1,10 +1,11 @@
-import { JOB_TYPES } from "@/constants/job-types";
+import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { IJob, IJobMessage } from "@/types/job";
 import { formatAsCurrency } from "@/utils/formatter";
 import { createClient } from "@/utils/supabase/server";
-import { Button, Card, List, ListItem } from "flowbite-react";
+import { Card, List, ListItem } from "flowbite-react";
 import { notFound } from "next/navigation";
 import JobEmployeesCard from "./job-employees-card";
+import JobLineitemsCard from "./job-lineitems-card";
 import JobLocationCard from "./job-location-card";
 import JobMediaCard from "./job-media-card";
 import JobMessagesCard from "./job-messages-card";
@@ -12,10 +13,11 @@ import JobTimelineCard from "./job-timeline-card";
 
 export default async function Page({ params: { jobId = "" } }) {
   const supabase = createClient();
+
   const fetchJob = supabase
     .from("business_location_jobs")
     .select(
-      "*, customer: customer_id(*), media: business_location_job_media(*), profiles: business_location_job_profiles(*, profile: profile_id(*))",
+      "*,  media: business_location_job_media(*), profiles: business_location_job_profiles(*, profile: profile_id(*)), products: business_location_job_products(*, product: business_products(*))",
     )
     .eq("id", jobId)
     .limit(1)
@@ -41,54 +43,36 @@ export default async function Page({ params: { jobId = "" } }) {
   const job: IJob = data;
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <div className="grid gap-4 md:col-span-2 md:grid-cols-2">
+    <div className="grid gap-4 xl:grid-cols-3 xl:gap-6">
+      <div className="grid gap-4 md:grid-cols-2 xl:col-span-2 xl:gap-6">
         <JobLocationCard job={job} />
-        <div className="grid gap-4">
+        <div className="grid gap-4 xl:gap-6">
           <Card className="group">
-            <h6 className="text-lg font-semibold tracking-tighter">Info</h6>
+            <h6 className="text-lg font-semibold tracking-tighter">
+              Payment Information
+            </h6>
             <List unstyled>
               <ListItem className="flex items-center justify-between gap-2">
-                <dt>Type</dt>
-                <dl>{JOB_TYPES[job.type].name}</dl>
+                <dt>Down payment collected</dt>
+                <dl>{formatAsCurrency(Number(job.down_payment_collected))}</dl>
               </ListItem>
               <ListItem className="flex items-center justify-between gap-2">
-                <dt>Total Sq Ft</dt>
-                <dl>{job.total_sq_ft}</dl>
-              </ListItem>
-              <ListItem className="flex items-center justify-between gap-2">
-                <dt>Price Per Sq Ft</dt>
-                <dl>{formatAsCurrency(Number(job.price_per_sq_ft))}</dl>
-              </ListItem>
-              <ListItem className="flex items-center justify-between gap-2 border-t border-gray-400 py-2">
-                <dt>Total Cost</dt>
-                <dl>{formatAsCurrency(Number(job.total_cost))}</dl>
+                <dt>Payment Type</dt>
+                <dl>{JOB_PAYMENT_TYPES[job.payment_type].name}</dl>
               </ListItem>
             </List>
           </Card>
           <JobTimelineCard job={job} />
         </div>
         <div className="md:col-span-2">
+          <JobLineitemsCard job={job} />
+        </div>
+        <div className="md:col-span-2">
           <JobMediaCard media={job.media ?? []} />
         </div>
       </div>
-      <div className="flex flex-col gap-4">
-        <Card>
-          <List unstyled>
-            <ListItem className="flex items-center justify-between gap-2">
-              <dt>Financing</dt>
-              <dl>{job.financing ? "Yes" : "No"}</dl>
-            </ListItem>
-            <ListItem className="flex items-center justify-between gap-2">
-              <dt>Down Payment Collected</dt>
-              <dl>{formatAsCurrency(Number(job.down_payment_collected))}</dl>
-            </ListItem>
-          </List>
-          <Button color="light">Send document for docusign</Button>
-        </Card>
+      <div className="flex flex-col gap-4 xl:gap-6">
         <JobEmployeesCard job={job} />
-      </div>
-      <div className="md:col-span-3">
         <JobMessagesCard messages={messages} />
       </div>
     </div>

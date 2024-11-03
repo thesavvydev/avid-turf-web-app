@@ -18,10 +18,12 @@ import { useFormState, useFormStatus } from "react-dom";
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import ErrorAlert from "@/components/error-alert";
+import JobProductsFormFields from "@/components/job-products-form-fields";
 import PageHeaderWithActions from "@/components/page-header-with-actions";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { JOB_TYPES } from "@/constants/job-types";
 import { US_STATES } from "@/constants/us-states";
@@ -91,9 +93,10 @@ const EmployeesCard = ({ profiles }: { profiles: TProfile[] }) => {
                 Role
               </Label>
               <Select
-                name={`employees__${number}__role`}
                 id={`employees__${number}__role`}
+                name={`employees__${number}__role`}
                 required
+                defaultValue="closer"
               >
                 <option value="">Select a role</option>
                 {Object.entries(JOB_PROFILE_ROLES).map(([roleKey, role]) => (
@@ -118,7 +121,135 @@ const EmployeesCard = ({ profiles }: { profiles: TProfile[] }) => {
   );
 };
 
-const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
+const HOAInformationFields = () => {
+  const [isApprovalRequired, setIsApprovalRequired] = useState(false);
+  const { pending } = useFormStatus();
+
+  return (
+    <Card>
+      <h2 className="text-xl font-medium text-gray-400">HOA Information</h2>
+      <fieldset
+        disabled={pending}
+        className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+      >
+        <fieldset className="flex max-w-md flex-col gap-4 sm:col-span-2">
+          <legend className="mb-4">Approval Needed</legend>
+          <div className="flex items-center gap-2">
+            <Radio
+              id="yes"
+              name="hoa_approval_required"
+              value="yes"
+              onChange={(e) => setIsApprovalRequired(e.target.checked)}
+            />
+            <Label htmlFor="yes">Yes</Label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Radio
+              id="no"
+              name="hoa_approval_required"
+              value="no"
+              defaultChecked
+              onChange={(e) => setIsApprovalRequired(!e.target.checked)}
+            />
+            <Label htmlFor="no">No</Label>
+          </div>
+        </fieldset>
+        {isApprovalRequired && (
+          <>
+            <div>
+              <Label htmlFor="hoa_contact_name" className="mb-2 block">
+                Contact Name
+              </Label>
+              <TextInput
+                id="hoa_contact_name"
+                name="hoa_contact_name"
+                autoComplete="off"
+              />
+            </div>
+            <div>
+              <Label htmlFor="hoa_contact_email" className="mb-2 block">
+                Contact Email
+              </Label>
+              <TextInput
+                type="email"
+                id="hoa_contact_email"
+                name="hoa_contact_email"
+                autoComplete="off"
+              />
+            </div>
+            <div>
+              <Label htmlFor="hoa_contact_phone" className="mb-2 block">
+                Contact Phone
+              </Label>
+              <TextInput
+                type="phone"
+                id="hoa_contact_phone"
+                name="hoa_contact_phone"
+                autoComplete="off"
+              />
+            </div>
+          </>
+        )}
+      </fieldset>
+    </Card>
+  );
+};
+
+const WaterRebateInformationFields = () => {
+  const [isRebateProvided, setIsRebateProvided] = useState(false);
+  const { pending } = useFormStatus();
+
+  return (
+    <Card>
+      <h2 className="text-xl font-medium text-gray-400">
+        Water Rebate Information
+      </h2>
+      <fieldset
+        disabled={pending}
+        className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+      >
+        <fieldset className="flex max-w-md flex-col gap-4 sm:col-span-2">
+          <legend className="mb-4">Has Water Rebate</legend>
+          <div className="flex items-center gap-2">
+            <Radio
+              id="yes"
+              name="has_water_rebate"
+              value="yes"
+              onChange={(e) => setIsRebateProvided(e.target.checked)}
+            />
+            <Label htmlFor="yes">Yes</Label>
+          </div>
+          <div className="flex items-center gap-2">
+            <Radio
+              id="no"
+              name="has_water_rebate"
+              value="no"
+              defaultChecked
+              onChange={(e) => setIsRebateProvided(!e.target.checked)}
+            />
+            <Label htmlFor="no">No</Label>
+          </div>
+        </fieldset>
+        {isRebateProvided && (
+          <>
+            <div>
+              <Label htmlFor="water_rebate_company" className="mb-2 block">
+                Water Rebate Company
+              </Label>
+              <TextInput
+                id="water_rebate_company"
+                name="water_rebate_company"
+                autoComplete="off"
+              />
+            </div>
+          </>
+        )}
+      </fieldset>
+    </Card>
+  );
+};
+
+const FormFields = ({ profiles, products }: TPageForm) => {
   const { businessId, locationId } = useParams();
   const { user } = useUserContext();
   const { pending } = useFormStatus();
@@ -213,12 +344,14 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
         </fieldset>
       </Card>
       <Card>
-        <h2 className="text-xl font-medium text-gray-400">Job Information</h2>
+        <h2 className="text-xl font-medium text-gray-400">
+          Product Information
+        </h2>
         <fieldset
           disabled={pending}
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
         >
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <Label htmlFor="type" className="mb-2 block">
               Type
             </Label>
@@ -233,39 +366,19 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
               ))}
             </Select>
           </div>
-          <div>
-            <Label htmlFor="total_sq_ft" className="mb-2 block">
-              Total Sq Ft
-            </Label>
-            <TextInput
-              type="number"
-              id="total_sq_ft"
-              name="total_sq_ft"
-              autoComplete="off"
-            />
+          <div className="sm:col-span-2">
+            <JobProductsFormFields products={products} />
           </div>
-          <div>
-            <Label htmlFor="price_per_sq_ft" className="mb-2 block">
-              Price Per Sq Ft
-            </Label>
-            <TextInput
-              type="number"
-              id="price_per_sq_ft"
-              name="price_per_sq_ft"
-              autoComplete="off"
-            />
-          </div>
-          <div>
-            <Label htmlFor="total_cost" className="mb-2 block">
-              Total Cost
-            </Label>
-            <TextInput
-              type="number"
-              id="total_cost"
-              name="total_cost"
-              autoComplete="off"
-            />
-          </div>
+        </fieldset>
+      </Card>
+      <Card>
+        <h2 className="text-xl font-medium text-gray-400">
+          Payment Information
+        </h2>
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
           <div>
             <Label htmlFor="down_payment_collected" className="mb-2 block">
               Down Payment Collected
@@ -278,19 +391,32 @@ const FormFields = ({ profiles }: { profiles: TProfile[] }) => {
               defaultValue={500}
             />
           </div>
-          <fieldset className="col-span-2 flex max-w-md flex-col gap-4">
-            <legend className="mb-4">Financing</legend>
-            <div className="flex items-center gap-2">
-              <Radio id="yes" name="financing" value="yes" defaultChecked />
-              <Label htmlFor="yes">Yes</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Radio id="no" name="financing" value="no" />
-              <Label htmlFor="no">No</Label>
-            </div>
-          </fieldset>
+          <div>
+            <Label htmlFor="payment_type" className="mb-2 block">
+              Payment Type
+            </Label>
+            <Select
+              id="payment_type"
+              name="payment_type"
+              defaultValue=""
+              required
+            >
+              <option value="" disabled>
+                Select a type
+              </option>
+              {Object.entries(JOB_PAYMENT_TYPES).map(
+                ([jobPaymentTypeKey, jobPaymentType]) => (
+                  <option key={jobPaymentTypeKey} value={jobPaymentTypeKey}>
+                    {jobPaymentType.name}
+                  </option>
+                ),
+              )}
+            </Select>
+          </div>
         </fieldset>
       </Card>
+      <HOAInformationFields />
+      <WaterRebateInformationFields />
       <EmployeesCard profiles={profiles} />
     </>
   );
@@ -302,16 +428,18 @@ type TProfile = Tables<"business_location_profiles"> & {
 
 type TPageForm = {
   profiles: TProfile[];
+  products: Tables<"business_products">[];
 };
 
-export default function PageForm({ profiles }: TPageForm) {
+export default function PageForm({ profiles, products }: TPageForm) {
   const { businessId, locationId } = useParams();
   const [state, action] = useFormState(
     AddJob<TInitialFormState>,
     initialFormState,
   );
+
   return (
-    <div className="mx-auto grid w-full max-w-screen-sm gap-4">
+    <div className="mx-auto grid w-full max-w-screen-md gap-4">
       <PageHeaderWithActions
         title="New Job"
         subtitle="Add a new job"
@@ -328,7 +456,7 @@ export default function PageForm({ profiles }: TPageForm) {
       />
       {state.error && <ErrorAlert message={state.error} />}
       <form action={action} className="grid gap-4 sm:gap-6">
-        <FormFields profiles={profiles} />
+        <FormFields profiles={profiles} products={products} />
         <div>
           <SubmitButton pendingText="Creating Job">
             <WorkflowIcon className="mr-2" />

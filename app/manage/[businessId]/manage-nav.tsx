@@ -16,9 +16,9 @@ import {
   SidebarOpenIcon,
 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
-import useManageMenuItems from "./use-manage-menu-items";
 import { useBusinessContext } from "@/contexts/business";
 import { useParams } from "next/navigation";
+import useManageMenuItems from "./use-manage-menu-items";
 
 export default function ManageNav() {
   const menuItems = useManageMenuItems();
@@ -41,33 +41,37 @@ export default function ManageNav() {
       className="fixed top-0 z-30 w-full border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
     >
       <div className="flex grow items-center gap-2">
-        <Tooltip content={`${isCollapsed ? "Open" : "Close"} Sidebar`}>
-          <button
-            className="hidden cursor-pointer items-center px-2 md:flex"
-            onClick={toggle}
-          >
-            <SidebarIcon className="size-5" />
-          </button>
-        </Tooltip>
-        <div className="mb-2 mr-2 flex w-full grow items-center justify-center gap-2 rounded border border-gray-200 bg-gray-50 px-4 py-2 shadow-inner dark:border-gray-600 dark:bg-gray-700 sm:mb-0 md:w-auto md:grow-0">
-          <Dropdown
-            inline
-            arrowIcon={false}
-            label={business.name}
-            color="light"
-            className="z-20"
-          >
-            <Dropdown.Header>Select a Business</Dropdown.Header>
-            {businesses?.map((userBusiness) => (
-              <Dropdown.Item
-                key={userBusiness.id}
-                href={`/manage/${userBusiness.id}/dashboard`}
-              >
-                {userBusiness.name}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
-          <ChevronRightIcon />
+        <div className="hidden lg:contents">
+          <Tooltip content={`${isCollapsed ? "Open" : "Close"} Sidebar`}>
+            <button
+              className="hidden cursor-pointer items-center px-2 lg:flex"
+              onClick={toggle}
+            >
+              <SidebarIcon className="size-5" />
+            </button>
+          </Tooltip>
+        </div>
+        <div className="mr-4 flex items-center gap-2 rounded border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-600 dark:bg-gray-700 md:mr-2 md:justify-center">
+          <div className="hidden sm:contents">
+            <Dropdown
+              inline
+              arrowIcon={false}
+              label={business.name}
+              color="light"
+              className="z-20"
+            >
+              <Dropdown.Header>Select a Business</Dropdown.Header>
+              {businesses?.map((userBusiness) => (
+                <Dropdown.Item
+                  key={userBusiness.id}
+                  href={`/manage/${userBusiness.id}/dashboard`}
+                >
+                  {userBusiness.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown>
+            <ChevronRightIcon />
+          </div>
           <Dropdown
             label={location?.name ?? "Select a location"}
             color="light"
@@ -111,7 +115,7 @@ export default function ManageNav() {
         <Navbar.Toggle />
         <DarkThemeToggle className="hidden lg:block" />
       </div>
-      <Navbar.Collapse className="lg:hidden">
+      <Navbar.Collapse className="mr-4 lg:hidden">
         {menuItems.map((menuItem) => (
           <Navbar.Link
             key={menuItem.name}

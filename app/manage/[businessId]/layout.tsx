@@ -16,7 +16,7 @@ export default async function Layout({
   const { data, error } = await supabase
     .from("businesses")
     .select(
-      "*, profiles: business_profiles(*, profile: profile_id(*)), locations: business_locations(*)",
+      "*, profiles: business_profiles(*, profile: profile_id(*)), locations: business_locations(*), products: business_products(*)",
     )
     .eq("id", businessId)
     .limit(1)
@@ -30,7 +30,7 @@ export default async function Layout({
     <BusinessContextProvider business={data}>
       <SidebarProvider initialCollapsed>
         <ManageNav />
-        <main className="relative mt-32 sm:mt-16 md:flex">
+        <main className="relative mt-20 sm:mt-16 md:flex">
           <ManageSidebar />
           <div className="relative max-w-full flex-1 overflow-x-hidden">
             <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">

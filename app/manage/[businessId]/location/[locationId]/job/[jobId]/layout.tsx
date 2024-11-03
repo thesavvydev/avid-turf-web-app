@@ -15,7 +15,7 @@ export default async function Layout({ children, params: { jobId } }: TLayout) {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("business_location_jobs")
-    .select("*, closer: closer_id(*), installer: installer_id(*)")
+    .select("*")
     .eq("id", jobId)
     .limit(1)
     .returns<IJob>()

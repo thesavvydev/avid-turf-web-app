@@ -4,11 +4,10 @@ import { ConfirmModal } from "@/components/confirm-modal";
 import Linky from "@/components/linky";
 import { JOB_TYPES } from "@/constants/job-types";
 import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
-import { useLocationContext } from "@/contexts/location";
 import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
 import { Database, Tables } from "@/types/supabase";
-import { formatAsCompactNumber, formatAsCurrency } from "@/utils/formatter";
+import { formatAsCompactNumber } from "@/utils/formatter";
 import {
   Alert,
   Avatar,
@@ -17,7 +16,6 @@ import {
   Datepicker,
   Dropdown,
   Pagination,
-  Select,
   Table,
   Tabs,
   TextInput,
@@ -289,70 +287,6 @@ function StatusTabFilters() {
   );
 }
 
-function CloserFilter() {
-  const {
-    location: { profiles },
-  } = useLocationContext();
-  const searchParams = useSearchParams();
-  const { handleUpdateSearchParam, handleRemoveSearchParam } =
-    useJobsTableContext();
-
-  return (
-    <Select
-      name="closer_id"
-      onChange={(e) => {
-        if (e.target.value === "") {
-          handleRemoveSearchParam(
-            "closer_id",
-            searchParams.get("closer_id") ?? "",
-          );
-        } else {
-          handleUpdateSearchParam("closer_id", e.target.value);
-        }
-      }}
-    >
-      <option value="">Select a closer</option>
-      {profiles.map(({ profile_id, profile }) => (
-        <option key={profile_id} value={profile_id}>
-          {profile.full_name}
-        </option>
-      ))}
-    </Select>
-  );
-}
-
-function InstallerFilter() {
-  const {
-    location: { profiles },
-  } = useLocationContext();
-  const searchParams = useSearchParams();
-  const { handleUpdateSearchParam, handleRemoveSearchParam } =
-    useJobsTableContext();
-
-  return (
-    <Select
-      name="installer_id"
-      onChange={(e) => {
-        if (e.target.value === "") {
-          handleRemoveSearchParam(
-            "installer_id",
-            searchParams.get("installer_id") ?? "",
-          );
-        } else {
-          handleUpdateSearchParam("installer_id", e.target.value);
-        }
-      }}
-    >
-      <option value="">Select an installer</option>
-      {profiles.map(({ profile_id, profile }) => (
-        <option key={profile_id} value={profile_id}>
-          {profile.full_name}
-        </option>
-      ))}
-    </Select>
-  );
-}
-
 function DateRangeFilter() {
   const { handleUpdateSearchParam } = useJobsTableContext();
 
@@ -588,24 +522,6 @@ function Content() {
       field: "type",
       header: "Type",
       render: (row) => JOB_TYPES[row.type].name,
-    },
-    {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap text-right",
-      field: "total_sq_ft",
-      header: "Total Sq Ft",
-      render: (row) => row.total_sq_ft,
-    },
-    {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap text-right",
-      field: "price_per_sq_ft",
-      header: "Price Per Sq Ft",
-      render: (row) => formatAsCurrency(Number(row.price_per_sq_ft)),
-    },
-    {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap text-right",
-      field: "total_cost",
-      header: "Total Cost",
-      render: (row) => formatAsCurrency(Number(row.total_cost)),
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
@@ -880,8 +796,6 @@ export default function JobsTable({
         </div>
         <div className="track grid gap-4 px-4 md:grid-cols-5 lg:px-6">
           <TableSearchFilter />
-          <CloserFilter />
-          <InstallerFilter />
           <DateRangeFilter />
         </div>
         <TableActiveFilters />
