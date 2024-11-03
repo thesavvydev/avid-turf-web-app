@@ -4,19 +4,19 @@ import { useUserContext } from "@/contexts/user";
 import { Button } from "flowbite-react";
 import { useParams } from "next/navigation";
 
-export default function ProductsHeader() {
+export default function LocationsHeader() {
   const { businessId } = useParams();
   const { user } = useUserContext();
 
   return (
     <PageHeaderWithActions
-      title="Products"
-      subtitle="Inventory management for your business."
+      title="Locations"
+      subtitle="Location management for your business."
       renderActions={() =>
         user.business?.role &&
         ["admin", "manager"].includes(user.business.role) ? (
-          <Button href={`/manage/${businessId}/products/new`} color="primary">
-            New product
+          <Button href={`/manage/${businessId}/locations/new`} color="primary">
+            New location
           </Button>
         ) : null
       }

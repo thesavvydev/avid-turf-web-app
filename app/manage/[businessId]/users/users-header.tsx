@@ -15,7 +15,7 @@ export default function UsersHeader() {
       )}
       <PageHeaderWithActions
         title="Users"
-        subtitle="View all of your business users."
+        subtitle="Employee management for your business."
         renderActions={() => (
           <Button onClick={() => setIsOpen(true)} color="primary">
             Add User
