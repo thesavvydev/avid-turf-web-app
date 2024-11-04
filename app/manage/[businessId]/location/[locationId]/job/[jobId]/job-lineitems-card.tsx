@@ -10,7 +10,7 @@ import { useBusinessContext } from "@/contexts/business";
 import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
 import { formatAsCurrency, formatAsReadableNumber } from "@/utils/formatter";
-import { Card, Table } from "flowbite-react";
+import { Button, Card, Table } from "flowbite-react";
 import { SettingsIcon } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { UpdateJobProducts } from "./actions";
@@ -156,8 +156,11 @@ const ManageLineitemsForm = ({
           defaultJobProducts={job.products}
           products={products}
         />
-        <div>
+        <div className="flex items-center gap-2">
           <SubmitButton pendingText="Saving...">Save</SubmitButton>
+          <Button color="light" onClick={close}>
+            Cancel
+          </Button>
         </div>
       </form>
     </>

@@ -15,7 +15,7 @@ export default function SubmitButton({
   const { pending } = useFormStatus();
 
   return (
-    <Button disabled={pending} type="submit" color="primary" size="lg">
+    <Button disabled={pending} type="submit" color="primary">
       {pending && pendingText ? (
         <>
           <Spinner aria-label="Form submitted" size="md" />
