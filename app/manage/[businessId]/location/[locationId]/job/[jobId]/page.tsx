@@ -1,15 +1,13 @@
-import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { IJob, IJobMessage } from "@/types/job";
-import { formatAsCurrency } from "@/utils/formatter";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
-import { Card, List, ListItem } from "flowbite-react";
 import { notFound } from "next/navigation";
+import JobAdditionalInformationCard from "./job-additional-information-card";
 import JobEmployeesCard from "./job-employees-card";
+import JobEstimatedTimelineCard from "./job-estimated-timeline-card";
 import JobLineitemsCard from "./job-lineitems-card";
 import JobLocationCard from "./job-location-card";
 import JobMediaCard from "./job-media-card";
 import JobMessagesCard from "./job-messages-card";
-import JobTimelineCard from "./job-timeline-card";
 
 type TProps = {
   params: Promise<{ jobId: string }>;
@@ -55,22 +53,8 @@ export default async function Page(props: TProps) {
       <div className="grid gap-4 md:grid-cols-2 xl:col-span-2 xl:gap-6">
         <JobLocationCard job={job} />
         <div className="grid gap-4 xl:gap-6">
-          <Card className="group">
-            <h6 className="text-lg font-semibold tracking-tighter">
-              Payment Information
-            </h6>
-            <List unstyled>
-              <ListItem className="flex items-center justify-between gap-2">
-                <dt>Down payment collected</dt>
-                <dl>{formatAsCurrency(Number(job.down_payment_collected))}</dl>
-              </ListItem>
-              <ListItem className="flex items-center justify-between gap-2">
-                <dt>Payment Type</dt>
-                <dl>{JOB_PAYMENT_TYPES[job.payment_type].name}</dl>
-              </ListItem>
-            </List>
-          </Card>
-          <JobTimelineCard job={job} />
+          <JobAdditionalInformationCard job={job} />
+          <JobEstimatedTimelineCard job={job} />
         </div>
         <div className="md:col-span-2">
           <JobLineitemsCard job={job} />

@@ -60,6 +60,83 @@ export async function UpdateJobCustomer<T>(...args: ServerActionWithState<T>) {
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
 
+export async function UpdateJobAdditionalInformation<T>(
+  ...args: ServerActionWithState<T>
+) {
+  const supabase = await createSupabaseServerClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const updates = {
+    down_payment_collected: Number(fields.down_payment_collected),
+    payment_type:
+      fields.payment_type as Database["public"]["Enums"]["job_payment_types"],
+    hoa_approval_required: fields.hoa_approval_required === "yes",
+    hoa_contact_name: fields.hoa_contact_name as string,
+    hoa_contact_phone: fields.hoa_contact_phone as string,
+    hoa_contact_email: fields.hoa_contact_email as string,
+    has_water_rebate: fields.has_water_rebate === "yes",
+    water_rebate_company: fields.water_rebate_company as string,
+  };
+
+  const { error } = await supabase
+    .from("business_location_jobs")
+    .update(updates)
+    .eq("id", fields.job_id);
+
+  if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
+    message: `Updated additional information`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  revalidatePath(
+    `/manage/${fields.business_id}/location/${fields.location_id}/job/${fields.job_id}`,
+  );
+
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
+export async function UpdateJobEstimatedTimeline<T>(
+  ...args: ServerActionWithState<T>
+) {
+  const supabase = await createSupabaseServerClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const updates = {
+    estimated_start_date: fields.estimated_start_date as string,
+    estimated_end_date: fields.estimated_end_date as string,
+  };
+
+  const { error } = await supabase
+    .from("business_location_jobs")
+    .update(updates)
+    .eq("id", fields.job_id);
+
+  if (error) return formStateResponse({ ...state, error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
+    message: `Updated estimated timelne`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  revalidatePath(
+    `/manage/${fields.business_id}/location/${fields.location_id}/job/${fields.job_id}`,
+  );
+
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
 export async function AddJobProfile<T>(...args: ServerActionWithState<T>) {
   const supabase = await createSupabaseServerClient();
   const [state, formData] = args;

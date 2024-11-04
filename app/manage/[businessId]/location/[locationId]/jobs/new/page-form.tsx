@@ -7,6 +7,7 @@ import {
   Breadcrumb,
   Button,
   Card,
+  Datepicker,
   Label,
   Radio,
   Select,
@@ -391,6 +392,36 @@ const FormFields = ({ profiles, products }: TPageForm) => {
                 ),
               )}
             </Select>
+          </div>
+        </fieldset>
+      </Card>
+      <Card>
+        <h2 className="text-xl font-medium text-gray-400">
+          Estimated Timeline
+        </h2>
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
+          <div>
+            <Label htmlFor="estimated_start_date" className="mb-2 block">
+              Start date
+            </Label>
+            <Datepicker
+              name="estimated_start_date"
+              id="estimated_start_date"
+              minDate={new Date()}
+            />
+          </div>
+          <div>
+            <Label htmlFor="estimated_end_date" className="mb-2 block">
+              End date
+            </Label>
+            <Datepicker
+              name="estimated_end_date"
+              id="estimated_end_date"
+              minDate={new Date()}
+            />
           </div>
         </fieldset>
       </Card>

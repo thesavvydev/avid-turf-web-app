@@ -8,8 +8,8 @@ import initialFormState, {
 import { US_STATES } from "@/constants/us-states";
 import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
-import { Card, Drawer, Label, Select, TextInput } from "flowbite-react";
-import { EditIcon, MapPinIcon } from "lucide-react";
+import { Button, Card, Drawer, Label, Select, TextInput } from "flowbite-react";
+import { MapIcon, MapPinIcon, MapPinnedIcon, SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
@@ -104,7 +104,7 @@ function EditDrawer({ job }: { job: IJob }) {
         className="shrink-0 cursor-pointer rounded-full p-2 opacity-0 hover:bg-gray-100 group-hover:opacity-100 dark:hover:bg-gray-700"
         onClick={() => setIsOpen(true)}
       >
-        <EditIcon />
+        <SettingsIcon />
       </div>
       <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
         <Drawer.Header
@@ -148,6 +148,20 @@ export default function JobLocationCard({ job }: TJobLocationCard) {
             </dd>
           </div>
         </dl>
+        <div className="flex w-full items-center justify-center gap-2">
+          <Button color="light">
+            <div className="flex items-center gap-2">
+              <MapPinnedIcon />
+              Get Directions
+            </div>
+          </Button>
+          <Button color="light">
+            <div className="flex items-center gap-2">
+              <MapIcon />
+              Send Location
+            </div>
+          </Button>
+        </div>
       </div>
     </Card>
   );

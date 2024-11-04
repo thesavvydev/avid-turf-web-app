@@ -33,6 +33,8 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     hoa_contact_phone: fields.hoa_contact_phone as string,
     has_water_rebate: fields.has_water_rebate === "yes",
     water_rebate_company: fields.water_rebate_company as string,
+    estimated_start_date: fields.estimated_start_date as string,
+    estimated_end_date: fields.estimated_end_date as string,
   };
 
   const employeesDictionary = Object.entries(fields).reduce<{

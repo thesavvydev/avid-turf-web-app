@@ -312,6 +312,8 @@ export type Database = {
           creator_id: string
           down_payment_collected: number | null
           email: string | null
+          estimated_end_date: string | null
+          estimated_start_date: string | null
           full_name: string
           has_water_rebate: boolean
           hoa_approval_required: boolean
@@ -336,6 +338,8 @@ export type Database = {
           creator_id: string
           down_payment_collected?: number | null
           email?: string | null
+          estimated_end_date?: string | null
+          estimated_start_date?: string | null
           full_name: string
           has_water_rebate?: boolean
           hoa_approval_required?: boolean
@@ -360,6 +364,8 @@ export type Database = {
           creator_id?: string
           down_payment_collected?: number | null
           email?: string | null
+          estimated_end_date?: string | null
+          estimated_start_date?: string | null
           full_name?: string
           has_water_rebate?: boolean
           hoa_approval_required?: boolean
