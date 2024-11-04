@@ -98,7 +98,6 @@ function EditDrawer({ job }: { job: IJob }) {
 export default function JobEstimatedTimelineCard({
   job,
 }: TJobEstimatedTimelineCard) {
-  console.log("job.estimated_start_date", job.estimated_start_date);
   return (
     <Card className="group">
       <div className="flex items-center justify-between gap-2">
