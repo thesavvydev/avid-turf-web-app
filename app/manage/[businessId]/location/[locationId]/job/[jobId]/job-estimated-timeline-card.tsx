@@ -98,6 +98,7 @@ function EditDrawer({ job }: { job: IJob }) {
 export default function JobEstimatedTimelineCard({
   job,
 }: TJobEstimatedTimelineCard) {
+  console.log("job.estimated_start_date", job.estimated_start_date);
   return (
     <Card className="group">
       <div className="flex items-center justify-between gap-2">
@@ -111,13 +112,21 @@ export default function JobEstimatedTimelineCard({
           <dt className="flex items-center gap-2">
             <CalendarIcon className="size-4" /> Start date
           </dt>
-          <dl>{formatAsReadableDate(job.estimated_start_date ?? "")}</dl>
+          <dl>
+            {job.estimated_start_date
+              ? formatAsReadableDate(job.estimated_start_date)
+              : "Unknown"}
+          </dl>
         </List.Item>
         <List.Item className="flex items-center justify-between gap-2">
           <dt className="flex items-center gap-2">
             <CalendarIcon className="size-4" /> Completion date
           </dt>
-          <dl>{formatAsReadableDate(job.estimated_end_date ?? "")}</dl>
+          <dl>
+            {job.estimated_end_date
+              ? formatAsReadableDate(job.estimated_end_date)
+              : "Unknown"}
+          </dl>
         </List.Item>
       </List>
     </Card>
