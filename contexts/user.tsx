@@ -16,7 +16,11 @@ type TLocation = Partial<Tables<"business_locations">> &
 type TBusiness = Partial<Tables<"businesses">> &
   Partial<Tables<"business_profiles">>;
 
-interface User extends Partial<Tables<"profiles">> {
+interface User
+  extends Pick<
+    Tables<"profiles">,
+    "avatar_url" | "id" | "full_name" | "created_at"
+  > {
   businesses?: Tables<"businesses">[];
   business_profiles?: Tables<"business_profiles">[];
   locations?: Tables<"business_locations">[];
@@ -29,7 +33,12 @@ interface User extends Partial<Tables<"profiles">> {
 const UserProviderContext = createContext<{
   user: User;
 }>({
-  user: {},
+  user: {
+    avatar_url: "",
+    created_at: "",
+    full_name: "",
+    id: "",
+  },
 });
 
 export function useUserContext() {

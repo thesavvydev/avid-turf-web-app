@@ -46,8 +46,8 @@ export default function JobHeader({ job }: { job: IJob }) {
       title: "Scheduling",
     },
     {
-      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/time-sheets`,
-      title: "Time Sheets",
+      href: `/manage/${businessId}/location/${locationId}/job/${jobId}/timesheets`,
+      title: "Timesheets",
     },
     {
       href: `/manage/${businessId}/location/${locationId}/job/${jobId}/documents`,

@@ -301,6 +301,71 @@ export type Database = {
           },
         ]
       }
+      business_location_job_timesheets: {
+        Row: {
+          business_id: string
+          created_at: string
+          end_datetime: string | null
+          id: number
+          job_id: number
+          location_id: number
+          paid: boolean
+          profile_id: string
+          start_datetime: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          end_datetime?: string | null
+          id?: number
+          job_id: number
+          location_id: number
+          paid?: boolean
+          profile_id: string
+          start_datetime: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          end_datetime?: string | null
+          id?: number
+          job_id?: number
+          location_id?: number
+          paid?: boolean
+          profile_id?: string
+          start_datetime?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_job_timesheets_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_timesheets_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_timesheets_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_timesheets_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_jobs: {
         Row: {
           address: string | null
