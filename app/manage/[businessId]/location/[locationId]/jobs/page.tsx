@@ -189,10 +189,11 @@ function JobStatusTiles({
 export default async function Page(props: {
   params: Promise<{ locationId: string }>;
   searchParams: Promise<{
-    page: number;
-    per_page: number;
     created_after: string;
     created_before: string;
+    page: number;
+    per_page: number;
+    products: string;
     status: string;
   }>;
 }) {
@@ -203,10 +204,11 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
 
   const {
-    page = 0,
-    per_page = 10,
     created_after = null,
     created_before = null,
+    page = 0,
+    per_page = 10,
+    products = "",
     status = "",
   } = searchParams;
 
@@ -234,7 +236,10 @@ export default async function Page(props: {
   const fetchTableData = supabase
     .from("business_location_jobs")
     .select(
-      "*,creator: profiles!creator_id(id,full_name,avatar_url), messages: business_location_job_messages(*,author: author_id(*))",
+      `*,
+      creator: profiles!creator_id(id,full_name,avatar_url),
+      messages: business_location_job_messages(*,author: author_id(*)),
+      products: business_location_job_products(*, product: product_id(*))`,
       { count: "exact" },
     )
     .match({
@@ -286,7 +291,13 @@ export default async function Page(props: {
       />
       <JobsTable
         jobsCount={count ?? 0}
-        jobs={data ?? []}
+        jobs={(data ?? []).filter((job) => {
+          if (!products || products === "") return true;
+          const productArray = products.split(",");
+          return job.products?.some((p) =>
+            productArray.includes(p.product_id.toString()),
+          );
+        })}
         paginatedTotal={paginatedTotal ?? 0}
         statusCounts={statusCounts}
       />

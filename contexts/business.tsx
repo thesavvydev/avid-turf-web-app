@@ -15,6 +15,9 @@ export interface IBusiness extends Partial<Tables<"businesses">> {
 
 type TBusinessProviderContext = {
   business: IBusiness;
+  productsDictionary: {
+    [k: number]: Tables<"business_products">;
+  };
 };
 
 const initialContext = {
@@ -24,6 +27,7 @@ const initialContext = {
     products: [],
     profiles: [],
   },
+  productsDictionary: {},
 };
 
 const BusinessProviderContext =
@@ -43,12 +47,20 @@ export function useBusinessContext() {
 export function BusinessContextProvider({
   children,
   business,
-}: PropsWithChildren<TBusinessProviderContext>) {
+}: PropsWithChildren<Pick<TBusinessProviderContext, "business">>) {
+  const productsDictionary = business.products.reduce<{
+    [k: number]: Tables<"business_products">;
+  }>((dictionary, product) => {
+    dictionary[product.id] = product;
+    return dictionary;
+  }, {});
+
   const value = useMemo(
     () => ({
       business,
+      productsDictionary,
     }),
-    [business],
+    [business, productsDictionary],
   );
 
   return (

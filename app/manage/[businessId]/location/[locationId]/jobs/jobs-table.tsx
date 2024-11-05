@@ -3,18 +3,23 @@
 import { ConfirmModal } from "@/components/confirm-modal";
 import Linky from "@/components/linky";
 import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
+import { useBusinessContext } from "@/contexts/business";
 import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
 import { Database, Tables } from "@/types/supabase";
-import { formatAsCompactNumber } from "@/utils/formatter";
+import { formatAsCompactNumber, formatAsCurrency } from "@/utils/formatter";
+import dayjs from "dayjs";
 import {
   Alert,
   Avatar,
   Badge,
   Button,
+  Checkbox,
   Datepicker,
   Dropdown,
+  List,
   Pagination,
+  Popover,
   Table,
   Tabs,
   TextInput,
@@ -54,7 +59,7 @@ const JobsTableContext = createContext<{
   jobs: IJob[];
   jobsCount: number | null;
   handleUpdateSearchParam: (param: string, value: string) => void;
-  handleRemoveSearchParam: (param: string, value: string) => void;
+  handleRemoveSearchParam: (param: string, value?: string) => void;
   isProcessing: boolean;
   paginatedTotal: number;
   statusCounts: {
@@ -121,7 +126,7 @@ function JobsTableProvider({
   );
 
   const handleRemoveSearchParam = useCallback(
-    (param: string, value: string) => {
+    (param: string, value?: string) => {
       setIsProcessing(true);
       const params = new URLSearchParams(searchParams.toString());
       params.delete(param, value);
@@ -210,6 +215,89 @@ function TableSearchFilter() {
   );
 }
 
+function ProductFilter() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const {
+    business: { products },
+  } = useBusinessContext();
+  const searchParams = useSearchParams();
+  const productsSearchParam = searchParams.get("products");
+  const productsSearchParamArray = productsSearchParam?.split(",") ?? [];
+
+  const { handleUpdateSearchParam, handleRemoveSearchParam, isProcessing } =
+    useJobsTableContext();
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  return (
+    <div className="relative">
+      <Dropdown
+        color="light"
+        dismissOnClick={false}
+        label="Select products"
+        theme={{
+          floating: {
+            target:
+              "w-full [&>span]:justify-between [&>span]:w-full [&>span]:items-center",
+          },
+        }}
+        enableTypeAhead={false}
+      >
+        <Dropdown.Header>
+          <TextInput
+            autoComplete="off"
+            disabled={isProcessing}
+            icon={() => <SearchIcon className="mr-2 size-4" />}
+            name="product-filter-search"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name"
+            value={searchTerm}
+          />
+        </Dropdown.Header>
+        {filteredProducts.map((product) => (
+          <Dropdown.Item
+            as="label"
+            className="flex cursor-pointer gap-2"
+            htmlFor={product.id.toString()}
+            key={product.id}
+          >
+            <Checkbox
+              className="cursor-pointer"
+              checked={productsSearchParamArray?.includes(
+                product.id.toString(),
+              )}
+              id={product.id.toString()}
+              name="products"
+              onChange={() => {
+                if (isProcessing) return;
+                const newProductArray = productsSearchParamArray?.includes(
+                  product.id.toString(),
+                )
+                  ? productsSearchParamArray.filter(
+                      (id) => id != product.id.toString(),
+                    )
+                  : [...productsSearchParamArray, product.id.toString()];
+
+                if (newProductArray.length === 0) {
+                  handleRemoveSearchParam("products");
+                } else {
+                  handleUpdateSearchParam(
+                    "products",
+                    newProductArray.join(","),
+                  );
+                }
+              }}
+            />
+            <span className="text-left">{product.name}</span>
+          </Dropdown.Item>
+        ))}
+      </Dropdown>
+    </div>
+  );
+}
+
 function StatusTabFilters() {
   const {
     handleUpdateSearchParam,
@@ -291,24 +379,28 @@ function DateRangeFilter() {
 
   return (
     <>
-      <Datepicker
-        id="created_after"
-        onChange={(date) =>
-          handleUpdateSearchParam(
-            "created_after",
-            new Date(date ?? "").toLocaleDateString(),
-          )
-        }
-      />
-      <Datepicker
-        id="created_before"
-        onChange={(date) =>
-          handleUpdateSearchParam(
-            "created_before",
-            new Date(date ?? "").toLocaleDateString(),
-          )
-        }
-      />
+      <div>
+        <Datepicker
+          id="created_after"
+          onChange={(date) =>
+            handleUpdateSearchParam(
+              "created_after",
+              new Date(date ?? "").toLocaleDateString(),
+            )
+          }
+        />
+      </div>
+      <div>
+        <Datepicker
+          id="created_before"
+          onChange={(date) =>
+            handleUpdateSearchParam(
+              "created_before",
+              new Date(date ?? "").toLocaleDateString(),
+            )
+          }
+        />
+      </div>
     </>
   );
 }
@@ -492,7 +584,6 @@ interface IColumn<RowData> {
 }
 
 function Content() {
-  const { user } = useUserContext();
   const { jobs } = useJobsTableContext();
 
   const columns: IColumn<(typeof jobs)[0]>[] = [
@@ -518,6 +609,65 @@ function Content() {
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "products",
+      header: "Products",
+      render: (row) => {
+        const productsCopy = [...(row.products ?? [])];
+        const displayProducts = productsCopy.splice(0, 1);
+
+        return (
+          <div>
+            <span>{displayProducts.map((p) => p.product.name).join(", ")}</span>
+            {productsCopy.length ? (
+              <Popover
+                trigger="hover"
+                content={
+                  <div className="p-2">
+                    <small>
+                      <b>More Products</b>
+                    </small>
+                    <List unstyled>
+                      {productsCopy.map((p) => (
+                        <List.Item key={p.product_id}>
+                          {p.product.name}
+                        </List.Item>
+                      ))}
+                    </List>
+                  </div>
+                }
+              >
+                <span className="ml-1 cursor-pointer font-semibold text-primary-400">{`+${productsCopy.length}`}</span>
+              </Popover>
+            ) : null}
+          </div>
+        );
+      },
+    },
+    {
+      cellClassNames: "w-0 text-right hidden sm:table-cell",
+      field: "commission",
+      header: "Commission",
+      render: (row) => formatAsCurrency(row.commission),
+    },
+    {
+      cellClassNames: "w-0 text-right hidden sm:table-cell",
+      field: "lineitems",
+      header: "Total",
+      render: (row) => {
+        const productsTotal = row.products?.reduce((dictionary, product) => {
+          dictionary +=
+            Number(product.number_of_units) *
+            (Number(product.product.price_per_measurement) +
+              Number(product.lead_price_addon));
+
+          return dictionary;
+        }, 0);
+
+        return formatAsCurrency(Number(productsTotal));
+      },
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
       field: "status",
       header: "Status",
       render: (row) => (
@@ -530,14 +680,29 @@ function Content() {
     },
     {
       cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
-      field: "created",
-      header: "Created",
+      field: "estimated_start_date",
+      header: "Start Date",
       render: (row) => (
         <div>
-          <p>{new Date(row.created_at).toLocaleDateString()}</p>
-          {["manager", "admin"].includes(user.location?.role ?? "") && (
-            <p className="text-xs text-gray-400">{`By: ${row.creator?.full_name}`}</p>
-          )}
+          <p>
+            {row.estimated_start_date
+              ? dayjs(row.estimated_start_date).format("MMM DD, YYYY")
+              : "Unknown"}
+          </p>
+        </div>
+      ),
+    },
+    {
+      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      field: "estimated_end_date",
+      header: "End Date",
+      render: (row) => (
+        <div>
+          <p>
+            {row.estimated_end_date
+              ? dayjs(row.estimated_end_date).format("MMM DD, YYYY")
+              : "Unknown"}
+          </p>
         </div>
       ),
     },
@@ -596,17 +761,20 @@ function Content() {
 }
 
 function TableActiveFilters() {
-  const { handleRemoveSearchParam, paginatedTotal } = useJobsTableContext();
+  const { productsDictionary } = useBusinessContext();
+  const { handleRemoveSearchParam, handleUpdateSearchParam, paginatedTotal } =
+    useJobsTableContext();
   const { locationId, businessId } = useParams();
   const searchParams = useSearchParams();
   const {
-    search,
-    status,
-    source,
-    created_before,
     created_after,
+    created_before,
     page,
     per_page,
+    products,
+    search,
+    source,
+    status,
   } = Object.fromEntries(searchParams);
   const hasFilters = Array.from(searchParams.entries())?.length > 0;
 
@@ -624,7 +792,7 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color="gray"
-                onClick={() => handleRemoveSearchParam("search", search)}
+                onClick={() => handleRemoveSearchParam("search")}
               >
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>{search}</p>
@@ -644,7 +812,7 @@ function TableActiveFilters() {
                     status as keyof typeof LOCATION_JOB_STATUS
                   ]?.color
                 }
-                onClick={() => handleRemoveSearchParam("status", status)}
+                onClick={() => handleRemoveSearchParam("status")}
               >
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>
@@ -664,7 +832,7 @@ function TableActiveFilters() {
               <span className="text-sm font-semibold text-gray-500">Page</span>
               <Badge
                 color="gray"
-                onClick={() => handleRemoveSearchParam("page", page)}
+                onClick={() => handleRemoveSearchParam("page")}
               >
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>{page}</p>
@@ -680,9 +848,7 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("per_page", per_page.toString())
-                }
+                onClick={() => handleRemoveSearchParam("per_page")}
               >
                 <div className="flex cursor-pointer items-center gap-2">
                   <p>{per_page}</p>
@@ -698,7 +864,7 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color="gray"
-                onClick={() => handleRemoveSearchParam("source", source)}
+                onClick={() => handleRemoveSearchParam("source")}
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
                   <p>{source}</p>
@@ -714,9 +880,7 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("createed_after", created_after)
-                }
+                onClick={() => handleRemoveSearchParam("created_after")}
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
                   <p>{created_after}</p>
@@ -732,15 +896,52 @@ function TableActiveFilters() {
               </span>
               <Badge
                 color="gray"
-                onClick={() =>
-                  handleRemoveSearchParam("createed_before", created_before)
-                }
+                onClick={() => handleRemoveSearchParam("created_before")}
               >
                 <div className="flex cursor-pointer items-center gap-2 capitalize">
                   <p>{created_before}</p>
                   <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
                 </div>
               </Badge>
+            </div>
+          )}
+          {products && (
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-dashed border-gray-300 p-2 px-4">
+              <span className="text-sm font-semibold text-gray-500">
+                Products
+              </span>
+              {products.split(",").map((productId) => {
+                const productsSearchParamArray = products.split(",");
+
+                return (
+                  <Badge
+                    color="gray"
+                    onClick={() => {
+                      const newProductArray =
+                        productsSearchParamArray?.includes(productId)
+                          ? productsSearchParamArray.filter(
+                              (id) => id != productId,
+                            )
+                          : [...productsSearchParamArray, productId];
+
+                      if (newProductArray.length === 0) {
+                        handleRemoveSearchParam("products");
+                      } else {
+                        handleUpdateSearchParam(
+                          "products",
+                          newProductArray.join(","),
+                        );
+                      }
+                    }}
+                    key={productId}
+                  >
+                    <div className="flex cursor-pointer items-center gap-2 capitalize">
+                      <p>{productsDictionary[Number(productId)].name}</p>
+                      <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                    </div>
+                  </Badge>
+                );
+              })}
             </div>
           )}
           <Button
@@ -782,7 +983,7 @@ export default function JobsTable({
     >
       <div
         id="jobs-table"
-        className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900"
+        className="grid gap-4 rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900"
       >
         <div className="overflow-x-auto">
           <StatusTabFilters />
@@ -790,6 +991,7 @@ export default function JobsTable({
         <div className="track grid gap-4 px-4 md:grid-cols-5 lg:px-6">
           <TableSearchFilter />
           <DateRangeFilter />
+          <ProductFilter />
         </div>
         <TableActiveFilters />
         {jobs?.length === 0 ? (
@@ -800,7 +1002,9 @@ export default function JobsTable({
             </Alert>
           </div>
         ) : (
-          <Content />
+          <div className="overflow-x-auto">
+            <Content />
+          </div>
         )}
 
         <TablePagination />
