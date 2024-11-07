@@ -27,6 +27,8 @@ import {
   Tooltip,
 } from "flowbite-react";
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   CircleXIcon,
   EllipsisVertical,
   InfoIcon,
@@ -121,7 +123,8 @@ function filterJobsBySearchParam(searchParam: string | null) {
 }
 
 function filterJobsByProductIdsParam(productsParam: string | null) {
-  const productIdsArray = productsParam?.split(", ");
+  const productIdsArray = productsParam?.split(",");
+
   return (job: IJob) => {
     if (!productsParam) return true;
 
@@ -607,9 +610,14 @@ interface IColumn<RowData> {
   field?: string;
   header?: string;
   render: (arg: RowData) => ReactNode;
+  sortableKey?: string;
 }
 
 function Content() {
+  const searchParams = useSearchParams();
+  const sort = searchParams.get("sort");
+  const isSortAscending = sort?.includes("ascending");
+  const { handleUpdateSearchParam } = useJobsTableContext();
   const { jobs } = useJobsTableContext();
 
   const columns: IColumn<(typeof jobs)[0]>[] = [
@@ -622,7 +630,7 @@ function Content() {
             root: { base: twMerge(theme.avatar.root.base, "justify-start") },
           }}
         >
-          <div>
+          <div className="text-nowrap">
             <Linky
               href={`/manage/${row.business_id}/location/${row.business_location_id}/job/${row.id}`}
             >
@@ -632,14 +640,16 @@ function Content() {
           </div>
         </Avatar>
       ),
+      sortableKey: "full_name",
     },
     {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
       field: "address",
       header: "Address",
       render: (row) => row.address,
     },
     {
-      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      cellClassNames: "w-0 text-nowrap hidden lg:table-cell",
       field: "products",
       header: "Products",
       render: (row) => {
@@ -675,13 +685,14 @@ function Content() {
       },
     },
     {
-      cellClassNames: "w-0 text-right hidden sm:table-cell",
+      cellClassNames: "w-0 text-right hidden md:table-cell",
       field: "commission",
       header: "Commission",
       render: (row) => formatAsCurrency(row.commission),
+      sortableKey: "commission",
     },
     {
-      cellClassNames: "w-0 text-right hidden sm:table-cell",
+      cellClassNames: "w-0 text-right hidden xl:table-cell",
       field: "lineitems",
       header: "Total",
       render: (row) => {
@@ -698,7 +709,7 @@ function Content() {
       },
     },
     {
-      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      cellClassNames: "w-0 text-nowrap hidden md:table-cell",
       field: "status",
       header: "Status",
       render: (row) => (
@@ -710,7 +721,7 @@ function Content() {
       ),
     },
     {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      cellClassNames: "hidden xl:table-cell w-0 text-nowrap",
       field: "estimated_start_date",
       header: "Start Date",
       render: (row) => (
@@ -722,9 +733,10 @@ function Content() {
           </p>
         </div>
       ),
+      sortableKey: "estimated_start_date",
     },
     {
-      cellClassNames: "hidden sm:table-cell w-0 text-nowrap",
+      cellClassNames: "hidden xl:table-cell w-0 text-nowrap",
       field: "estimated_end_date",
       header: "End Date",
       render: (row) => (
@@ -736,6 +748,7 @@ function Content() {
           </p>
         </div>
       ),
+      sortableKey: "estimated_end_date",
     },
     {
       cellClassNames: "w-0",
@@ -758,11 +771,35 @@ function Content() {
           },
         }}
       >
-        {columns.map((column) => (
-          <Table.HeadCell key={column.header} className={column.cellClassNames}>
-            {column.header}
-          </Table.HeadCell>
-        ))}
+        {columns.map((column) => {
+          const isSortedColumn = sort?.includes(column.sortableKey ?? "");
+          const SortIcon =
+            isSortAscending && isSortedColumn ? ChevronDownIcon : ChevronUpIcon;
+
+          return (
+            <Table.HeadCell
+              key={column.header}
+              className={column.cellClassNames}
+            >
+              {Boolean(column.sortableKey) ? (
+                <div className="inline-flex items-center">
+                  <span>{column.header}</span>
+                  <SortIcon
+                    className="ml-1 cursor-pointer text-gray-400 hover:scale-105"
+                    onClick={() => {
+                      handleUpdateSearchParam(
+                        "sort",
+                        `${column.sortableKey}__${isSortAscending ? "descending" : "ascending"}`,
+                      );
+                    }}
+                  />
+                </div>
+              ) : (
+                column.header
+              )}
+            </Table.HeadCell>
+          );
+        })}
       </Table.Head>
       <Table.Body>
         {jobs.map((job) => (
@@ -807,7 +844,18 @@ function TableActiveFilters() {
     source,
     status,
   } = Object.fromEntries(searchParams);
-  const hasFilters = Array.from(searchParams.entries())?.length > 0;
+
+  const hasFilters =
+    Object.values({
+      created_after,
+      created_before,
+      page,
+      per_page,
+      products,
+      search,
+      source,
+      status,
+    }).join("").length > 0;
 
   return (
     hasFilters && (
@@ -1019,7 +1067,7 @@ export default function JobsTable({
         <div className="overflow-x-auto">
           <StatusTabFilters />
         </div>
-        <div className="track grid gap-4 px-4 md:grid-cols-5 lg:px-6">
+        <div className="track grid gap-2 px-2 md:grid-cols-4 md:px-4 lg:gap-4 lg:px-6">
           <TableSearchFilter />
           <DateRangeFilter />
           <ProductFilter />
@@ -1033,9 +1081,7 @@ export default function JobsTable({
             </Alert>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <Content />
-          </div>
+          <Content />
         )}
 
         <TablePagination />

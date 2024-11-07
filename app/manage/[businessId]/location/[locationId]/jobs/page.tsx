@@ -194,6 +194,7 @@ export default async function Page(props: {
     page: number;
     per_page: number;
     products: string;
+    sort: string;
     status: string;
   }>;
 }) {
@@ -210,7 +211,10 @@ export default async function Page(props: {
     per_page = 10,
     products = "",
     status = "",
+    sort = "",
   } = searchParams;
+
+  const [sortKey, sortDirection] = sort.split("__");
 
   const supabase = await createSupabaseServerClient();
 
@@ -249,7 +253,9 @@ export default async function Page(props: {
     .range(startRange, endRange)
     .gte("created_at", new Date(created_after ?? "0").toISOString())
     .lte("created_at", new Date(created_before ?? "3000-01-01").toISOString())
-    .order("created_at", { ascending: false })
+    .order(sortKey || "estimated_end_date", {
+      ascending: sortDirection === "ascending",
+    })
     .returns<IJob[]>();
 
   const [
