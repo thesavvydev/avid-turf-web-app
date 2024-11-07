@@ -267,6 +267,7 @@ function ProductFilter() {
         dismissOnClick={false}
         label="Select products"
         theme={{
+          content: twMerge(theme.dropdown.content, "max-h-60 overflow-y-auto"),
           floating: {
             target:
               "w-full [&>span]:justify-between [&>span]:w-full [&>span]:items-center",
@@ -636,17 +637,11 @@ function Content() {
             >
               {row.full_name ?? "John Doe"}
             </Linky>
-            <p className="text-xs text-gray-400">{`JOB-${row.id}`}</p>
+            <p className="text-xs text-gray-400">{`JOB-${row.id}${row.address ? ` at ${row.address}` : ""}`}</p>
           </div>
         </Avatar>
       ),
       sortableKey: "full_name",
-    },
-    {
-      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
-      field: "address",
-      header: "Address",
-      render: (row) => row.address,
     },
     {
       cellClassNames: "w-0 text-nowrap hidden lg:table-cell",
@@ -1062,7 +1057,7 @@ export default function JobsTable({
     >
       <div
         id="jobs-table"
-        className="grid gap-4 rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900"
+        className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900"
       >
         <div className="overflow-x-auto">
           <StatusTabFilters />
@@ -1083,7 +1078,6 @@ export default function JobsTable({
         ) : (
           <Content />
         )}
-
         <TablePagination />
       </div>
     </JobsTableProvider>
