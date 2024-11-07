@@ -101,6 +101,36 @@ type TJobsTableProviderProps = PropsWithChildren & {
   };
 };
 
+function filterJobsBySearchParam(searchParam: string | null) {
+  return (job: IJob) => {
+    if (!searchParam) return true;
+    const concatenatedProductNames =
+      job.products?.map((product) => product.product.name) ?? [];
+    const searchItemsArray = [
+      job.full_name,
+      job.address,
+      job.city,
+      job.state,
+      job.postal_code,
+      ...concatenatedProductNames,
+    ];
+    const searchableString = searchItemsArray.join(" ").toLowerCase();
+
+    return searchableString.includes(searchParam.toLowerCase());
+  };
+}
+
+function filterJobsByProductIdsParam(productsParam: string | null) {
+  const productIdsArray = productsParam?.split(", ");
+  return (job: IJob) => {
+    if (!productsParam) return true;
+
+    return job.products?.some((p) =>
+      productIdsArray?.includes(p.product_id.toString()),
+    );
+  };
+}
+
 function JobsTableProvider({
   children,
   jobs,
@@ -137,13 +167,9 @@ function JobsTableProvider({
     [pathname, router, searchParams],
   );
 
-  const filteredjobs = jobs.filter((item) =>
-    searchParams.get("search")
-      ? item.address
-          ?.toLowerCase()
-          .includes(searchParams.get("search")?.toLowerCase() ?? "")
-      : true,
-  );
+  const filteredjobs = jobs
+    .filter(filterJobsBySearchParam(searchParams.get("search")))
+    .filter(filterJobsByProductIdsParam(searchParams.get("products")));
 
   const value = useMemo(
     () => ({
@@ -606,6 +632,11 @@ function Content() {
           </div>
         </Avatar>
       ),
+    },
+    {
+      field: "address",
+      header: "Address",
+      render: (row) => row.address,
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
