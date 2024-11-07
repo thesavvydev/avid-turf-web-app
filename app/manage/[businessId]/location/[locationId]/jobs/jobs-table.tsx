@@ -56,6 +56,7 @@ import { twMerge } from "tailwind-merge";
 import { DeleteJob } from "./actions";
 import JobMessagesDrawer from "./job-messages-drawer";
 import UpdateJobDrawer from "./update-job-drawer";
+import pluralize from "@/utils/pluralize";
 
 const JobsTableContext = createContext<{
   jobs: IJob[];
@@ -265,7 +266,11 @@ function ProductFilter() {
       <Dropdown
         color="light"
         dismissOnClick={false}
-        label="Select products"
+        label={
+          productsSearchParamArray.length === 0
+            ? "Select products"
+            : `${productsSearchParamArray.length} Selected ${pluralize("Product", "Products", productsSearchParamArray.length)}`
+        }
         theme={{
           content: twMerge(theme.dropdown.content, "max-h-60 overflow-y-auto"),
           floating: {
@@ -984,38 +989,40 @@ function TableActiveFilters() {
               <span className="text-sm font-semibold text-gray-500">
                 Products
               </span>
-              {products.split(",").map((productId) => {
-                const productsSearchParamArray = products.split(",");
+              <div className="flex flex-wrap gap-4">
+                {products.split(",").map((productId) => {
+                  const productsSearchParamArray = products.split(",");
 
-                return (
-                  <Badge
-                    color="gray"
-                    onClick={() => {
-                      const newProductArray =
-                        productsSearchParamArray?.includes(productId)
-                          ? productsSearchParamArray.filter(
-                              (id) => id != productId,
-                            )
-                          : [...productsSearchParamArray, productId];
+                  return (
+                    <Badge
+                      color="gray"
+                      onClick={() => {
+                        const newProductArray =
+                          productsSearchParamArray?.includes(productId)
+                            ? productsSearchParamArray.filter(
+                                (id) => id != productId,
+                              )
+                            : [...productsSearchParamArray, productId];
 
-                      if (newProductArray.length === 0) {
-                        handleRemoveSearchParam("products");
-                      } else {
-                        handleUpdateSearchParam(
-                          "products",
-                          newProductArray.join(","),
-                        );
-                      }
-                    }}
-                    key={productId}
-                  >
-                    <div className="flex cursor-pointer items-center gap-2 capitalize">
-                      <p>{productsDictionary[Number(productId)].name}</p>
-                      <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
-                    </div>
-                  </Badge>
-                );
-              })}
+                        if (newProductArray.length === 0) {
+                          handleRemoveSearchParam("products");
+                        } else {
+                          handleUpdateSearchParam(
+                            "products",
+                            newProductArray.join(","),
+                          );
+                        }
+                      }}
+                      key={productId}
+                    >
+                      <div className="flex cursor-pointer items-center gap-2 capitalize">
+                        <p>{productsDictionary[Number(productId)].name}</p>
+                        <CircleXIcon className="size-4 fill-gray-600 stroke-gray-100" />
+                      </div>
+                    </Badge>
+                  );
+                })}
+              </div>
             </div>
           )}
           <Button
