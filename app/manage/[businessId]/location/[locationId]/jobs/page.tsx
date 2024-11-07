@@ -209,7 +209,6 @@ export default async function Page(props: {
     created_before = null,
     page = 0,
     per_page = 10,
-    products = "",
     status = "",
     sort = "",
   } = searchParams;
@@ -297,13 +296,7 @@ export default async function Page(props: {
       />
       <JobsTable
         jobsCount={count ?? 0}
-        jobs={(data ?? []).filter((job) => {
-          if (!products || products === "") return true;
-          const productArray = products.split(",");
-          return job.products?.some((p) =>
-            productArray.includes(p.product_id.toString()),
-          );
-        })}
+        jobs={data ?? []}
         paginatedTotal={paginatedTotal ?? 0}
         statusCounts={statusCounts}
       />
