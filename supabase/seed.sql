@@ -104,8 +104,25 @@ ALTER SEQUENCE business_location_job_messages_id_seq RESTART WITH 4;
 
 INSERT INTO business_location_job_timesheets (id, business_id, location_id, job_id, profile_id, start_datetime, end_datetime)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'7e15d5cf-952c-4416-85e1-465849358402', '2024-11-01 07:16:22','2024-11-01 12:16:22'),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'4106c32c-18bc-48dd-9714-729ab1168b44', '2024-11-02 07:16:22','2024-11-02 15:16:22'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'7e15d5cf-952c-4416-85e1-465849358402', '2024-11-03 07:16:22', '2024-11-03 13:16:22');
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'7e15d5cf-952c-4416-85e1-465849358402', '2024-11-01 07:00:00','2024-11-01 12:00:00'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'4106c32c-18bc-48dd-9714-729ab1168b44', '2024-11-02 07:00:00','2024-11-02 15:00:00'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'7e15d5cf-952c-4416-85e1-465849358402', '2024-11-03 07:00:00', '2024-11-03 13:00:00');
 
 ALTER SEQUENCE business_location_job_timesheets_id_seq RESTART WITH 4;
+
+INSERT INTO business_location_job_events (id, business_id, location_id, job_id, type, start_datetime, end_datetime)
+VALUES
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'install', '2024-11-01 07:00:00','2024-11-01 12:00:00'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'demolition', '2024-11-02 07:00:00','2024-11-02 15:00:00'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'install', '2024-11-03 07:00:00', '2024-11-03 13:00:00');
+
+ALTER SEQUENCE business_location_job_events_id_seq RESTART WITH 4;
+
+INSERT INTO business_location_job_events (id, business_id, location_id, job_id, event_id, profile_id)
+VALUES
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1, '7e15d5cf-952c-4416-85e1-465849358402'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1, '4106c32c-18bc-48dd-9714-729ab1168b44'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 2, '4106c32c-18bc-48dd-9714-729ab1168b44'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 3, '4106c32c-18bc-48dd-9714-729ab1168b44');
+
+ALTER SEQUENCE business_location_job_events_id_seq RESTART WITH 5;

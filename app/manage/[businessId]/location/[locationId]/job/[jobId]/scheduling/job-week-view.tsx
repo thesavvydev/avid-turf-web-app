@@ -7,96 +7,8 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
-
-//  YYYY-MM-DD HH:MI:SS
-const mockEvents = [
-  {
-    id: 1,
-    name: "Closing",
-    start_datetime: "2024-10-27 13:00:00",
-    end_datetime: "2024-10-27 14:30:00",
-    type: "closing",
-    profiles: [
-      {
-        id: "uuid",
-        full_name: "Jon Jones",
-        avatar: null,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Excavate",
-    start_datetime: "2024-10-28 08:00:00",
-    end_datetime: "2024-10-28 16:30:00",
-    type: "excavate",
-    profiles: [
-      {
-        id: "uuid",
-        full_name: "Jon Jones",
-        avatar: null,
-      },
-      {
-        id: "uuid 1",
-        full_name: "Donald Biden",
-        avatar: null,
-      },
-      {
-        id: "uuid 2",
-        full_name: "Erica Mendez",
-        avatar: null,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Install",
-    start_datetime: "2024-10-29 10:00:00",
-    end_datetime: "2024-10-29 17:00:00",
-    type: "install",
-    profiles: [
-      {
-        id: "uuid 1",
-        full_name: "Jon Jones",
-        avatar: null,
-      },
-      {
-        id: "uuid 2",
-        full_name: "Jon Jones",
-        avatar: null,
-      },
-      {
-        id: "uuid 3",
-        full_name: "Jake Hall",
-        avatar: null,
-      },
-    ],
-  },
-  {
-    id: 6,
-    name: "Install",
-    start_datetime: "2024-10-30 08:00:00",
-    end_datetime: "2024-10-30 16:30:00",
-    type: "install",
-    profiles: [
-      {
-        id: "uuid 1",
-        full_name: "Jon Jones",
-        avatar: null,
-      },
-      {
-        id: "uuid 2",
-        full_name: "Shawn Dell",
-        avatar: null,
-      },
-      {
-        id: "uuid 3",
-        full_name: "Dave Hammer",
-        avatar: null,
-      },
-    ],
-  },
-];
+import AddJobEventDrawer from "./add-job-event-drawer";
+import { TSchedulingEvent } from "./page";
 
 const EVENT_TYPE_STYLE_PROPERTIES = {
   install: {
@@ -105,7 +17,7 @@ const EVENT_TYPE_STYLE_PROPERTIES = {
     title: "text-yellow-700 dark:text-yellow-400",
     time: "text-yellow-500 group-hover:text-yellow-700 dark:text-yellow-600 dark:group-hover:text-yellow-500",
   },
-  excavate: {
+  demolition: {
     background:
       "bg-red-50 hover:bg-red-100 dark:bg-red-800 dark:hover:bg-red-700",
     title: "text-red-700 dark:text-red-400",
@@ -146,7 +58,11 @@ const DAY_OF_WEEK_TO_COLUMN = [
   "sm:col-start-7",
 ];
 
-export default function JobWeekView() {
+export default function JobWeekView({
+  events,
+}: {
+  events: TSchedulingEvent[];
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -173,7 +89,7 @@ export default function JobWeekView() {
 
   const handleUpdateStartOfWeekParam = (date: Dayjs) => () => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("startOfWeek", date.startOf("week").toString());
+    params.set("startOfWeek", date.startOf("week").toISOString());
 
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -205,9 +121,7 @@ export default function JobWeekView() {
           <Dropdown.Item>Week</Dropdown.Item>
           <Dropdown.Item>Month</Dropdown.Item>
         </Dropdown>
-        <Button size="sm" color="primary">
-          Add Event
-        </Button>
+        <AddJobEventDrawer />
       </div>
       <div
         className="isolate flex flex-auto flex-col overflow-auto bg-white dark:bg-gray-800"
@@ -307,7 +221,7 @@ export default function JobWeekView() {
                   gridTemplateRows: "1.75rem repeat(288, minmax(0, 1fr)) auto",
                 }}
               >
-                {mockEvents.map((event) => {
+                {events.map((event) => {
                   const styles =
                     EVENT_TYPE_STYLE_PROPERTIES[
                       event.type as TEventTypeStyleProperty
@@ -331,31 +245,33 @@ export default function JobWeekView() {
                         gridRow: `${gridRowStart} / span ${gridRowSpan}`,
                       }}
                     >
-                      <a
-                        href="#"
+                      <div
                         className={twMerge(
                           styles.background,
                           "group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5",
                         )}
                       >
+                        <p className={styles.time}>
+                          {dayjs(event.start_datetime).format("MM/DD")}
+                        </p>
                         <p
                           className={twMerge(
                             styles.title,
-                            "order-1 font-semibold",
+                            "order-1 font-semibold capitalize",
                           )}
                         >
-                          {event.name}
+                          {event.type}
                         </p>
                         <div className="order-2 mt-2 flex flex-wrap items-center gap-1">
                           {event.profiles.map((profile) => (
                             <Tooltip
-                              content={profile.full_name}
+                              content={profile.profile.full_name}
                               placement="bottom"
-                              key={profile.id}
+                              key={profile.profile.id}
                             >
                               <Avatar
                                 placeholderInitials={getInitials(
-                                  profile.full_name,
+                                  profile.profile.full_name ?? "",
                                 )}
                                 rounded
                                 size="xs"
@@ -380,7 +296,7 @@ export default function JobWeekView() {
                             {dayjs(event.end_datetime).format("hh:mm a")}
                           </time>
                         </p>
-                      </a>
+                      </div>
                     </li>
                   );
                 })}

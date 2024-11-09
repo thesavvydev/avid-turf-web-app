@@ -69,6 +69,127 @@ export type Database = {
           },
         ]
       }
+      business_location_job_event_profiles: {
+        Row: {
+          business_id: string
+          created_at: string
+          event_id: number
+          id: number
+          job_id: number
+          location_id: number
+          profile_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          event_id: number
+          id?: number
+          job_id: number
+          location_id: number
+          profile_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          event_id?: number
+          id?: number
+          job_id?: number
+          location_id?: number
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_job_event_profiles_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_event_profiles_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_job_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_event_profiles_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_event_profiles_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_job_event_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_location_job_events: {
+        Row: {
+          business_id: string
+          created_at: string
+          end_datetime: string
+          id: number
+          job_id: number
+          location_id: number
+          start_datetime: string
+          type: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          end_datetime: string
+          id?: number
+          job_id: number
+          location_id: number
+          start_datetime: string
+          type: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          end_datetime?: string
+          id?: number
+          job_id?: number
+          location_id?: number
+          start_datetime?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_locations_job_events_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_locations_job_events_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_locations_job_events_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_job_media: {
         Row: {
           business_id: string
