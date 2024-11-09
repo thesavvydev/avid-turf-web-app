@@ -8,6 +8,7 @@ import JobLineitemsCard from "./job-lineitems-card";
 import JobLocationCard from "./job-location-card";
 import JobMediaCard from "./job-media-card";
 import JobMessagesCard from "./job-messages-card";
+import JobCustomerCard from "./job-customer-card";
 
 type TProps = {
   params: Promise<{ jobId: string }>;
@@ -64,6 +65,7 @@ export default async function Page(props: TProps) {
         </div>
       </div>
       <div className="flex flex-col gap-4 xl:gap-6">
+        <JobCustomerCard job={job} />
         <JobEmployeesCard job={job} />
         <JobMessagesCard messages={messages} />
       </div>

@@ -3,21 +3,12 @@
 import { IJob } from "@/types/job";
 import { Database } from "@/types/supabase";
 import { createClient } from "@/utils/supabase/client";
-import { Breadcrumb, Button, Dropdown, Tooltip } from "flowbite-react";
-import {
-  ChevronLeftIcon,
-  HardHatIcon,
-  MailIcon,
-  PhoneCallIcon,
-  PhoneIcon,
-  SendIcon,
-  SettingsIcon,
-} from "lucide-react";
+import { Breadcrumb, Dropdown } from "flowbite-react";
+import { ChevronLeftIcon, HardHatIcon } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
 import PageTabs from "@/components/page-tabs";
 import { LOCATION_JOB_STATUS } from "@/constants/location-job-status";
-import UpdateCustomerDrawer from "./update-customer-drawer";
 
 export default function JobHeader({ job }: { job: IJob }) {
   const supabase = createClient();
@@ -85,37 +76,6 @@ export default function JobHeader({ job }: { job: IJob }) {
             </h1>
           </hgroup>
           <div className="flex flex-wrap gap-2">
-            <UpdateCustomerDrawer
-              job={job}
-              trigger={(setIsUpdateCustomerDrawerVisible) => (
-                <Tooltip content={job.full_name}>
-                  <Button
-                    color="light"
-                    className="group whitespace-nowrap"
-                    onClick={() =>
-                      setIsUpdateCustomerDrawerVisible(
-                        (prevState) => !prevState,
-                      )
-                    }
-                  >
-                    <SettingsIcon className="mr-1 size-5" />
-                    Edit
-                  </Button>
-                </Tooltip>
-              )}
-            />
-            <Tooltip content={`Email ${job.email}`}>
-              <Button color="light" className="group">
-                <MailIcon className="size-5 group-hover:hidden" />
-                <SendIcon className="hidden size-5 group-hover:block" />
-              </Button>
-            </Tooltip>
-            <Tooltip content={`Call ${job.phone}`}>
-              <Button color="light" className="group">
-                <PhoneIcon className="size-5 group-hover:hidden" />
-                <PhoneCallIcon className="hidden size-5 group-hover:block" />
-              </Button>
-            </Tooltip>
             <Dropdown
               label={LOCATION_JOB_STATUS[job.status].name}
               color={LOCATION_JOB_STATUS[job.status].color}

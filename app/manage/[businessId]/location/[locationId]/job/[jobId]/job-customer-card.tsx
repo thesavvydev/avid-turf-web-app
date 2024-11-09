@@ -7,9 +7,15 @@ import initialFormState, {
 } from "@/constants/initial-form-state";
 import { useUserContext } from "@/contexts/user";
 import { IJob } from "@/types/job";
-import { Avatar, Button, Drawer, Label, TextInput } from "flowbite-react";
-import { EditIcon, MailIcon, PhoneIcon, UserPlus2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Card, Drawer, Label, List, TextInput, Tooltip } from "flowbite-react";
+import {
+  EditIcon,
+  MailIcon,
+  PhoneCallIcon,
+  PhoneIcon,
+  SendIcon,
+  UserPlus2Icon,
+} from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { UpdateJobCustomer } from "./actions";
@@ -70,7 +76,6 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
 }
 
 function EditDrawer({ job }: { job: IJob }) {
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [state, action] = useActionState(
     UpdateJobCustomer<TInitialFormState>,
@@ -78,11 +83,8 @@ function EditDrawer({ job }: { job: IJob }) {
   );
 
   useEffect(() => {
-    if (state.success) {
-      router.refresh();
-      if (state.dismiss) setIsOpen(() => false);
-    }
-  }, [state.success, state.dismiss, router, setIsOpen]);
+    if (state.success && state.dismiss) setIsOpen(() => false);
+  }, [state.success, state.dismiss, setIsOpen]);
 
   return (
     <>
@@ -114,28 +116,49 @@ function EditDrawer({ job }: { job: IJob }) {
 
 export default function JobCustomerCard({ job }: TJobCustomerCard) {
   return (
-    <div className="group grid gap-4 border-b border-dashed border-gray-200 pb-4 dark:border-gray-700 lg:gap-6 lg:pb-6">
+    <Card className="group">
       <div className="flex items-center justify-between gap-2">
-        <h6 className="text-lg font-semibold tracking-tighter">
-          Customer info
-        </h6>
+        <h6 className="text-lg font-semibold tracking-tighter">Customer</h6>
         <EditDrawer job={job} />
       </div>
-      <div className="flex items-start gap-4">
-        <Avatar rounded bordered />
-        <div className="grid gap-1">
-          <p className="font-semibold">{job.full_name}</p>
-          <div className="flex items-center gap-1 font-light">
-            <PhoneIcon className="size-4" /> {job.phone}
-          </div>
-          <Button size="xs" outline color="light">
-            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-              <MailIcon className="size-4" />
-              Send Email
-            </div>
-          </Button>
-        </div>
-      </div>
-    </div>
+      <List unstyled>
+        <List.Item className="flex items-center justify-between gap-2">
+          <dt>Name</dt>
+          <dl>{job.full_name}</dl>
+        </List.Item>
+        <List.Item className="group/phone flex items-center justify-between gap-2">
+          <dt>Phone</dt>
+          <dl>
+            {job.phone ? (
+              <Tooltip content={`Call ${job.phone}`} placement="left">
+                <div className="flex cursor-pointer items-center gap-2">
+                  <PhoneIcon className="size-5 group-hover/phone:hidden" />
+                  <PhoneCallIcon className="hidden size-5 group-hover/phone:block" />
+                  {job.phone}
+                </div>
+              </Tooltip>
+            ) : (
+              "NA"
+            )}
+          </dl>
+        </List.Item>
+        <List.Item className="group/email flex items-center justify-between gap-2">
+          <dt>Email</dt>
+          <dl>
+            {job.email ? (
+              <Tooltip content={`Email ${job.email}`} placement="left">
+                <div className="flex cursor-pointer items-center gap-2">
+                  <MailIcon className="size-5 group-hover/email:hidden" />
+                  <SendIcon className="hidden size-5 group-hover/email:block" />
+                  {job.email}
+                </div>
+              </Tooltip>
+            ) : (
+              "NA"
+            )}
+          </dl>
+        </List.Item>
+      </List>
+    </Card>
   );
 }

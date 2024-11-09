@@ -57,6 +57,10 @@ export async function UpdateJobCustomer<T>(...args: ServerActionWithState<T>) {
     profile_id: fields.profile_id as string,
   });
 
+  revalidatePath(
+    `/manage/${fields.business_id}/location/${fields.location_id}/job/${fields.job_id}`,
+  );
+
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
 
