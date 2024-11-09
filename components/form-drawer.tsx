@@ -15,6 +15,8 @@ import {
 import ErrorAlert from "./error-alert";
 
 type TFormDrawer = PropsWithChildren<{
+  closeCallback?: () => unknown;
+  defaultIsOpen?: boolean;
   FormAction: (
     prevState: TInitialFormState,
     formData: FormData,
@@ -26,17 +28,24 @@ type TFormDrawer = PropsWithChildren<{
 
 export default function FormDrawer({
   children,
+  closeCallback,
+  defaultIsOpen = false,
   FormAction,
   renderTrigger,
   title,
   titleIcon,
 }: TFormDrawer) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultIsOpen);
   const [state, action] = useActionState(FormAction, initialFormState);
 
   useEffect(() => {
     if (state.success && state.dismiss) setIsOpen(() => false);
   }, [state.success, state.dismiss, setIsOpen]);
+
+  const close = useCallback(() => {
+    setIsOpen(() => false);
+    if (closeCallback) closeCallback();
+  }, [closeCallback]);
 
   const toggle = useCallback(() => setIsOpen((prevState) => !prevState), []);
 
@@ -44,7 +53,7 @@ export default function FormDrawer({
     <>
       {renderTrigger(toggle)}
       {isOpen && (
-        <Drawer open={isOpen} onClose={() => setIsOpen(false)} position="right">
+        <Drawer open={isOpen} onClose={close} position="right">
           <Drawer.Header title={title} titleIcon={titleIcon} />
           <Drawer.Items>
             {state.error && (

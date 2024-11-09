@@ -23,6 +23,25 @@ export async function AddJobEvent(
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
 
+  const { data: foundEventsDuringTime, error: fetchProfileTimeCheckError } =
+    await supabase
+      .from("business_location_job_event_profiles")
+      .select("*, event: event_id!inner(*)")
+      .gte("event.start_datetime", fields.start_datetime as string)
+      .lte("event.end_datetime", fields.end_datetime as string)
+      .in("profile_id", formData.getAll("profiles"));
+
+  if (fetchProfileTimeCheckError)
+    return formStateResponse({
+      error: fetchProfileTimeCheckError.message,
+    });
+
+  if (foundEventsDuringTime.length) {
+    return formStateResponse({
+      error: "Found existing event for employees.",
+    });
+  }
+
   const insert = {
     business_id: fields.business_id as string,
     end_datetime: fields.end_datetime as string,
@@ -38,7 +57,7 @@ export async function AddJobEvent(
     .select("id")
     .single();
 
-  if (error) return formStateResponse({ ...state, error: error.message });
+  if (error) return formStateResponse({ error: error.message });
 
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(insert),
@@ -62,11 +81,72 @@ export async function AddJobEvent(
     .insert(profilesInsert);
 
   if (addProfilesError)
-    return formStateResponse({ ...state, error: addProfilesError.message });
+    return formStateResponse({ error: addProfilesError.message });
 
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(profilesInsert),
     message: `Added profiles to job event`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
+
+  revalidatePath(
+    generateRevalidationPathForScheduling(
+      fields.business_id,
+      fields.location_id,
+      fields.job_id,
+    ),
+  );
+
+  return formStateResponse({ ...state, success: true, dismiss: true });
+}
+
+export async function UpdateJobEvent(
+  ...args: ServerActionWithState<TInitialFormState>
+) {
+  const supabase = await createSupabaseServerClient();
+  const [state, formData] = args;
+  const fields = Object.fromEntries(formData);
+
+  const { data: foundEventsDuringTime, error: fetchProfileTimeCheckError } =
+    await supabase
+      .from("business_location_job_event_profiles")
+      .select("*, event: event_id!inner(*)")
+      .gte("event.start_datetime", fields.start_datetime as string)
+      .lte("event.end_datetime", fields.end_datetime as string)
+      .in("profile_id", formData.getAll("profiles"));
+
+  if (fetchProfileTimeCheckError)
+    return formStateResponse({
+      error: fetchProfileTimeCheckError.message,
+    });
+
+  if (foundEventsDuringTime.length) {
+    return formStateResponse({
+      error: "Found existing event for employees.",
+    });
+  }
+
+  const update = {
+    end_datetime: fields.end_datetime as string,
+    start_datetime: fields.start_datetime as string,
+    type: fields.type as string,
+  };
+
+  const { error } = await supabase
+    .from("business_location_job_events")
+    .update(update)
+    .eq("id", fields.id)
+    .select("id")
+    .single();
+
+  if (error) return formStateResponse({ error: error.message });
+
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(update),
+    message: `Updated event`,
     record_id: fields.job_id as string,
     record_table_name: "business_location_jobs",
     business_id: fields.business_id as string,

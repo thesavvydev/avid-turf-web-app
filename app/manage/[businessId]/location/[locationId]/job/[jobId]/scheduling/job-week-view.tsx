@@ -9,6 +9,8 @@ import { Fragment, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 import AddJobEventDrawer from "./add-job-event-drawer";
 import { TSchedulingEvent } from "./page";
+import UpdateJobEventDrawer from "./update-job-event-drawer";
+import Link from "next/link";
 
 const EVENT_TYPE_STYLE_PROPERTIES = {
   install: {
@@ -96,6 +98,7 @@ export default function JobWeekView({
 
   return (
     <div className="flex h-[calc(100vh-24rem)] flex-col">
+      <UpdateJobEventDrawer events={events} />
       <div className="mb-4 flex items-center justify-end gap-2">
         <ButtonGroup>
           <Button
@@ -245,58 +248,60 @@ export default function JobWeekView({
                         gridRow: `${gridRowStart} / span ${gridRowSpan}`,
                       }}
                     >
-                      <div
-                        className={twMerge(
-                          styles.background,
-                          "group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5",
-                        )}
-                      >
-                        <p className={styles.time}>
-                          {dayjs(event.start_datetime).format("MM/DD")}
-                        </p>
-                        <p
+                      <Link href={`?event_id=${event.id}`}>
+                        <div
                           className={twMerge(
-                            styles.title,
-                            "order-1 font-semibold capitalize",
+                            styles.background,
+                            "group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5",
                           )}
                         >
-                          {event.type}
-                        </p>
-                        <div className="order-2 mt-2 flex flex-wrap items-center gap-1">
-                          {event.profiles.map((profile) => (
-                            <Tooltip
-                              content={profile.profile.full_name}
-                              placement="bottom"
-                              key={profile.profile.id}
+                          <p className={styles.time}>
+                            {dayjs(event.start_datetime).format("MM/DD")}
+                          </p>
+                          <p
+                            className={twMerge(
+                              styles.title,
+                              "order-1 font-semibold capitalize",
+                            )}
+                          >
+                            {event.type}
+                          </p>
+                          <div className="order-2 mt-2 flex flex-wrap items-center gap-1">
+                            {event.profiles.map((profile) => (
+                              <Tooltip
+                                content={profile.profile.full_name}
+                                placement="bottom"
+                                key={profile.profile.id}
+                              >
+                                <Avatar
+                                  placeholderInitials={getInitials(
+                                    profile.profile.full_name ?? "",
+                                  )}
+                                  rounded
+                                  size="xs"
+                                />
+                              </Tooltip>
+                            ))}
+                          </div>
+                          <p className={styles.time}>
+                            <time
+                              dateTime={dayjs(event.start_datetime).format(
+                                "YYYY-MM-DDTHH:mm",
+                              )}
                             >
-                              <Avatar
-                                placeholderInitials={getInitials(
-                                  profile.profile.full_name ?? "",
-                                )}
-                                rounded
-                                size="xs"
-                              />
-                            </Tooltip>
-                          ))}
+                              {dayjs(event.start_datetime).format("hh:mm a")}
+                            </time>
+                            {" - "}
+                            <time
+                              dateTime={dayjs(event.end_datetime).format(
+                                "YYYY-MM-DDTHH:mm",
+                              )}
+                            >
+                              {dayjs(event.end_datetime).format("hh:mm a")}
+                            </time>
+                          </p>
                         </div>
-                        <p className={styles.time}>
-                          <time
-                            dateTime={dayjs(event.start_datetime).format(
-                              "YYYY-MM-DDTHH:mm",
-                            )}
-                          >
-                            {dayjs(event.start_datetime).format("hh:mm a")}
-                          </time>
-                          {" - "}
-                          <time
-                            dateTime={dayjs(event.end_datetime).format(
-                              "YYYY-MM-DDTHH:mm",
-                            )}
-                          >
-                            {dayjs(event.end_datetime).format("hh:mm a")}
-                          </time>
-                        </p>
-                      </div>
+                      </Link>
                     </li>
                   );
                 })}
