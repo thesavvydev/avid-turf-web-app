@@ -59,7 +59,7 @@ export default function JobMessagesCard({ messages }: TJobMessages) {
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "business_location_job_messages",
           filter: `job_id=eq.${jobId}`,
