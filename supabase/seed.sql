@@ -70,21 +70,31 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, creator_id)
+INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '7e15d5cf-952c-4416-85e1-465849358402'),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '7e15d5cf-952c-4416-85e1-465849358402'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 'Aaron Judge', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef');
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '200 E 1600 N', 'St George', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'new'::location_job_status),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '1234 Fake St', 'Washington', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'scheduled'::location_job_status),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 'Jarren Benton', '1234 Fake St', 'Ogden', 'UT', '84242', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'new'::location_job_status),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Patiently Waiting', '1234 Fake St', 'LaVerkin', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'pending'::location_job_status),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nephi LaVerkin', '1234 Fake St', 'Hurricane', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'approved'::location_job_status),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Darnell Wright', '1234 Fake St', 'Ivins', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'billed'::location_job_status),
+  (7, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ryan Jyan', '1234 Fake St', 'Santa Clara', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'canceled'::location_job_status),
+  (8, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Drew Walker', '1234 Fake St', 'Leeds', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'complete'::location_job_status);
 
-ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 4;
+ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 9;
 
 INSERT INTO business_location_job_profiles (id, business_id, location_id, job_id, profile_id)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, '7e15d5cf-952c-4416-85e1-465849358402'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 2, '7e15d5cf-952c-4416-85e1-465849358402'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 3, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef');
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 3, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 4, '7e15d5cf-952c-4416-85e1-465849358402'),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 5, '7e15d5cf-952c-4416-85e1-465849358402'),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 6, '7e15d5cf-952c-4416-85e1-465849358402'),
+  (7, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 7, '7e15d5cf-952c-4416-85e1-465849358402'),
+  (8, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 8, '7e15d5cf-952c-4416-85e1-465849358402');
 
-ALTER SEQUENCE business_location_job_profiles_id_seq RESTART WITH 4;
+ALTER SEQUENCE business_location_job_profiles_id_seq RESTART WITH 9;
 
 INSERT INTO business_location_job_products (id, business_id, location_id, job_id, product_id, number_of_units,lead_price_addon)
 VALUES
