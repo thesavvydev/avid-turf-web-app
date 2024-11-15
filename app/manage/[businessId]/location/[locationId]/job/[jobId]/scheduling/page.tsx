@@ -3,12 +3,13 @@ import JobWeekView from "./job-week-view";
 import { Tables } from "@/types/supabase";
 import dayjs from "dayjs";
 
-export type TSchedulingEvent = Tables<"business_location_job_events"> & {
-  profiles: Tables<"business_location_job_event_profiles"> &
-    {
-      profile: Tables<"profiles">;
-    }[];
-};
+export type TSchedulingAppointment =
+  Tables<"business_location_job_appointments"> & {
+    profiles: Tables<"business_location_job_appointment_profiles"> &
+      {
+        profile: Tables<"profiles">;
+      }[];
+  };
 
 type TPageProps = {
   searchParams: Promise<{
@@ -21,16 +22,16 @@ export default async function Page(props: TPageProps) {
   const { startOfWeek } = await props.searchParams;
 
   const { data } = await supabase
-    .from("business_location_job_events")
+    .from("business_location_job_appointments")
     .select(
-      "*,profiles: business_location_job_event_profiles(*,profile: profile_id(*))",
+      "*,profiles: business_location_job_appointment_profiles(*,profile: profile_id(*))",
     )
     .gte(
       "start_datetime",
       startOfWeek ? startOfWeek : dayjs().startOf("week").toISOString(),
     )
     .lte("end_datetime", dayjs(startOfWeek).endOf("week").toISOString())
-    .returns<TSchedulingEvent[]>();
+    .returns<TSchedulingAppointment[]>();
 
-  return <JobWeekView events={data ?? []} />;
+  return <JobWeekView appointments={data ?? []} />;
 }

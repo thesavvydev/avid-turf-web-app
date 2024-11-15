@@ -7,12 +7,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
-import AddJobEventDrawer from "./add-job-event-drawer";
-import { TSchedulingEvent } from "./page";
-import UpdateJobEventDrawer from "./update-job-event-drawer";
+import AddJobAppointmentDrawer from "./add-job-appointment-drawer";
+import { TSchedulingAppointment } from "./page";
+import UpdateJobAppointmentDrawer from "./update-job-appointment-drawer";
 import Link from "next/link";
 
-const EVENT_TYPE_STYLE_PROPERTIES = {
+const APPOINTMENT_TYPE_STYLE_PROPERTIES = {
   install: {
     background:
       "bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-800 dark:hover:bg-yellow-700",
@@ -33,7 +33,8 @@ const EVENT_TYPE_STYLE_PROPERTIES = {
   },
 };
 
-type TEventTypeStyleProperty = keyof typeof EVENT_TYPE_STYLE_PROPERTIES;
+type TAppointmentTypeStyleProperty =
+  keyof typeof APPOINTMENT_TYPE_STYLE_PROPERTIES;
 
 const calculateGridRowStartAndSpan = (start: string, end: string) => {
   const rowPadding = 2;
@@ -61,9 +62,9 @@ const DAY_OF_WEEK_TO_COLUMN = [
 ];
 
 export default function JobWeekView({
-  events,
+  appointments,
 }: {
-  events: TSchedulingEvent[];
+  appointments: TSchedulingAppointment[];
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -98,7 +99,7 @@ export default function JobWeekView({
 
   return (
     <div className="flex h-[calc(100vh-24rem)] flex-col">
-      <UpdateJobEventDrawer events={events} />
+      <UpdateJobAppointmentDrawer appointments={appointments} />
       <div className="mb-4 flex items-center justify-end gap-2">
         <ButtonGroup>
           <Button
@@ -124,7 +125,7 @@ export default function JobWeekView({
           <Dropdown.Item>Week</Dropdown.Item>
           <Dropdown.Item>Month</Dropdown.Item>
         </Dropdown>
-        <AddJobEventDrawer />
+        <AddJobAppointmentDrawer />
       </div>
       <div
         className="isolate flex flex-auto flex-col overflow-auto bg-white dark:bg-gray-800"
@@ -217,22 +218,22 @@ export default function JobWeekView({
                 <div className="col-start-8 row-span-full w-8" />
               </div>
 
-              {/* Events */}
+              {/* Appointments */}
               <ol
                 className="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"
                 style={{
                   gridTemplateRows: "1.75rem repeat(288, minmax(0, 1fr)) auto",
                 }}
               >
-                {events.map((event) => {
+                {appointments.map((appointment) => {
                   const styles =
-                    EVENT_TYPE_STYLE_PROPERTIES[
-                      event.type as TEventTypeStyleProperty
-                    ] ?? EVENT_TYPE_STYLE_PROPERTIES.closing;
+                    APPOINTMENT_TYPE_STYLE_PROPERTIES[
+                      appointment.type as TAppointmentTypeStyleProperty
+                    ] ?? APPOINTMENT_TYPE_STYLE_PROPERTIES.closing;
                   const { gridRowStart, gridRowSpan } =
                     calculateGridRowStartAndSpan(
-                      event.start_datetime,
-                      event.end_datetime,
+                      appointment.start_datetime,
+                      appointment.end_datetime,
                     );
 
                   return (
@@ -240,15 +241,15 @@ export default function JobWeekView({
                       className={twMerge(
                         "relative mt-px flex",
                         DAY_OF_WEEK_TO_COLUMN[
-                          dayjs(event.start_datetime).day()
+                          dayjs(appointment.start_datetime).day()
                         ],
                       )}
-                      key={event.id}
+                      key={appointment.id}
                       style={{
                         gridRow: `${gridRowStart} / span ${gridRowSpan}`,
                       }}
                     >
-                      <Link href={`?event_id=${event.id}`}>
+                      <Link href={`?appointment_id=${appointment.id}`}>
                         <div
                           className={twMerge(
                             styles.background,
@@ -256,7 +257,7 @@ export default function JobWeekView({
                           )}
                         >
                           <p className={styles.time}>
-                            {dayjs(event.start_datetime).format("MM/DD")}
+                            {dayjs(appointment.start_datetime).format("MM/DD")}
                           </p>
                           <p
                             className={twMerge(
@@ -264,10 +265,10 @@ export default function JobWeekView({
                               "order-1 font-semibold capitalize",
                             )}
                           >
-                            {event.type}
+                            {appointment.type}
                           </p>
                           <div className="order-2 mt-2 flex flex-wrap items-center gap-1">
-                            {event.profiles.map((profile) => (
+                            {appointment.profiles.map((profile) => (
                               <Tooltip
                                 content={profile.profile.full_name}
                                 placement="bottom"
@@ -285,19 +286,23 @@ export default function JobWeekView({
                           </div>
                           <p className={styles.time}>
                             <time
-                              dateTime={dayjs(event.start_datetime).format(
-                                "YYYY-MM-DDTHH:mm",
-                              )}
+                              dateTime={dayjs(
+                                appointment.start_datetime,
+                              ).format("YYYY-MM-DDTHH:mm")}
                             >
-                              {dayjs(event.start_datetime).format("hh:mm a")}
+                              {dayjs(appointment.start_datetime).format(
+                                "hh:mm a",
+                              )}
                             </time>
                             {" - "}
                             <time
-                              dateTime={dayjs(event.end_datetime).format(
+                              dateTime={dayjs(appointment.end_datetime).format(
                                 "YYYY-MM-DDTHH:mm",
                               )}
                             >
-                              {dayjs(event.end_datetime).format("hh:mm a")}
+                              {dayjs(appointment.end_datetime).format(
+                                "hh:mm a",
+                              )}
                             </time>
                           </p>
                         </div>

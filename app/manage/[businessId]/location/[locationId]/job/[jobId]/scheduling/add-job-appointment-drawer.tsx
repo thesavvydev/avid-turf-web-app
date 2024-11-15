@@ -8,9 +8,9 @@ import { Button, Label, Select, TextInput } from "flowbite-react";
 import { CalendarClockIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useRef } from "react";
-import { AddJobEvent } from "./actions";
+import { AddJobAppointment } from "./actions";
 
-export default function AddJobEventDrawer() {
+export default function AddJobAppointmentDrawer() {
   const startDatetimeRef = useRef<HTMLInputElement>(null);
   const endDatetimeRef = useRef<HTMLInputElement>(null);
   const {
@@ -20,13 +20,13 @@ export default function AddJobEventDrawer() {
 
   return (
     <FormDrawer
-      FormAction={AddJobEvent}
+      FormAction={AddJobAppointment}
       renderTrigger={(toggle) => (
         <Button color="primary" onClick={toggle} size="sm">
-          Add Event
+          Add Appointment
         </Button>
       )}
-      title="Add Event"
+      title="Add Appointment"
       titleIcon={() => <CalendarClockIcon className="mr-2" />}
     >
       <input type="hidden" name="business_id" value={businessId} />
@@ -92,7 +92,7 @@ export default function AddJobEventDrawer() {
             ))}
           </Select>
         </div>
-        <SubmitButton pendingText="Adding event...">Submit</SubmitButton>
+        <SubmitButton pendingText="Adding appointment...">Submit</SubmitButton>
       </fieldset>
     </FormDrawer>
   );

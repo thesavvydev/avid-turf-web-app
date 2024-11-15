@@ -69,35 +69,42 @@ export type Database = {
           },
         ]
       }
-      business_location_job_event_profiles: {
+      business_location_job_appointment_profiles: {
         Row: {
+          appointment_id: number
           business_id: string
           created_at: string
-          event_id: number
           id: number
           job_id: number
           location_id: number
           profile_id: string
         }
         Insert: {
+          appointment_id: number
           business_id: string
           created_at?: string
-          event_id: number
           id?: number
           job_id: number
           location_id: number
           profile_id: string
         }
         Update: {
+          appointment_id?: number
           business_id?: string
           created_at?: string
-          event_id?: number
           id?: number
           job_id?: number
           location_id?: number
           profile_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "business_location_job_appointment_profiles_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_job_appointments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "business_location_job_event_profiles_business_id_fkey"
             columns: ["business_id"]
@@ -107,9 +114,9 @@ export type Database = {
           },
           {
             foreignKeyName: "business_location_job_event_profiles_event_id_fkey"
-            columns: ["event_id"]
+            columns: ["appointment_id"]
             isOneToOne: false
-            referencedRelation: "business_location_job_events"
+            referencedRelation: "business_location_job_appointments"
             referencedColumns: ["id"]
           },
           {
@@ -135,7 +142,7 @@ export type Database = {
           },
         ]
       }
-      business_location_job_events: {
+      business_location_job_appointments: {
         Row: {
           business_id: string
           created_at: string
@@ -590,146 +597,6 @@ export type Database = {
           },
         ]
       }
-      business_location_lead_custom_fields: {
-        Row: {
-          business_id: string
-          created_at: string
-          custom_field_id: number
-          lead_id: number
-          value: string
-        }
-        Insert: {
-          business_id: string
-          created_at?: string
-          custom_field_id: number
-          lead_id: number
-          value: string
-        }
-        Update: {
-          business_id?: string
-          created_at?: string
-          custom_field_id?: number
-          lead_id?: number
-          value?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "business_location_lead_custom_fields_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "businesses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lead_custom_fields_custom_field_id_fkey"
-            columns: ["custom_field_id"]
-            isOneToOne: false
-            referencedRelation: "business_custom_fields"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lead_custom_fields_lead_id_fkey"
-            columns: ["lead_id"]
-            isOneToOne: false
-            referencedRelation: "business_location_leads"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      business_location_leads: {
-        Row: {
-          address: string | null
-          budget: number | null
-          business_id: string | null
-          business_location_id: number
-          city: string | null
-          completion_date: string | null
-          created_at: string
-          creator_id: string
-          custom_fields: Json | null
-          email: string | null
-          follow_up_date: string | null
-          id: number
-          name: string
-          notes: string | null
-          phone: string | null
-          postal_code: string | null
-          score: number
-          source: Database["public"]["Enums"]["lead_sources"]
-          state: string | null
-          status: Database["public"]["Enums"]["lead_statuses"]
-          type: Database["public"]["Enums"]["lead_type"] | null
-        }
-        Insert: {
-          address?: string | null
-          budget?: number | null
-          business_id?: string | null
-          business_location_id: number
-          city?: string | null
-          completion_date?: string | null
-          created_at?: string
-          creator_id: string
-          custom_fields?: Json | null
-          email?: string | null
-          follow_up_date?: string | null
-          id?: number
-          name: string
-          notes?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          score?: number
-          source?: Database["public"]["Enums"]["lead_sources"]
-          state?: string | null
-          status?: Database["public"]["Enums"]["lead_statuses"]
-          type?: Database["public"]["Enums"]["lead_type"] | null
-        }
-        Update: {
-          address?: string | null
-          budget?: number | null
-          business_id?: string | null
-          business_location_id?: number
-          city?: string | null
-          completion_date?: string | null
-          created_at?: string
-          creator_id?: string
-          custom_fields?: Json | null
-          email?: string | null
-          follow_up_date?: string | null
-          id?: number
-          name?: string
-          notes?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          score?: number
-          source?: Database["public"]["Enums"]["lead_sources"]
-          state?: string | null
-          status?: Database["public"]["Enums"]["lead_statuses"]
-          type?: Database["public"]["Enums"]["lead_type"] | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "leads_location_id_fkey"
-            columns: ["business_location_id"]
-            isOneToOne: false
-            referencedRelation: "business_locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "leads_profile_id_fkey"
-            columns: ["creator_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "location_leads_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "businesses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       business_location_profiles: {
         Row: {
           business_id: string
@@ -1114,15 +981,6 @@ export type Database = {
         | "closer"
         | "project_manager"
         | "crew_lead"
-      lead_sources: "website-form" | "phone" | "email" | "referral" | "other"
-      lead_statuses:
-        | "new"
-        | "qualified"
-        | "nurturing"
-        | "follow-up"
-        | "lost"
-        | "inactive"
-      lead_type: "new" | "remodel" | "maintenance"
       location_job_status:
         | "new"
         | "scheduled"

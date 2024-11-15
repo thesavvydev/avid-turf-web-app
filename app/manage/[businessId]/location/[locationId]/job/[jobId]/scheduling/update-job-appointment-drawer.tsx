@@ -13,46 +13,51 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { PropsWithChildren, useRef } from "react";
-import { UpdateJobEvent } from "./actions";
+import { UpdateJobAppointment } from "./actions";
 
-export default function UpdateJobEventDrawer({
+export default function UpdateJobAppointmentDrawer({
   children,
-  events,
+  appointments,
 }: PropsWithChildren<{
-  events: Tables<"business_location_job_events">[];
+  appointments: Tables<"business_location_job_appointments">[];
 }>) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-  const event = events.find(
-    (event) => event.id === Number(searchParams.get("event_id")),
+  const appointment = appointments.find(
+    (a) => a.id === Number(searchParams.get("appointment_id")),
   );
   const startDatetimeRef = useRef<HTMLInputElement>(null);
   const endDatetimeRef = useRef<HTMLInputElement>(null);
   const { businessId, locationId, jobId } = useParams();
 
-  return event ? (
+  return appointment ? (
     <FormDrawer
-      key={event.id}
+      key={appointment.id}
       closeCallback={() => router.push(pathname)}
       defaultIsOpen
-      FormAction={UpdateJobEvent}
+      FormAction={UpdateJobAppointment}
       renderTrigger={(toggle) => (
         <div className="contents" onClick={toggle}>
           {children}
         </div>
       )}
-      title="Update Event"
+      title="Update Appointment"
       titleIcon={() => <CalendarClockIcon className="mr-2" />}
     >
-      <input type="hidden" name="id" value={event.id} />
+      <input type="hidden" name="id" value={appointment.id} />
       <input type="hidden" name="business_id" value={businessId} />
       <input type="hidden" name="location_id" value={locationId} />
       <input type="hidden" name="job_id" value={jobId} />
       <fieldset className="grid gap-2 md:gap-4 lg:gap-6">
         <div className="grid gap-2">
           <Label htmlFor="type">Type</Label>
-          <Select defaultValue={event.type} id="type" name="type" required>
+          <Select
+            defaultValue={appointment.type}
+            id="type"
+            name="type"
+            required
+          >
             <option value="">Select a type</option>
             <option value="install">Install</option>
             <option value="Demolition">Demolition</option>
@@ -61,7 +66,7 @@ export default function UpdateJobEventDrawer({
         <div className="grid gap-2">
           <Label htmlFor="start_datetime">Start Time</Label>
           <TextInput
-            defaultValue={event.start_datetime}
+            defaultValue={appointment.start_datetime}
             id="start_datetime"
             name="start_datetime"
             ref={startDatetimeRef}
@@ -72,7 +77,7 @@ export default function UpdateJobEventDrawer({
         <div className="grid gap-2">
           <Label htmlFor="end_datetime">End Time</Label>
           <TextInput
-            defaultValue={event.end_datetime}
+            defaultValue={appointment.end_datetime}
             id="end_datetime"
             name="end_datetime"
             onChange={(e) => {
@@ -97,7 +102,9 @@ export default function UpdateJobEventDrawer({
             type="datetime-local"
           />
         </div>
-        <SubmitButton pendingText="Updating event...">Submit</SubmitButton>
+        <SubmitButton pendingText="Updating appointment...">
+          Submit
+        </SubmitButton>
       </fieldset>
     </FormDrawer>
   ) : null;
