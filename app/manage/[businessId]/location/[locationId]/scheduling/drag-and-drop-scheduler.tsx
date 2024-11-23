@@ -254,32 +254,7 @@ function DayAppointments({ appointments }: { appointments: TAppointment[] }) {
               gridRow: `${gridRowStart} / span ${gridRowSpan}`,
             }}
           >
-            <div
-              className={twMerge(
-                "group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5",
-              )}
-            >
-              <p>{dayjs(appointment.start_datetime).format("MM/DD")}</p>
-              <p className={twMerge("order-1 font-semibold capitalize")}>
-                {appointment.type}
-              </p>
-              <div className="order-2 mt-2 flex flex-wrap items-center gap-1">
-                {appointment.profiles.map((profile) => (
-                  <Tooltip
-                    content={profile.profile.full_name}
-                    placement="bottom"
-                    key={profile.profile.id}
-                  >
-                    <Avatar
-                      placeholderInitials={getInitials(
-                        profile.profile.full_name ?? "",
-                      )}
-                      rounded
-                      size="xs"
-                    />
-                  </Tooltip>
-                ))}
-              </div>
+            <div className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5">
               <p>
                 <time
                   dateTime={dayjs(appointment.start_datetime).format(
@@ -297,6 +272,28 @@ function DayAppointments({ appointments }: { appointments: TAppointment[] }) {
                   {dayjs(appointment.end_datetime).format("hh:mm a")}
                 </time>
               </p>
+              <p className="font-semibold capitalize">{appointment.type}</p>
+              <p className="font-semibold capitalize">
+                {appointment.job.full_name}
+              </p>
+              <p className="text-xs">{`${appointment.job.address}, ${appointment.job.city} ${appointment.job.state}`}</p>
+              <div className="mt-2 flex flex-wrap items-center gap-1">
+                {appointment.profiles.map((profile) => (
+                  <Tooltip
+                    content={profile.profile.full_name}
+                    placement="bottom"
+                    key={profile.profile.id}
+                  >
+                    <Avatar
+                      placeholderInitials={getInitials(
+                        profile.profile.full_name ?? "",
+                      )}
+                      rounded
+                      size="xs"
+                    />
+                  </Tooltip>
+                ))}
+              </div>
             </div>
           </li>
         );
