@@ -106,35 +106,28 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_location_job_event_profiles_business_id_fkey"
+            foreignKeyName: "business_location_job_appointment_profiles_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_location_job_event_profiles_event_id_fkey"
-            columns: ["appointment_id"]
-            isOneToOne: false
-            referencedRelation: "business_location_job_appointments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "business_location_job_event_profiles_job_id_fkey"
+            foreignKeyName: "business_location_job_appointment_profiles_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "business_location_jobs"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_location_job_event_profiles_location_id_fkey"
+            foreignKeyName: "business_location_job_appointment_profiles_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "business_locations"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_location_job_event_profiles_profile_id_fkey"
+            foreignKeyName: "business_location_job_appointment_profiles_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -175,21 +168,21 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "business_locations_job_events_business_id_fkey"
+            foreignKeyName: "business_location_job_appointments_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_locations_job_events_job_id_fkey"
+            foreignKeyName: "business_location_job_appointments_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "business_location_jobs"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "business_locations_job_events_location_id_fkey"
+            foreignKeyName: "business_location_job_appointments_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "business_locations"

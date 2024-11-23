@@ -3,6 +3,7 @@
 import { useUserContext } from "@/contexts/user";
 import {
   BoxIcon,
+  CalendarIcon,
   HomeIcon,
   MapPinIcon,
   UserCircle2,
@@ -83,6 +84,14 @@ export default function useManageMenuItems() {
               `/manage/${businessId}/location/${locationId}/employee`,
             ),
             icon: UserIcon,
+          },
+          {
+            name: "Scheduling",
+            href: `/manage/${businessId}/location/${locationId}/scheduling`,
+            isActive: pathname.startsWith(
+              `/manage/${businessId}/location/${locationId}/scheduling`,
+            ),
+            icon: CalendarIcon,
           },
         ]
       : []),

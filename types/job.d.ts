@@ -1,5 +1,13 @@
 import { Tables } from "./supabase";
 
+interface IAppointmentProfile
+  extends Tables<"business_location_job_appointment_profiles"> {
+  profile: Tables<"profile">;
+}
+interface IJobAppointment extends Tables<"business_location_job_appointments"> {
+  profiles: IAppointmentProfile[];
+}
+
 interface IJobProfile extends Tables<"business_location_job_profiles"> {
   profile: Tables<"profiles">;
 }
@@ -17,6 +25,7 @@ export interface IJob extends Tables<"business_location_jobs"> {
   media?: Tables<"business_location_job_media">[];
   profiles?: IJobProfile[];
   products?: IJobProduct[];
+  appointments?: IJobProduct[];
 }
 
 export interface IJobMessage extends Tables<"business_location_job_messages"> {

@@ -79,7 +79,7 @@ export default function UserContextProvider({
         ? { ...selectedLocation, ...selectedLocationProfile }
         : {}),
     };
-  }, [locationId, user.locations, user.location_profiles]);
+  }, [locationId, user]);
 
   const getSelectedBusinessData = useCallback(() => {
     const { business_profiles, businesses } = user;
@@ -100,7 +100,7 @@ export default function UserContextProvider({
         ? { ...selectedBusiness, ...selectedBusinessProfile }
         : {}),
     };
-  }, [businessId, user.business_profiles, user.businesses]);
+  }, [businessId, user]);
 
   const value = useMemo(
     () => ({
@@ -118,7 +118,13 @@ export default function UserContextProvider({
           : {}),
       },
     }),
-    [user],
+    [
+      user,
+      businessId,
+      locationId,
+      getSelectedLocationData,
+      getSelectedBusinessData,
+    ],
   );
 
   return (
