@@ -37,10 +37,8 @@ export default async function Layout(
         <ManageNav />
         <main className="relative mt-20 sm:mt-16 md:flex">
           <ManageSidebar />
-          <div className="relative max-w-full flex-1 overflow-x-hidden">
-            <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-              {children}
-            </div>
+          <div className="container relative flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+            {children}
           </div>
         </main>
         <AppToasts />
