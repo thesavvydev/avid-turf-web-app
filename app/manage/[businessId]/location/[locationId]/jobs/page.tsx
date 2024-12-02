@@ -167,7 +167,7 @@ function JobStatusTiles({
             <p className="text-gray-400">
               {formatAsCompactNumber(Number(tile.value))}
             </p>
-            <p className="whitespace-nowrap text-xs">
+            <p className="text-xs">
               Weekly Change{" "}
               <span
                 className={twMerge(
