@@ -1,5 +1,6 @@
 "use client";
 
+import { useBusinessContext } from "@/contexts/business";
 import { useSidebarContext } from "@/contexts/sidebar";
 import { useUserContext } from "@/contexts/user";
 import {
@@ -15,9 +16,8 @@ import {
   SidebarCloseIcon,
   SidebarOpenIcon,
 } from "lucide-react";
-import { twMerge } from "tailwind-merge";
-import { useBusinessContext } from "@/contexts/business";
 import { useParams } from "next/navigation";
+import { twMerge } from "tailwind-merge";
 import useManageMenuItems from "./use-manage-menu-items";
 
 export default function ManageNav() {

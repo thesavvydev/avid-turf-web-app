@@ -6,6 +6,7 @@ import {
   CalendarIcon,
   HomeIcon,
   MapPinIcon,
+  SettingsIcon,
   UserCircle2,
   UserIcon,
   WorkflowIcon,
@@ -27,71 +28,83 @@ export default function useManageMenuItems() {
 
   if (!businessId) return [];
 
+  const generateBusinessLink = (segment: string) =>
+    `/manage/${businessId}/${segment}`;
+
   if (!locationId) {
     return [
       {
-        name: "Dashboard",
-        href: `/manage/${businessId}/dashboard`,
-        isActive: pathname === `/manage/${businessId}/dashboard`,
+        href: generateBusinessLink("dashboard"),
         icon: HomeIcon,
+        isActive: pathname === `/manage/${businessId}/dashboard`,
+        name: "Dashboard",
       },
       {
-        name: "Locations",
-        href: `/manage/${businessId}/locations`,
-        isActive: pathname === `/manage/${businessId}/locations`,
+        href: generateBusinessLink("locations"),
         icon: MapPinIcon,
+        isActive: pathname === `/manage/${businessId}/locations`,
+        name: "Locations",
       },
       {
-        name: "Products",
-        href: `/manage/${businessId}/products`,
-        isActive: pathname === `/manage/${businessId}/products`,
+        href: generateBusinessLink("products"),
         icon: BoxIcon,
+        isActive: pathname === `/manage/${businessId}/products`,
+        name: "Products",
       },
       ...(isBusinessManagement
         ? [
             {
               name: "Users",
-              href: `/manage/${businessId}/users`,
+              href: generateBusinessLink("users"),
               isActive: pathname === `/manage/${businessId}/users`,
               icon: UserCircle2,
+            },
+            {
+              href: generateBusinessLink("settings"),
+              icon: SettingsIcon,
+              isActive: pathname === `/manage/${businessId}/settings`,
+              name: "Settings",
             },
           ]
         : []),
     ];
   }
 
+  const generateLocationLink = (segment: string = "") =>
+    generateBusinessLink(`/location/${locationId}/${segment}`);
+
   return [
     {
-      name: "Dashboard",
-      href: `/manage/${businessId}/location/${locationId}`,
-      isActive: pathname === `/manage/${businessId}/location/${locationId}`,
+      href: generateLocationLink(),
       icon: HomeIcon,
+      isActive: pathname === `/manage/${businessId}/location/${locationId}`,
+      name: "Dashboard",
     },
     {
-      name: "Jobs",
-      href: `/manage/${businessId}/location/${locationId}/jobs`,
+      href: generateLocationLink("jobs"),
+      icon: WorkflowIcon,
       isActive: pathname.startsWith(
         `/manage/${businessId}/location/${locationId}/job`,
       ),
-      icon: WorkflowIcon,
+      name: "Jobs",
     },
     ...(isLocationManagement
       ? [
           {
-            name: "Employees",
-            href: `/manage/${businessId}/location/${locationId}/employees`,
+            href: generateLocationLink("employees"),
+            icon: UserIcon,
             isActive: pathname.startsWith(
               `/manage/${businessId}/location/${locationId}/employee`,
             ),
-            icon: UserIcon,
+            name: "Employees",
           },
           {
-            name: "Scheduling",
-            href: `/manage/${businessId}/location/${locationId}/scheduling`,
+            href: generateLocationLink("scheduling"),
+            icon: CalendarIcon,
             isActive: pathname.startsWith(
               `/manage/${businessId}/location/${locationId}/scheduling`,
             ),
-            icon: CalendarIcon,
+            name: "Scheduling",
           },
         ]
       : []),
