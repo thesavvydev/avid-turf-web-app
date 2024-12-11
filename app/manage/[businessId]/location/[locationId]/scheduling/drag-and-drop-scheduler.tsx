@@ -185,8 +185,11 @@ function HorizontalTimeLines() {
     });
   };
 
+  const searchParams = useSearchParams();
   const hoursArray = Array.from({ length: 24 }, (_, i) =>
-    dayjs().startOf("day").add(i, "h"),
+    dayjs(searchParams.get("selectedDate") ?? undefined)
+      .startOf("day")
+      .add(i, "h"),
   );
 
   return (
