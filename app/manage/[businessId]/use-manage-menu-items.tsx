@@ -22,9 +22,9 @@ export default function useManageMenuItems() {
   const isBusinessManagement = ["manager", "admin"].includes(
     user.business?.role ?? "",
   );
-  const isLocationManagement = ["manager", "admin"].includes(
-    user.location?.role ?? "",
-  );
+  const isLocationManagement =
+    isBusinessManagement ||
+    ["manager", "admin"].includes(user.location?.role ?? "");
 
   if (!businessId) return [];
 
