@@ -114,7 +114,8 @@ function NewAppointmentModal({
             <Select defaultValue="" id="type" name="type" required>
               <option value="">Select a type</option>
               <option value="install">Install</option>
-              <option value="Demolition">Demolition</option>
+              <option value="demolition">Demolition</option>
+              <option value="walkthrough">Walkthrough</option>
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-4">
