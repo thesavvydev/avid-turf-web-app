@@ -597,6 +597,7 @@ export type Database = {
           created_at: string
           location_id: number
           profile_id: string
+          referrer_profile_id: string | null
           role: Database["public"]["Enums"]["location_profile_roles"]
         }
         Insert: {
@@ -605,6 +606,7 @@ export type Database = {
           created_at?: string
           location_id: number
           profile_id: string
+          referrer_profile_id?: string | null
           role?: Database["public"]["Enums"]["location_profile_roles"]
         }
         Update: {
@@ -613,6 +615,7 @@ export type Database = {
           created_at?: string
           location_id?: number
           profile_id?: string
+          referrer_profile_id?: string | null
           role?: Database["public"]["Enums"]["location_profile_roles"]
         }
         Relationships: [
@@ -621,6 +624,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_profiles_referrer_profile_id_fkey"
+            columns: ["referrer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -804,6 +814,41 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_tokens: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: number
+          service: string
+          token: string
+          token_type: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: number
+          service: string
+          token: string
+          token_type: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: number
+          service?: string
+          token?: string
+          token_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_tokens_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
         ]

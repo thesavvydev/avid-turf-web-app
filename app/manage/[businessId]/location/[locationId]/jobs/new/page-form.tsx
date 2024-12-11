@@ -27,11 +27,12 @@ import initialFormState, {
 import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { US_STATES } from "@/constants/us-states";
+import { ILocationEmployee } from "@/types/location";
 import { Tables } from "@/types/supabase";
 import { useActionState, useState } from "react";
 import { AddJob } from "./action";
 
-const EmployeesCard = ({ profiles }: { profiles: TProfile[] }) => {
+const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
   const [employees, setEmployees] = useState([""]);
   const { user } = useUserContext();
   const { pending } = useFormStatus();
@@ -432,12 +433,8 @@ const FormFields = ({ profiles, products }: TPageForm) => {
   );
 };
 
-type TProfile = Tables<"business_location_profiles"> & {
-  profile: Partial<Tables<"profiles">> | null;
-};
-
 type TPageForm = {
-  profiles: TProfile[];
+  profiles: ILocationEmployee[];
   products: Tables<"business_products">[];
 };
 

@@ -17,7 +17,7 @@ export default async function Layout({ children }: PropsWithChildren) {
   const { data, error: fetchProfileError } = await supabase
     .from("profiles")
     .select(
-      "*, businesses(*), business_profiles(*), locations: business_locations(*), location_profiles: business_location_profiles(*)",
+      "*, businesses(*), business_profiles(*), locations: business_locations(*), location_profiles: business_location_profiles!profile_id(*)",
     )
     .eq("id", user.id)
     .limit(1)
