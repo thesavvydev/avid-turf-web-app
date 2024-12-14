@@ -26,7 +26,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     data: {
       ...fields,
       employees: Object.values(employeesDictionary),
-      products: Object.values(employeesDictionary),
+      products: Object.values(productsDictionary),
     },
   };
 
