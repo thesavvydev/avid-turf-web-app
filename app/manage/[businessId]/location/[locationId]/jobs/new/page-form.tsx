@@ -77,7 +77,7 @@ const EmployeesCard = ({
 }) => {
   const [employees, setEmployees] = useState(() => data.employees);
   const { pending } = useFormStatus();
-  console.log({ employees });
+
   return (
     <Card>
       <h2 className="text-xl font-medium text-gray-400">Employees</h2>
@@ -444,7 +444,7 @@ const FormFields = ({
         </h2>
         <fieldset disabled={pending} className="grid gap-2 md:mt-2 md:gap-6">
           <JobProductsFormFields
-            key={data.products.toString()}
+            key={data.products?.toString()}
             defaultCommission={Number(data.commission)}
             defaultJobProducts={data.products}
             products={products}
@@ -531,7 +531,7 @@ const FormFields = ({
       <HOAInformationFields data={data} />
       <WaterRebateInformationFields data={data} />
       <EmployeesCard
-        key={data.employees.toString()}
+        key={data.employees?.toString()}
         data={data}
         profiles={profiles}
       />
