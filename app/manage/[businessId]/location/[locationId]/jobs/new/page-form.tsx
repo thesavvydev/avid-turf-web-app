@@ -7,7 +7,6 @@ import {
   Breadcrumb,
   Button,
   Card,
-  Datepicker,
   Label,
   Radio,
   Select,
@@ -27,16 +26,58 @@ import initialFormState, {
 import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { US_STATES } from "@/constants/us-states";
+import { useLocationContext } from "@/contexts/location";
 import { ILocationEmployee } from "@/types/location";
-import { Tables } from "@/types/supabase";
-import { useActionState, useState } from "react";
+import { Database, Tables } from "@/types/supabase";
+import { useActionState, useEffect, useState } from "react";
 import { AddJob } from "./action";
 
-const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
-  const [employees, setEmployees] = useState([""]);
-  const { user } = useUserContext();
-  const { pending } = useFormStatus();
+interface IEmployee {
+  profile_id: string;
+  role: string;
+}
 
+interface IFormFields {
+  address: string;
+  city: string;
+  commission: string;
+  down_payment_collected: number;
+  email: string;
+  employees: IEmployee[];
+  estimated_end_date: string;
+  estimated_start_date: string;
+  full_name: string;
+  has_water_rebate: "no" | "yes";
+  hoa_approval_required: "no" | "yes";
+  hoa_contact_email: string;
+  hoa_contact_name: string;
+  hoa_contact_phone: string;
+  payment_type: Database["public"]["Enums"]["job_payment_types"];
+  phone: string;
+  products: Omit<
+    Tables<"business_location_job_products">,
+    "created_at" | "id" | "job_id"
+  >[];
+  postal_code: string;
+  state: string;
+  water_rebate_company: string;
+}
+
+type TPageForm = {
+  profiles: ILocationEmployee[];
+  products: Tables<"business_products">[];
+};
+
+const EmployeesCard = ({
+  data,
+  profiles,
+}: {
+  data: Pick<IFormFields, "employees">;
+  profiles: ILocationEmployee[];
+}) => {
+  const [employees, setEmployees] = useState(() => data.employees);
+  const { pending } = useFormStatus();
+  console.log({ employees });
   return (
     <Card>
       <h2 className="text-xl font-medium text-gray-400">Employees</h2>
@@ -44,9 +85,9 @@ const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
         disabled={pending}
         className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
       >
-        {employees.map((_, number) => (
+        {employees.map((employee, number) => (
           <div
-            key={number}
+            key={number.toString()}
             className="group relative grid gap-2 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
           >
             <div className="absolute right-4 top-4 hidden group-hover:block">
@@ -73,9 +114,10 @@ const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
                 Employee
               </Label>
               <Select
-                name={`employees__${number}__profile_id`}
+                defaultValue={employee.profile_id}
                 id={`employees__${number}__profile_id`}
-                defaultValue={user.id}
+                key={employee.profile_id}
+                name={`employees__${number}__profile_id`}
                 required
               >
                 <option value="">Select an employee</option>
@@ -94,10 +136,11 @@ const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
                 Role
               </Label>
               <Select
+                defaultValue={employee.role}
                 id={`employees__${number}__role`}
+                key={employee.role}
                 name={`employees__${number}__role`}
                 required
-                defaultValue="closer"
               >
                 <option value="">Select a role</option>
                 {Object.entries(JOB_PROFILE_ROLES).map(([roleKey, role]) => (
@@ -113,7 +156,12 @@ const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
       <div>
         <Button
           color="light"
-          onClick={() => setEmployees((prevState) => [...prevState, ""])}
+          onClick={() =>
+            setEmployees((prevState) => [
+              ...prevState,
+              { profile_id: "", role: "" },
+            ])
+          }
         >
           Add employee
         </Button>
@@ -122,7 +170,17 @@ const EmployeesCard = ({ profiles }: { profiles: ILocationEmployee[] }) => {
   );
 };
 
-const HOAInformationFields = () => {
+const HOAInformationFields = ({
+  data,
+}: {
+  data: Pick<
+    IFormFields,
+    | "hoa_approval_required"
+    | "hoa_contact_email"
+    | "hoa_contact_name"
+    | "hoa_contact_phone"
+  >;
+}) => {
   const [isApprovalRequired, setIsApprovalRequired] = useState(false);
   const { pending } = useFormStatus();
 
@@ -137,20 +195,21 @@ const HOAInformationFields = () => {
           <legend className="mb-4">Approval Needed</legend>
           <div className="flex items-center gap-2">
             <Radio
+              defaultChecked={data.hoa_approval_required === "yes"}
               id="yes"
               name="hoa_approval_required"
-              value="yes"
               onChange={(e) => setIsApprovalRequired(e.target.checked)}
+              value="yes"
             />
             <Label htmlFor="yes">Yes</Label>
           </div>
           <div className="flex items-center gap-2">
             <Radio
+              defaultChecked={data.hoa_approval_required === "no"}
               id="no"
               name="hoa_approval_required"
-              value="no"
-              defaultChecked
               onChange={(e) => setIsApprovalRequired(!e.target.checked)}
+              value="no"
             />
             <Label htmlFor="no">No</Label>
           </div>
@@ -162,9 +221,10 @@ const HOAInformationFields = () => {
                 Contact Name
               </Label>
               <TextInput
+                autoComplete="off"
+                defaultValue={data.hoa_contact_name}
                 id="hoa_contact_name"
                 name="hoa_contact_name"
-                autoComplete="off"
               />
             </div>
             <div>
@@ -172,10 +232,11 @@ const HOAInformationFields = () => {
                 Contact Email
               </Label>
               <TextInput
-                type="email"
+                autoComplete="off"
+                defaultValue={data.hoa_contact_email}
                 id="hoa_contact_email"
                 name="hoa_contact_email"
-                autoComplete="off"
+                type="email"
               />
             </div>
             <div>
@@ -183,10 +244,11 @@ const HOAInformationFields = () => {
                 Contact Phone
               </Label>
               <TextInput
-                type="phone"
+                autoComplete="off"
+                defaultValue={data.hoa_contact_phone}
                 id="hoa_contact_phone"
                 name="hoa_contact_phone"
-                autoComplete="off"
+                type="phone"
               />
             </div>
           </>
@@ -196,7 +258,11 @@ const HOAInformationFields = () => {
   );
 };
 
-const WaterRebateInformationFields = () => {
+const WaterRebateInformationFields = ({
+  data,
+}: {
+  data: Pick<IFormFields, "water_rebate_company" | "has_water_rebate">;
+}) => {
   const [isRebateProvided, setIsRebateProvided] = useState(false);
   const { pending } = useFormStatus();
 
@@ -213,20 +279,21 @@ const WaterRebateInformationFields = () => {
           <legend className="mb-4">Has Water Rebate</legend>
           <div className="flex items-center gap-2">
             <Radio
+              defaultChecked={data.has_water_rebate === "yes"}
               id="yes"
               name="has_water_rebate"
-              value="yes"
               onChange={(e) => setIsRebateProvided(e.target.checked)}
+              value="yes"
             />
             <Label htmlFor="yes">Yes</Label>
           </div>
           <div className="flex items-center gap-2">
             <Radio
+              defaultChecked={data.has_water_rebate === "no"}
               id="no"
               name="has_water_rebate"
-              value="no"
-              defaultChecked
               onChange={(e) => setIsRebateProvided(!e.target.checked)}
+              value="no"
             />
             <Label htmlFor="no">No</Label>
           </div>
@@ -238,6 +305,7 @@ const WaterRebateInformationFields = () => {
                 Water Rebate Company
               </Label>
               <TextInput
+                defaultValue={data.water_rebate_company}
                 id="water_rebate_company"
                 name="water_rebate_company"
                 autoComplete="off"
@@ -250,7 +318,11 @@ const WaterRebateInformationFields = () => {
   );
 };
 
-const FormFields = ({ profiles, products }: TPageForm) => {
+const FormFields = ({
+  data,
+  profiles,
+  products,
+}: TPageForm & { data: IFormFields }) => {
   const { businessId, locationId } = useParams();
   const { user } = useUserContext();
   const { pending } = useFormStatus();
@@ -273,28 +345,36 @@ const FormFields = ({ profiles, products }: TPageForm) => {
               Full Name
             </Label>
             <TextInput
+              autoComplete="off"
+              defaultValue={data.full_name}
               id="full_name"
               name="full_name"
               required
-              autoComplete="off"
             />
           </div>
           <div>
             <Label htmlFor="phone" className="mb-2 block">
               Phone
             </Label>
-            <TextInput id="phone" name="phone" autoComplete="off" required />
+            <TextInput
+              autoComplete="off"
+              defaultValue={data.phone}
+              id="phone"
+              name="phone"
+              required
+            />
           </div>
           <div>
             <Label htmlFor="email" className="mb-2 block">
               Email
             </Label>
             <TextInput
+              autoComplete="off"
+              defaultValue={data.email}
               id="email"
               name="email"
-              type="email"
-              autoComplete="off"
               required
+              type="email"
             />
           </div>
           <div className="sm:col-span-2">
@@ -302,10 +382,11 @@ const FormFields = ({ profiles, products }: TPageForm) => {
               Address
             </Label>
             <TextInput
+              autoComplete="off"
               id="address"
               name="address"
-              autoComplete="off"
               required
+              defaultValue={data.address}
             />
           </div>
           <div className="grid gap-2 sm:col-span-2 sm:grid-cols-3 md:gap-6">
@@ -313,13 +394,25 @@ const FormFields = ({ profiles, products }: TPageForm) => {
               <Label htmlFor="city" className="mb-2 block">
                 City
               </Label>
-              <TextInput id="city" name="city" autoComplete="off" required />
+              <TextInput
+                autoComplete="off"
+                defaultValue={data.city}
+                id="city"
+                name="city"
+                required
+              />
             </div>
             <div>
               <Label htmlFor="state" className="mb-2 block">
                 State
               </Label>
-              <Select id="state" name="state" defaultValue="" required>
+              <Select
+                defaultValue={data.state}
+                key={data.state}
+                id="state"
+                name="state"
+                required
+              >
                 <option value="" disabled>
                   Select a state
                 </option>
@@ -335,10 +428,11 @@ const FormFields = ({ profiles, products }: TPageForm) => {
                 Postal Code
               </Label>
               <TextInput
+                autoComplete="off"
                 id="postal_code"
                 name="postal_code"
-                autoComplete="off"
                 required
+                defaultValue={data.postal_code}
               />
             </div>
           </div>
@@ -349,7 +443,12 @@ const FormFields = ({ profiles, products }: TPageForm) => {
           Product Information
         </h2>
         <fieldset disabled={pending} className="grid gap-2 md:mt-2 md:gap-6">
-          <JobProductsFormFields products={products} />
+          <JobProductsFormFields
+            key={data.products.toString()}
+            defaultCommission={Number(data.commission)}
+            defaultJobProducts={data.products}
+            products={products}
+          />
         </fieldset>
       </Card>
       <Card>
@@ -365,11 +464,11 @@ const FormFields = ({ profiles, products }: TPageForm) => {
               Down Payment Collected
             </Label>
             <TextInput
-              type="number"
+              autoComplete="off"
+              defaultValue={data.down_payment_collected}
               id="down_payment_collected"
               name="down_payment_collected"
-              autoComplete="off"
-              defaultValue={500}
+              type="number"
             />
           </div>
           <div>
@@ -377,9 +476,10 @@ const FormFields = ({ profiles, products }: TPageForm) => {
               Payment Type
             </Label>
             <Select
+              defaultValue={data.payment_type}
               id="payment_type"
+              key={data.payment_type}
               name="payment_type"
-              defaultValue=""
               required
             >
               <option value="" disabled>
@@ -408,42 +508,69 @@ const FormFields = ({ profiles, products }: TPageForm) => {
             <Label htmlFor="estimated_start_date" className="mb-2 block">
               Start date
             </Label>
-            <Datepicker
-              name="estimated_start_date"
+            <TextInput
+              type="date"
+              defaultValue={data.estimated_start_date}
               id="estimated_start_date"
-              minDate={new Date()}
+              name="estimated_start_date"
             />
           </div>
           <div>
             <Label htmlFor="estimated_end_date" className="mb-2 block">
               End date
             </Label>
-            <Datepicker
-              name="estimated_end_date"
+            <TextInput
+              type="date"
               id="estimated_end_date"
-              minDate={new Date()}
+              name="estimated_end_date"
+              defaultValue={data.estimated_end_date}
             />
           </div>
         </fieldset>
       </Card>
-      <HOAInformationFields />
-      <WaterRebateInformationFields />
-      <EmployeesCard profiles={profiles} />
+      <HOAInformationFields data={data} />
+      <WaterRebateInformationFields data={data} />
+      <EmployeesCard
+        key={data.employees.toString()}
+        data={data}
+        profiles={profiles}
+      />
     </>
   );
 };
 
-type TPageForm = {
-  profiles: ILocationEmployee[];
-  products: Tables<"business_products">[];
-};
-
 export default function PageForm({ profiles, products }: TPageForm) {
   const { businessId, locationId } = useParams();
-  const [state, action] = useActionState(
-    AddJob<TInitialFormState>,
-    initialFormState,
-  );
+  const { location } = useLocationContext();
+  const [state, action] = useActionState(AddJob<TInitialFormState>, {
+    ...initialFormState,
+    data: {
+      address: "",
+      city: "",
+      commission: "",
+      down_payment_collected: 500,
+      email: "",
+      employees: [],
+      estimated_end_date: null,
+      estimated_start_date: null,
+      full_name: "",
+      has_water_rebate: "no",
+      hoa_approval_required: "no",
+      hoa_contact_email: "",
+      hoa_contact_name: "",
+      hoa_contact_phone: "",
+      payment_type: "",
+      phone: "",
+      postal_code: "",
+      products: [],
+      state: location.state ?? "",
+      water_rebate_company: "",
+    },
+  });
+
+  useEffect(() => {
+    if (state.error) window.scrollTo(0, 0);
+  }, [state.error]);
 
   return (
     <div className="mx-auto grid w-full max-w-screen-md gap-4">
@@ -463,7 +590,7 @@ export default function PageForm({ profiles, products }: TPageForm) {
       />
       {state.error && <ErrorAlert message={state.error} />}
       <form action={action} className="grid gap-4 sm:gap-6">
-        <FormFields profiles={profiles} products={products} />
+        <FormFields data={state.data} profiles={profiles} products={products} />
         <div>
           <SubmitButton pendingText="Creating Job">
             <WorkflowIcon className="mr-2" />

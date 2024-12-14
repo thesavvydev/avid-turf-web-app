@@ -39,9 +39,10 @@ export default function JobProductsFormFields({
     return dictionary;
   }, {});
 
-  const [commission, setCommission] = useState(defaultCommission);
-  const [jobProducts, setJobProducts] =
-    useState<TJobProduct[]>(defaultJobProducts);
+  const [commission, setCommission] = useState(() => defaultCommission);
+  const [jobProducts, setJobProducts] = useState<TJobProduct[]>(
+    () => defaultJobProducts,
+  );
 
   const productsTotal = jobProducts?.reduce((dictionary, product) => {
     const selectedProduct = productDictionary[product.product_id];
@@ -53,9 +54,7 @@ export default function JobProductsFormFields({
     return dictionary;
   }, 0);
 
-  const filteredOutSelectedProducts = products.filter(
-    (p) => !jobProducts.find((jP) => jP.product_id === p.id),
-  );
+  const selectedProductDictionary = jobProducts.map((p) => p.product_id);
 
   return (
     <Table striped>
@@ -86,18 +85,11 @@ export default function JobProductsFormFields({
                 Number(product.lead_price_addon));
 
             return (
-              <Table.Row key={product.product_id}>
+              <Table.Row key={product.product_id.toString()}>
                 <Table.Cell
                   colSpan={!product.product_id ? 5 : 1}
                   className="table-cell px-2 sm:hidden"
                 >
-                  {/* {product.id && (
-                    <input
-                      type="hidden"
-                      name={`product__${index}__id`}
-                      value={product.id}
-                    />
-                  )} */}
                   <div className="grid gap-2">
                     <div>
                       <Label
@@ -108,7 +100,7 @@ export default function JobProductsFormFields({
                       </Label>
                       <Select
                         className="md:w-52"
-                        value={product.product_id?.toString()}
+                        defaultValue={product.product_id?.toString()}
                         id={`product__${index}__product_id`}
                         name={`product__${index}__product_id`}
                         onChange={(e) => {
@@ -125,13 +117,15 @@ export default function JobProductsFormFields({
                         }}
                       >
                         <option value="">Select a product</option>
-                        {selectedProduct && (
-                          <option value={selectedProduct.id}>
-                            {selectedProduct.name}
-                          </option>
-                        )}
-                        {filteredOutSelectedProducts.map((p) => (
-                          <option key={p.id} value={p.id.toString()}>
+                        {products.map((p) => (
+                          <option
+                            disabled={
+                              selectedProductDictionary?.includes(p.id) &&
+                              product.product_id !== p.id
+                            }
+                            key={p.id}
+                            value={p.id.toString()}
+                          >
                             {p.name}
                           </option>
                         ))}
@@ -216,7 +210,8 @@ export default function JobProductsFormFields({
                 >
                   <Select
                     className="md:w-52"
-                    value={product.product_id?.toString()}
+                    defaultValue={product.product_id?.toString()}
+                    id={`product__${index}__product_id`}
                     name={`product__${index}__product_id`}
                     onChange={(e) => {
                       setJobProducts((prevState) =>
@@ -232,13 +227,15 @@ export default function JobProductsFormFields({
                     }}
                   >
                     <option value="">Select a product</option>
-                    {selectedProduct && (
-                      <option value={selectedProduct.id}>
-                        {selectedProduct.name}
-                      </option>
-                    )}
-                    {filteredOutSelectedProducts.map((p) => (
-                      <option key={p.id} value={p.id.toString()}>
+                    {products.map((p) => (
+                      <option
+                        disabled={
+                          selectedProductDictionary?.includes(p.id) &&
+                          product.product_id !== p.id
+                        }
+                        key={p.id}
+                        value={p.id.toString()}
+                      >
                         {p.name}
                       </option>
                     ))}
@@ -362,6 +359,7 @@ export default function JobProductsFormFields({
           <Table.Cell className="px-2">
             <p className="text-lg">Commission</p>
             <TextInput
+              key={commission}
               name="commission"
               onChange={(e) => setCommission(Number(e.target.value))}
               type="number"
