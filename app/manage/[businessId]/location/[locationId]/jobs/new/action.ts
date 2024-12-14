@@ -1,7 +1,8 @@
 "use server";
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
-import { Database, Tables } from "@/types/supabase";
+import { Database } from "@/types/supabase";
+import { formatArrayFormFieldsIntoDictionary } from "@/utils/format-array-form-fields-into-dictionary";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -10,6 +11,24 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
   const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
+  const employeesDictionary = formatArrayFormFieldsIntoDictionary(
+    "employees",
+    fields,
+  );
+
+  const productsDictionary = formatArrayFormFieldsIntoDictionary(
+    "product",
+    fields,
+  );
+
+  const newState = {
+    ...state,
+    data: {
+      ...fields,
+      employees: Object.values(employeesDictionary),
+      products: Object.values(employeesDictionary),
+    },
+  };
 
   const insert = {
     address: fields.address as string,
@@ -22,7 +41,6 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     phone: fields.phone as string,
     postal_code: fields.postal_code as string,
     state: fields.state as string,
-    status: fields.status as Database["public"]["Enums"]["location_job_status"],
     down_payment_collected: Number(fields.down_payment_collected),
     commission: Number(fields.commission),
     payment_type:
@@ -33,47 +51,24 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     hoa_contact_phone: fields.hoa_contact_phone as string,
     has_water_rebate: fields.has_water_rebate === "yes",
     water_rebate_company: fields.water_rebate_company as string,
-    estimated_start_date: fields.estimated_start_date as string,
-    estimated_end_date: fields.estimated_end_date as string,
+    estimated_start_date: fields.estimated_start_date
+      ? (fields.estimated_start_date as string)
+      : null,
+    estimated_end_date: fields.estimated_end_date
+      ? (fields.estimated_end_date as string)
+      : null,
   };
 
-  const employeesDictionary = Object.entries(fields).reduce<{
-    [key: string]: Pick<
-      Tables<"business_location_job_profiles">,
-      "profile_id" | "role"
-    >;
-  }>((dictionary, [key, value]) => {
-    if (!key.includes("employees__")) return dictionary;
-    const [_, tempId, field] = key.split("__");
-    if (!tempId) return dictionary;
-    dictionary[tempId] = dictionary[tempId] ?? {};
-
-    if (!field) return dictionary;
-    if (field === "role") {
-      dictionary[tempId].role =
-        value as Database["public"]["Enums"]["job_roles"];
-    } else {
-      dictionary[tempId].profile_id = value as string;
-    }
-
-    return dictionary;
-  }, {});
-
-  const productsDictionary = Object.entries(fields).reduce<{
-    [key: string]: {
-      [key: string]: unknown;
-    };
-  }>((dictionary, [key, value]) => {
-    if (!key.includes("product__")) return dictionary;
-    const [_, tempId, field] = key.split("__");
-    if (!tempId) return dictionary;
-    dictionary[tempId] = dictionary[tempId] ?? {};
-
-    if (!field) return dictionary;
-    dictionary[tempId][field] = value;
-
-    return dictionary;
-  }, {});
+  if (
+    !Object.values(employeesDictionary).find(
+      (employee) => employee.role === "closer",
+    )
+  ) {
+    return formStateResponse({
+      ...newState,
+      error: "Jobs require a closer employee",
+    });
+  }
 
   const { data, error } = await supabase
     .from("business_location_jobs")
@@ -82,7 +77,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     .single();
 
   if (error) {
-    return formStateResponse({ ...state, error: error.message });
+    return formStateResponse({ ...newState, error: error.message });
   }
 
   await supabase.from("business_logs").insert({
@@ -97,6 +92,8 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
   const employeesInsert = Object.values(employeesDictionary).map(
     (employee) => ({
       ...employee,
+      role: employee.role as Database["public"]["Enums"]["job_roles"],
+      profile_id: employee.profile_id as string,
       business_id: fields.business_id as string,
       location_id: Number(fields.business_location_id),
       job_id: data.id,
@@ -108,7 +105,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     .insert(employeesInsert);
 
   if (addEmployeesError) {
-    return formStateResponse({ ...state, error: addEmployeesError.message });
+    return formStateResponse({ ...newState, error: addEmployeesError.message });
   }
 
   await supabase.from("business_logs").insert({
@@ -132,13 +129,15 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
       : [],
   );
 
+  console.log({ productsInsert });
+
   const { error: insertJobProductsError } = await supabase
     .from("business_location_job_products")
     .insert(productsInsert);
 
   if (insertJobProductsError) {
     return formStateResponse({
-      ...state,
+      ...newState,
       error: insertJobProductsError.message,
     });
   }
