@@ -85,7 +85,7 @@ export default function JobProductsFormFields({
                 Number(product.lead_price_addon));
 
             return (
-              <Table.Row key={product.product_id.toString()}>
+              <Table.Row key={product.product_id?.toString()}>
                 <Table.Cell
                   colSpan={!product.product_id ? 5 : 1}
                   className="table-cell px-2 sm:hidden"
