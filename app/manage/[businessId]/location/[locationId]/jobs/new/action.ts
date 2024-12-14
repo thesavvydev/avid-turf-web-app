@@ -94,6 +94,10 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     return formStateResponse({ ...newState, error: error.message });
   }
 
+  if (!data) {
+    return formStateResponse({ ...newState, error: "No record created." });
+  }
+
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(insert),
     message: `Created new job`,
@@ -142,8 +146,6 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
         }
       : [],
   );
-
-  console.log({ productsInsert });
 
   const { error: insertJobProductsError } = await supabase
     .from("business_location_job_products")
