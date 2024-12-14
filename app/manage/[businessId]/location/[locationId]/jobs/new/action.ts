@@ -30,6 +30,20 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     },
   };
 
+  if (Object.values(productsDictionary).length === 0) {
+    return formStateResponse({
+      ...newState,
+      error: "Add products to your job",
+    });
+  }
+
+  if (Object.values(employeesDictionary).length === 0) {
+    return formStateResponse({
+      ...newState,
+      error: "Add employees to your job",
+    });
+  }
+
   const insert = {
     address: fields.address as string,
     business_id: fields.business_id as string,
@@ -66,7 +80,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
   ) {
     return formStateResponse({
       ...newState,
-      error: "Jobs require a closer employee",
+      error: "A closer employee is required",
     });
   }
 
