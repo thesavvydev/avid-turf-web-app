@@ -743,30 +743,33 @@ export type Database = {
       }
       business_products: {
         Row: {
-          business_id: string | null
+          business_id: string
           created_at: string
           id: number
           image: string | null
+          lead_price: number
           measurement: string
           name: string
           price_per_measurement: number
           units_in_stock: number | null
         }
         Insert: {
-          business_id?: string | null
+          business_id: string
           created_at?: string
           id?: number
           image?: string | null
+          lead_price?: number
           measurement?: string
           name: string
           price_per_measurement: number
           units_in_stock?: number | null
         }
         Update: {
-          business_id?: string | null
+          business_id?: string
           created_at?: string
           id?: number
           image?: string | null
+          lead_price?: number
           measurement?: string
           name?: string
           price_per_measurement?: number
