@@ -49,28 +49,29 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     business_id: fields.business_id as string,
     business_location_id: Number(fields.business_location_id),
     city: fields.city as string,
-    creator_id: fields.creator_id as string,
-    email: fields.email as string,
-    full_name: fields.full_name as string,
-    phone: fields.phone as string,
-    postal_code: fields.postal_code as string,
-    state: fields.state as string,
-    down_payment_collected: Number(fields.down_payment_collected),
     commission: Number(fields.commission),
-    payment_type:
-      fields.payment_type as Database["public"]["Enums"]["job_payment_types"],
-    hoa_approval_required: fields.hoa_approval_required === "yes",
-    hoa_contact_name: fields.hoa_contact_name as string,
-    hoa_contact_email: fields.hoa_contact_email as string,
-    hoa_contact_phone: fields.hoa_contact_phone as string,
-    has_water_rebate: fields.has_water_rebate === "yes",
-    water_rebate_company: fields.water_rebate_company as string,
+    creator_id: fields.creator_id as string,
+    down_payment_collected: Number(fields.down_payment_collected),
+    email: fields.email as string,
     estimated_start_date: fields.estimated_start_date
       ? (fields.estimated_start_date as string)
       : null,
     estimated_end_date: fields.estimated_end_date
       ? (fields.estimated_end_date as string)
       : null,
+    full_name: fields.full_name as string,
+    has_water_rebate: fields.has_water_rebate === "yes",
+    hoa_approval_required: fields.hoa_approval_required === "yes",
+    hoa_contact_email: fields.hoa_contact_email as string,
+    hoa_contact_name: fields.hoa_contact_name as string,
+    hoa_contact_phone: fields.hoa_contact_phone as string,
+    lead_type: fields.lead_type as string,
+    payment_type:
+      fields.payment_type as Database["public"]["Enums"]["job_payment_types"],
+    phone: fields.phone as string,
+    postal_code: fields.postal_code as string,
+    state: fields.state as string,
+    water_rebate_company: fields.water_rebate_company as string,
   };
 
   if (

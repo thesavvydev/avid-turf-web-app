@@ -52,6 +52,7 @@ interface IFormFields {
   hoa_contact_email: string;
   hoa_contact_name: string;
   hoa_contact_phone: string;
+  lead_type: string;
   payment_type: Database["public"]["Enums"]["job_payment_types"];
   phone: string;
   products: Omit<
@@ -81,78 +82,82 @@ const EmployeesCard = ({
   return (
     <Card>
       <h2 className="text-xl font-medium text-gray-400">Employees</h2>
-      <fieldset
-        disabled={pending}
-        className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
-      >
-        {employees.map((employee, number) => (
-          <div
-            key={number.toString()}
-            className="group relative grid gap-2 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
-          >
-            <div className="absolute right-4 top-4 hidden group-hover:block">
-              <ConfirmModal
-                trigger={(toggle) => (
-                  <Trash2Icon
-                    className="size-4 cursor-pointer text-red-400 hover:size-5"
-                    onClick={toggle}
-                  />
-                )}
-                description="Are you sure you want to remove this employee?"
-                onConfirmClick={() =>
-                  setEmployees((prevState) =>
-                    prevState.filter((_, index) => index !== number),
-                  )
-                }
-              />
+      {employees.length > 0 ? (
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
+          {employees.map((employee, number) => (
+            <div
+              key={number.toString()}
+              className="group relative grid gap-2 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+            >
+              <div className="absolute right-4 top-4 hidden group-hover:block">
+                <ConfirmModal
+                  trigger={(toggle) => (
+                    <Trash2Icon
+                      className="size-4 cursor-pointer text-red-400 hover:size-5"
+                      onClick={toggle}
+                    />
+                  )}
+                  description="Are you sure you want to remove this employee?"
+                  onConfirmClick={() =>
+                    setEmployees((prevState) =>
+                      prevState.filter((_, index) => index !== number),
+                    )
+                  }
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor={`employees__${number}__profile_id`}
+                  className="mb-2 block"
+                >
+                  Employee
+                </Label>
+                <Select
+                  defaultValue={employee.profile_id}
+                  id={`employees__${number}__profile_id`}
+                  key={employee.profile_id}
+                  name={`employees__${number}__profile_id`}
+                  required
+                >
+                  <option value="">Select an employee</option>
+                  {profiles.map((profile) => (
+                    <option key={profile.profile_id} value={profile.profile_id}>
+                      {profile.profile?.full_name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+              <div>
+                <Label
+                  htmlFor={`employees__${number}__role`}
+                  className="mb-2 block"
+                >
+                  Role
+                </Label>
+                <Select
+                  defaultValue={employee.role}
+                  id={`employees__${number}__role`}
+                  key={employee.role}
+                  name={`employees__${number}__role`}
+                  required
+                >
+                  <option value="">Select a role</option>
+                  {Object.entries(JOB_PROFILE_ROLES).map(([roleKey, role]) => (
+                    <option key={roleKey} value={roleKey}>
+                      {role.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
-            <div>
-              <Label
-                htmlFor={`employees__${number}__profile_id`}
-                className="mb-2 block"
-              >
-                Employee
-              </Label>
-              <Select
-                defaultValue={employee.profile_id}
-                id={`employees__${number}__profile_id`}
-                key={employee.profile_id}
-                name={`employees__${number}__profile_id`}
-                required
-              >
-                <option value="">Select an employee</option>
-                {profiles.map((profile) => (
-                  <option key={profile.profile_id} value={profile.profile_id}>
-                    {profile.profile?.full_name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <Label
-                htmlFor={`employees__${number}__role`}
-                className="mb-2 block"
-              >
-                Role
-              </Label>
-              <Select
-                defaultValue={employee.role}
-                id={`employees__${number}__role`}
-                key={employee.role}
-                name={`employees__${number}__role`}
-                required
-              >
-                <option value="">Select a role</option>
-                {Object.entries(JOB_PROFILE_ROLES).map(([roleKey, role]) => (
-                  <option key={roleKey} value={roleKey}>
-                    {role.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-          </div>
-        ))}
-      </fieldset>
+          ))}
+        </fieldset>
+      ) : (
+        "No employees added to job."
+      )}
       <div>
         <Button
           color="light"
@@ -329,6 +334,9 @@ const FormFields = ({
 
   return (
     <>
+      <input type="hidden" name="business_location_id" value={locationId} />
+      <input type="hidden" name="business_id" value={businessId} />
+      <input type="hidden" name="creator_id" value={user.id} />
       <Card>
         <h2 className="text-xl font-medium text-gray-400">
           Customer Information
@@ -337,9 +345,6 @@ const FormFields = ({
           disabled={pending}
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
         >
-          <input type="hidden" name="business_location_id" value={locationId} />
-          <input type="hidden" name="business_id" value={businessId} />
-          <input type="hidden" name="creator_id" value={user.id} />
           <div>
             <Label htmlFor="full_name" className="mb-2 block">
               Full Name
@@ -376,6 +381,36 @@ const FormFields = ({
               required
               type="email"
             />
+          </div>
+        </fieldset>
+      </Card>
+      <Card>
+        <h2 className="text-xl font-medium text-gray-400">
+          Location Information
+        </h2>
+        <fieldset
+          disabled={pending}
+          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+        >
+          <div>
+            <Label htmlFor="lead_type" className="mb-2 block">
+              Lead Type
+            </Label>
+            <Select
+              defaultValue={data.lead_type}
+              key={data.lead_type}
+              id="lead_type"
+              name="lead_type"
+              required
+            >
+              <option value="" disabled>
+                Select a lead type
+              </option>
+              <option value="self">Self Generated</option>
+              <option value="referral">Referral</option>
+              <option value="paid">Paid Lead</option>
+              <option value="setter">Setter Generated</option>
+            </Select>
           </div>
           <div className="sm:col-span-2">
             <Label htmlFor="address" className="mb-2 block">
@@ -559,6 +594,7 @@ export default function PageForm({ profiles, products }: TPageForm) {
       hoa_contact_email: "",
       hoa_contact_name: "",
       hoa_contact_phone: "",
+      lead_type: "",
       payment_type: "",
       phone: "",
       postal_code: "",

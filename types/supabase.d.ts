@@ -507,6 +507,7 @@ export type Database = {
           hoa_contact_name: string | null
           hoa_contact_phone: string | null
           id: number
+          lead_type: string
           payment_type: Database["public"]["Enums"]["job_payment_types"]
           phone: string | null
           postal_code: string | null
@@ -533,6 +534,7 @@ export type Database = {
           hoa_contact_name?: string | null
           hoa_contact_phone?: string | null
           id?: number
+          lead_type?: string
           payment_type?: Database["public"]["Enums"]["job_payment_types"]
           phone?: string | null
           postal_code?: string | null
@@ -559,6 +561,7 @@ export type Database = {
           hoa_contact_name?: string | null
           hoa_contact_phone?: string | null
           id?: number
+          lead_type?: string
           payment_type?: Database["public"]["Enums"]["job_payment_types"]
           phone?: string | null
           postal_code?: string | null
