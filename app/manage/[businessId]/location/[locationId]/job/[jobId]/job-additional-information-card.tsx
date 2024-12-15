@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { UpdateJobAdditionalInformation } from "./actions";
+import { JOB_LEAD_TYPES, TJobLeadTypes } from "@/constants/job-lead-types";
 
 type TJobAdditionalInformationCard = {
   job: IJob;
@@ -163,6 +164,25 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
         type="hidden"
       />
       <div>
+        <Label htmlFor="lead_type" className="mb-2 block">
+          Lead Type
+        </Label>
+        <Select
+          defaultValue={job.lead_type}
+          key={job.lead_type}
+          id="lead_type"
+          name="lead_type"
+          required
+        >
+          <option value="" disabled>
+            Select a lead type
+          </option>
+          {Object.entries(JOB_LEAD_TYPES).map(([key, prop]) => (
+            <option value={key}>{prop.name}</option>
+          ))}
+        </Select>
+      </div>
+      <div>
         <Label htmlFor="down_payment_collected" className="mb-2 block">
           Down payment collected
         </Label>
@@ -256,6 +276,12 @@ export default function JobAdditionalInformationCard({
         <EditDrawer job={job} />
       </div>
       <List unstyled>
+        <List.Item className="flex items-center justify-between gap-2">
+          <dt>Lead type</dt>
+          <dl className="capitalize">
+            {JOB_LEAD_TYPES[job.lead_type as TJobLeadTypes].name}
+          </dl>
+        </List.Item>
         <List.Item className="flex items-center justify-between gap-2">
           <dt>Down payment collected</dt>
           <dl>{formatAsCurrency(Number(job.down_payment_collected))}</dl>
