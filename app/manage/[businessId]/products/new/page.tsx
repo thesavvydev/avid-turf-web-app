@@ -27,7 +27,7 @@ function FormFields() {
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
         >
           <input type="hidden" name="business_id" value={businessId} />
-          <div>
+          <div className="sm:col-span-2">
             <Label htmlFor="name" className="mb-2 block">
               Name
             </Label>
@@ -63,6 +63,23 @@ function FormFields() {
               required
             />
           </div>
+          <div>
+            <Label htmlFor="lead_price" className="mb-2 block">
+              Lead Price
+            </Label>
+            <TextInput
+              autoComplete="off"
+              helperText={
+                <>
+                  Pricing applied to products when job has certain lead types
+                  selected.
+                </>
+              }
+              id="lead_price"
+              name="lead_price"
+              placeholder="1.00"
+            />
+          </div>
         </fieldset>
       </Card>
       <Card>
@@ -91,7 +108,9 @@ function FormFields() {
         <fieldset
           disabled={pending}
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
-        ></fieldset>
+        >
+          Coming soon...
+        </fieldset>
       </Card>
     </>
   );

@@ -1,9 +1,14 @@
 "use client";
+import { ConfirmModal } from "@/components/confirm-modal";
 import { Tables } from "@/types/supabase";
 import { formatAsCurrency } from "@/utils/formatter";
-import { Table, theme } from "flowbite-react";
-import { ReactNode } from "react";
+import { Dropdown, Table, theme, Tooltip } from "flowbite-react";
+import { EllipsisVertical, SettingsIcon, Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ReactNode, useState } from "react";
 import { twMerge } from "tailwind-merge";
+import UpdateProductDrawer from "./update-product-drawer";
+import { DeleteProduct } from "./actions";
 
 type TTableColumnConfig = {
   field: string;
@@ -12,6 +17,75 @@ type TTableColumnConfig = {
   render: (r: Tables<"business_products">) => ReactNode;
 };
 
+function ActionsCell({ row }: { row: Tables<"business_products"> }) {
+  const [isUpdateProductDrawerOpen, setIsUpdateProductDrawerOpen] =
+    useState(false);
+
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    await DeleteProduct(row.id);
+    router.refresh();
+  };
+
+  return (
+    <>
+      {isUpdateProductDrawerOpen && (
+        <UpdateProductDrawer
+          isOpen
+          product={row}
+          setIsOpen={setIsUpdateProductDrawerOpen}
+        />
+      )}
+      <div className="relative hidden items-center gap-2 sm:flex">
+        <>
+          <Tooltip content="Settings">
+            <span
+              className="cursor-pointer text-lg text-gray-500 active:opacity-50 dark:text-gray-300"
+              onClick={() => setIsUpdateProductDrawerOpen(true)}
+            >
+              <SettingsIcon />
+            </span>
+          </Tooltip>
+          <Tooltip content="Delete">
+            <ConfirmModal
+              description={`Are you sure you want to remove ${row.name}?`}
+              onConfirmClick={handleDelete}
+              trigger={(toggle) => (
+                <span
+                  className="cursor-pointer text-lg text-red-500 active:opacity-50"
+                  onClick={toggle}
+                >
+                  <Trash2Icon />
+                </span>
+              )}
+            />
+          </Tooltip>
+        </>
+      </div>
+      <div className="w-2 sm:hidden">
+        <Dropdown
+          label=""
+          renderTrigger={() => <EllipsisVertical />}
+          size="sm"
+          dismissOnClick={false}
+        >
+          <Dropdown.Item onClick={() => setIsUpdateProductDrawerOpen(true)}>
+            Settings
+          </Dropdown.Item>
+          <ConfirmModal
+            description={`Are you sure you want to remove ${row.name}?`}
+            onConfirmClick={handleDelete}
+            trigger={(toggle) => (
+              <Dropdown.Item onClick={toggle}>Delete</Dropdown.Item>
+            )}
+          />
+        </Dropdown>
+      </div>
+    </>
+  );
+}
+
 export default function ProductsTable({
   products,
 }: {
@@ -19,20 +93,42 @@ export default function ProductsTable({
 }) {
   const columns: TTableColumnConfig[] = [
     {
+      cellClassNames: "",
       field: "name",
       header: "Name",
-      render: (row) => row.name,
+      render: (row) => (
+        <>
+          <span className="hidden sm:table-cell">{row.name}</span>
+          <span className="grid gap-2 sm:hidden">
+            <div>{row.name}</div>
+            <div>{`${formatAsCurrency(row.price_per_measurement)} per ${row.measurement}`}</div>
+          </span>
+        </>
+      ),
     },
     {
+      cellClassNames: "hidden sm:table-cell",
       field: "measurement",
       header: "Measurement",
       render: (row) => row.measurement,
     },
     {
-      cellClassNames: "text-right",
+      cellClassNames: "text-right hidden sm:table-cell",
       field: "price_per_measurement",
-      header: "Price Per Measurement",
+      header: "Price Per",
       render: (row) => formatAsCurrency(row.price_per_measurement),
+    },
+    {
+      cellClassNames: "text-right hidden sm:table-cell",
+      field: "lead_price",
+      header: "Lead Price",
+      render: (row) => formatAsCurrency(row.lead_price),
+    },
+    {
+      cellClassNames: "w-0",
+      field: "actions",
+      header: "",
+      render: (row) => <ActionsCell row={row} />,
     },
   ];
 
