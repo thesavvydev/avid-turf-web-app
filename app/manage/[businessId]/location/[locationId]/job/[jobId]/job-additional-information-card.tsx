@@ -178,7 +178,9 @@ function EditDrawerFormFields({ job }: { job: IJob }) {
             Select a lead type
           </option>
           {Object.entries(JOB_LEAD_TYPES).map(([key, prop]) => (
-            <option value={key}>{prop.name}</option>
+            <option key={key} value={key}>
+              {prop.name}
+            </option>
           ))}
         </Select>
       </div>
