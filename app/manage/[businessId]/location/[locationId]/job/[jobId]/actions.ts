@@ -80,6 +80,7 @@ export async function UpdateJobAdditionalInformation<T>(
     hoa_contact_phone: fields.hoa_contact_phone as string,
     hoa_contact_email: fields.hoa_contact_email as string,
     has_water_rebate: fields.has_water_rebate === "yes",
+    lead_type: fields.lead_type as string,
     water_rebate_company: fields.water_rebate_company as string,
   };
 

@@ -31,6 +31,7 @@ import { ILocationEmployee } from "@/types/location";
 import { Database, Tables } from "@/types/supabase";
 import { useActionState, useEffect, useState } from "react";
 import { AddJob } from "./action";
+import { JOB_LEAD_TYPES } from "@/constants/job-lead-types";
 
 interface IEmployee {
   profile_id: string;
@@ -406,10 +407,9 @@ const FormFields = ({
               <option value="" disabled>
                 Select a lead type
               </option>
-              <option value="self">Self Generated</option>
-              <option value="referral">Referral</option>
-              <option value="paid">Paid Lead</option>
-              <option value="setter">Setter Generated</option>
+              {Object.entries(JOB_LEAD_TYPES).map(([key, prop]) => (
+                <option value={key}>{prop.name}</option>
+              ))}
             </Select>
           </div>
           <div className="sm:col-span-2">
