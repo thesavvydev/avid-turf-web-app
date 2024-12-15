@@ -44,6 +44,25 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     });
   }
 
+  const employeesWithRole = (role: string) =>
+    Object.values(employeesDictionary).find(
+      (employee) => employee.role === role,
+    );
+
+  if (!employeesWithRole("closer")) {
+    return formStateResponse({
+      ...newState,
+      error: "A closer employee is required",
+    });
+  }
+
+  if (fields.lead_type === "setter" && !employeesWithRole("setter")) {
+    return formStateResponse({
+      ...newState,
+      error: "A setter is required for setter generated leads.",
+    });
+  }
+
   const insert = {
     address: fields.address as string,
     business_id: fields.business_id as string,
@@ -73,17 +92,6 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     state: fields.state as string,
     water_rebate_company: fields.water_rebate_company as string,
   };
-
-  if (
-    !Object.values(employeesDictionary).find(
-      (employee) => employee.role === "closer",
-    )
-  ) {
-    return formStateResponse({
-      ...newState,
-      error: "A closer employee is required",
-    });
-  }
 
   const { data, error } = await supabase
     .from("business_location_jobs")
