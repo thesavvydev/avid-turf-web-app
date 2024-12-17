@@ -42,23 +42,23 @@ const FormFields = ({
         />
       </div>
       <div>
-        <Label htmlFor="measurement" className="mb-2 block">
-          Measurement
+        <Label htmlFor="unit" className="mb-2 block">
+          Unit
         </Label>
         <TextInput
-          defaultValue={defaultValues.measurement ?? ""}
-          id="measurement"
-          name="measurement"
+          defaultValue={defaultValues.unit ?? ""}
+          id="unit"
+          name="unit"
         />
       </div>
       <div>
-        <Label htmlFor="price_per_measurement" className="mb-2 block">
-          Price Per Measurement
+        <Label htmlFor="unit_price" className="mb-2 block">
+          Unit Price
         </Label>
         <TextInput
-          id="price_per_measurement"
-          name="price_per_measurement"
-          defaultValue={defaultValues.price_per_measurement ?? ""}
+          id="unit_price"
+          name="unit_price"
+          defaultValue={defaultValues.unit_price ?? ""}
         />
       </div>
       <div>

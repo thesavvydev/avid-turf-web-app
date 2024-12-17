@@ -2,7 +2,7 @@
 
 import { Tables } from "@/types/supabase";
 import { formatAsCurrency } from "@/utils/formatter";
-import { Button, Label, Select, Table, TextInput } from "flowbite-react";
+import { Button, Select, Table, TextInput } from "flowbite-react";
 import { Trash2Icon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -15,21 +15,20 @@ type TJobProduct = Omit<
 export default function JobProductsFormFields({
   defaultCommission = 0,
   defaultJobProducts = [],
+  leadType,
   products = [],
 }: {
   defaultCommission?: number;
   defaultJobProducts?: TJobProduct[];
+  leadType: string | null;
   products: Tables<"business_products">[];
 }) {
+  const includeLeadPrice = ["paid", "setter"].includes(leadType || "self");
   const { businessId, locationId } = useParams();
-  const defaultProductRecord = {
-    business_id: businessId as string,
-    location_id: Number(locationId),
-    product_id: 0,
-    lead_price_addon: 0,
-    number_of_units: 1,
-    job_id: null,
-  };
+  const [commission, setCommission] = useState(() => defaultCommission);
+  const [jobProducts, setJobProducts] = useState<TJobProduct[]>(
+    () => defaultJobProducts,
+  );
 
   const productDictionary = products.reduce<{
     [k: string]: Tables<"business_products">;
@@ -39,188 +38,88 @@ export default function JobProductsFormFields({
     return dictionary;
   }, {});
 
-  const [commission, setCommission] = useState(() => defaultCommission);
-  const [jobProducts, setJobProducts] = useState<TJobProduct[]>(
-    () => defaultJobProducts,
-  );
+  const defaultProductRecord = {
+    business_id: businessId as string,
+    job_id: null,
+    lead_price: 0,
+    location_id: Number(locationId),
+    number_of_units: 1,
+    product_id: 0,
+    total_price: 0,
+    unit_price: 0,
+  };
 
   const productsTotal = jobProducts?.reduce((dictionary, product) => {
-    const selectedProduct = productDictionary[product.product_id];
-    dictionary +=
-      product.number_of_units *
-      (Number(selectedProduct?.price_per_measurement ?? 0) +
-        Number(product.lead_price_addon));
-
+    dictionary += product.total_price;
     return dictionary;
   }, 0);
 
-  const selectedProductDictionary = jobProducts.map((p) => p.product_id);
+  const selectedProductIdsDictionary = jobProducts.map((p) => p.product_id);
 
   return (
-    <Table striped>
+    <Table
+      key={leadType}
+      striped
+      theme={{
+        body: { cell: { base: "p-2" } },
+        head: { cell: { base: "p-2 bg-gray-50" } },
+      }}
+    >
       <Table.Head>
-        <Table.HeadCell className="hidden sm:table-cell">
+        <Table.HeadCell className="hidden w-52 sm:table-cell">
           Product
         </Table.HeadCell>
-        <Table.HeadCell className="hidden sm:table-cell">Units</Table.HeadCell>
-        <Table.HeadCell className="hidden whitespace-nowrap sm:table-cell">
+        <Table.HeadCell className="hidden w-24 sm:table-cell">
+          Units
+        </Table.HeadCell>
+        <Table.HeadCell className="hidden w-24 sm:table-cell">
+          Unit Price
+        </Table.HeadCell>
+        <Table.HeadCell className="hidden w-24 sm:table-cell">
           Lead Price
         </Table.HeadCell>
-        <Table.HeadCell className="hidden text-right sm:table-cell">
+        <Table.HeadCell className="hidden w-28 text-right sm:table-cell">
           Total
         </Table.HeadCell>
-        <Table.HeadCell />
+        <Table.HeadCell className="w-0" />
       </Table.Head>
       <Table.Body className="divide-y dark:divide-gray-600">
-        {jobProducts.length === 0 ? (
+        {jobProducts.length === 0 && (
           <Table.Row>
-            <Table.Cell colSpan={4}>No products.</Table.Cell>
+            <Table.Cell colSpan={6}>No Products.</Table.Cell>
           </Table.Row>
-        ) : (
-          jobProducts.map((product, index) => {
-            const selectedProduct = productDictionary[product.product_id];
-            const calculatedLineItemTotal =
-              product.number_of_units *
-              (Number(selectedProduct?.price_per_measurement) +
-                Number(product.lead_price_addon));
+        )}
+        {jobProducts.map((jobProduct, index) => {
+          const businessProduct = productDictionary[jobProduct.product_id];
 
+          if (!businessProduct) {
             return (
-              <Table.Row key={product.product_id?.toString()}>
-                <Table.Cell
-                  colSpan={!product.product_id ? 5 : 1}
-                  className="table-cell px-2 sm:hidden"
-                >
-                  <div className="grid gap-2">
-                    <div>
-                      <Label
-                        htmlFor={`product__${index}__product_id`}
-                        className="mb-2 block"
-                      >
-                        Product
-                      </Label>
-                      <Select
-                        className="md:w-52"
-                        defaultValue={product.product_id?.toString()}
-                        id={`product__${index}__product_id`}
-                        name={`product__${index}__product_id`}
-                        onChange={(e) => {
-                          setJobProducts((prevState) =>
-                            prevState.map((old, idx) => {
-                              if (idx !== index) return old;
-
-                              return {
-                                ...old,
-                                product_id: Number(e.target.value),
-                              };
-                            }),
-                          );
-                        }}
-                      >
-                        <option value="">Select a product</option>
-                        {products.map((p) => (
-                          <option
-                            disabled={
-                              selectedProductDictionary?.includes(p.id) &&
-                              product.product_id !== p.id
-                            }
-                            key={p.id}
-                            value={p.id.toString()}
-                          >
-                            {p.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </div>
-                    {product.product_id ? (
-                      <>
-                        <div>
-                          <Label
-                            htmlFor={`product__${index}__number_of_units`}
-                            className="mb-2 block"
-                          >
-                            Number of units
-                          </Label>
-                          <TextInput
-                            className="min-w-20"
-                            defaultValue={product.number_of_units}
-                            id={`product__${index}__number_of_units`}
-                            name={`product__${index}__number_of_units`}
-                            onChange={(e) => {
-                              setJobProducts((prevState) =>
-                                prevState.map((old, idx) => {
-                                  if (idx !== index) return old;
-
-                                  return {
-                                    ...old,
-                                    number_of_units: Number(e.target.value),
-                                  };
-                                }),
-                              );
-                            }}
-                            type="number"
-                          />
-                        </div>
-                        <div>
-                          <Label
-                            htmlFor={`product__${index}__lead_price_addon`}
-                            className="mb-2 block"
-                          >
-                            Lead Price
-                          </Label>
-                          <TextInput
-                            className="min-w-20"
-                            defaultValue={product.lead_price_addon?.toString()}
-                            id={`product__${index}__lead_price_addon`}
-                            name={`product__${index}__lead_price_addon`}
-                            onChange={(e) => {
-                              setJobProducts((prevState) =>
-                                prevState.map((old, idx) => {
-                                  if (idx !== index) return old;
-
-                                  return {
-                                    ...old,
-                                    lead_price_addon: Number(e.target.value),
-                                  };
-                                }),
-                              );
-                            }}
-                            type="number"
-                          />
-                        </div>
-                        {formatAsCurrency(Number(calculatedLineItemTotal))}
-                        <Button
-                          color="light"
-                          className="text-red-400"
-                          onClick={() =>
-                            setJobProducts((prevState) =>
-                              prevState.filter((_, i) => i !== index),
-                            )
-                          }
-                        >
-                          <Trash2Icon className="mr-2 size-5 cursor-pointer text-red-400 opacity-50 hover:opacity-100" />
-                          Remove
-                        </Button>
-                      </>
-                    ) : null}
-                  </div>
-                </Table.Cell>
-                <Table.Cell
-                  colSpan={!product.product_id ? 5 : 1}
-                  className="hidden sm:table-cell"
-                >
+              <Table.Row key={jobProduct.product_id}>
+                <Table.Cell>
                   <Select
-                    className="md:w-52"
-                    defaultValue={product.product_id?.toString()}
+                    defaultValue={jobProduct.product_id?.toString()}
                     id={`product__${index}__product_id`}
                     name={`product__${index}__product_id`}
                     onChange={(e) => {
                       setJobProducts((prevState) =>
                         prevState.map((old, idx) => {
                           if (idx !== index) return old;
+                          const selectedProduct =
+                            productDictionary[e.target.value];
 
                           return {
                             ...old,
                             product_id: Number(e.target.value),
+                            number_of_units: 1,
+                            lead_price: Number(
+                              includeLeadPrice && selectedProduct.lead_price,
+                            ),
+                            unit_price: selectedProduct.unit_price,
+                            total_price:
+                              Number(selectedProduct.unit_price) +
+                              Number(
+                                includeLeadPrice && selectedProduct.lead_price,
+                              ),
                           };
                         }),
                       );
@@ -230,119 +129,168 @@ export default function JobProductsFormFields({
                     {products.map((p) => (
                       <option
                         disabled={
-                          selectedProductDictionary?.includes(p.id) &&
-                          product.product_id !== p.id
+                          selectedProductIdsDictionary?.includes(p.id) &&
+                          jobProduct.product_id !== p.id
                         }
                         key={p.id}
-                        value={p.id.toString()}
+                        value={p.id}
                       >
                         {p.name}
                       </option>
                     ))}
                   </Select>
                 </Table.Cell>
-                {product.product_id ? (
-                  <>
-                    <Table.Cell className="hidden sm:table-cell">
-                      <TextInput
-                        className="min-w-20"
-                        defaultValue={product.number_of_units}
-                        name={`product__${index}__number_of_units`}
-                        onChange={(e) => {
-                          setJobProducts((prevState) =>
-                            prevState.map((old, idx) => {
-                              if (idx !== index) return old;
-
-                              return {
-                                ...old,
-                                number_of_units: Number(e.target.value),
-                              };
-                            }),
-                          );
-                        }}
-                        type="number"
-                      />
-                    </Table.Cell>
-                    <Table.Cell className="hidden sm:table-cell">
-                      <TextInput
-                        className="min-w-20"
-                        defaultValue={product.lead_price_addon?.toString()}
-                        name={`product__${index}__lead_price_addon`}
-                        onChange={(e) => {
-                          setJobProducts((prevState) =>
-                            prevState.map((old, idx) => {
-                              if (idx !== index) return old;
-
-                              return {
-                                ...old,
-                                lead_price_addon: Number(e.target.value),
-                              };
-                            }),
-                          );
-                        }}
-                        type="number"
-                      />
-                    </Table.Cell>
-                    <Table.Cell className="hidden text-right font-semibold sm:table-cell">
-                      {formatAsCurrency(Number(calculatedLineItemTotal))}
-                    </Table.Cell>
-                    <Table.Cell className="hidden w-0 sm:table-cell">
-                      <Trash2Icon
-                        className="cursor-pointer text-red-400 opacity-50 hover:opacity-100"
-                        onClick={() =>
-                          setJobProducts((prevState) =>
-                            prevState.filter((_, i) => i !== index),
-                          )
-                        }
-                      />
-                    </Table.Cell>
-                  </>
-                ) : null}
               </Table.Row>
             );
-          })
+          }
+
+          return (
+            <Table.Row key={businessProduct.id}>
+              <Table.Cell>
+                {businessProduct.name}
+                <input
+                  name={`product__${index}__product_id`}
+                  type="hidden"
+                  value={businessProduct.id}
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <TextInput
+                  defaultValue={Number(jobProduct.number_of_units)}
+                  name={`product__${index}__number_of_units`}
+                  onChange={(e) => {
+                    setJobProducts((prevState) =>
+                      prevState.map((old, idx) => {
+                        if (idx !== index) return old;
+
+                        return {
+                          ...old,
+                          number_of_units: Number(e.target.value),
+                          total_price:
+                            Number(e.target.value) *
+                            (Number(old.unit_price) +
+                              Number(includeLeadPrice && old.lead_price)),
+                        };
+                      }),
+                    );
+                  }}
+                  step={0.01}
+                  type="number"
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <TextInput
+                  defaultValue={Number(jobProduct.unit_price)}
+                  name={`product__${index}__unit_price`}
+                  onChange={(e) => {
+                    setJobProducts((prevState) =>
+                      prevState.map((old, idx) => {
+                        if (idx !== index) return old;
+
+                        return {
+                          ...old,
+                          total_price:
+                            Number(old.number_of_units) *
+                            (Number(e.target.value) +
+                              Number(includeLeadPrice && old.lead_price)),
+                          unit_price: Number(e.target.value),
+                        };
+                      }),
+                    );
+                  }}
+                  step={0.01}
+                  type="number"
+                />
+              </Table.Cell>
+              <Table.Cell>
+                <TextInput
+                  defaultValue={Number(jobProduct.lead_price)}
+                  name={`product__${index}__lead_price`}
+                  onChange={(e) => {
+                    setJobProducts((prevState) =>
+                      prevState.map((old, idx) => {
+                        if (idx !== index) return old;
+
+                        return {
+                          ...old,
+                          lead_price: Number(e.target.value),
+                          total_price:
+                            Number(old.number_of_units) *
+                            (Number(old.unit_price) + Number(e.target.value)),
+                        };
+                      }),
+                    );
+                  }}
+                  step={0.01}
+                  type="number"
+                />
+              </Table.Cell>
+              <Table.Cell className="text-right">
+                <input
+                  name={`product__${index}__total_price`}
+                  type="hidden"
+                  value={jobProduct.total_price}
+                />
+                {formatAsCurrency(Number(jobProduct.total_price))}
+              </Table.Cell>
+              <Table.Cell className="w-0 p-0">
+                <Trash2Icon
+                  className="cursor-pointer text-red-400 opacity-50 hover:opacity-100"
+                  onClick={() =>
+                    setJobProducts((prevState) =>
+                      prevState.filter((_, i) => i !== index),
+                    )
+                  }
+                />
+              </Table.Cell>
+            </Table.Row>
+          );
+        })}
+        {!jobProducts.find((jobProduct) => jobProduct.product_id === 0) && (
+          <>
+            <Table.Row className="sm:hidden">
+              <Table.Cell className="px-2">
+                <Button
+                  color="light"
+                  onClick={() =>
+                    setJobProducts((prevState) => [
+                      ...prevState,
+                      defaultProductRecord,
+                    ])
+                  }
+                  size="sm"
+                >
+                  Add product
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row className="hidden sm:table-row">
+              <Table.Cell colSpan={6}>
+                <Button
+                  color="light"
+                  onClick={() =>
+                    setJobProducts((prevState) => [
+                      ...prevState,
+                      defaultProductRecord,
+                    ])
+                  }
+                  size="sm"
+                >
+                  Add product
+                </Button>
+              </Table.Cell>
+            </Table.Row>
+          </>
         )}
-        <Table.Row className="sm:hidden">
-          <Table.Cell className="px-2">
-            <Button
-              color="light"
-              onClick={() =>
-                setJobProducts((prevState) => [
-                  ...prevState,
-                  defaultProductRecord,
-                ])
-              }
-              size="sm"
-            >
-              Add product
-            </Button>
-          </Table.Cell>
-        </Table.Row>
+
         <Table.Row className="hidden sm:table-row">
-          <Table.Cell colSpan={5}>
-            <Button
-              color="light"
-              onClick={() =>
-                setJobProducts((prevState) => [
-                  ...prevState,
-                  defaultProductRecord,
-                ])
-              }
-              size="sm"
-            >
-              Add product
-            </Button>
-          </Table.Cell>
-        </Table.Row>
-        <Table.Row className="hidden sm:table-row">
-          <Table.Cell colSpan={3}>
+          <Table.Cell colSpan={4}>
             <p className="text-lg">Commission</p>
           </Table.Cell>
           <Table.Cell colSpan={2}>
             <TextInput
               name="commission"
               onChange={(e) => setCommission(Number(e.target.value))}
-              type="number"
               value={commission}
             />
           </Table.Cell>
@@ -350,7 +298,7 @@ export default function JobProductsFormFields({
         <Table.Row className="hidden sm:table-row">
           <Table.Cell
             className="text-right text-lg font-bold text-green-400"
-            colSpan={5}
+            colSpan={6}
           >
             {formatAsCurrency(Number(productsTotal) + commission)}
           </Table.Cell>

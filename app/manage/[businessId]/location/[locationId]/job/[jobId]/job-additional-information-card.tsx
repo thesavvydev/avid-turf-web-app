@@ -281,7 +281,7 @@ export default function JobAdditionalInformationCard({
         <List.Item className="flex items-center justify-between gap-2">
           <dt>Lead type</dt>
           <dl className="capitalize">
-            {JOB_LEAD_TYPES[job.lead_type as TJobLeadTypes].name}
+            {JOB_LEAD_TYPES[job.lead_type as TJobLeadTypes]?.name}
           </dl>
         </List.Item>
         <List.Item className="flex items-center justify-between gap-2">
