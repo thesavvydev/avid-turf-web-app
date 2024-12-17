@@ -49,7 +49,8 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
               <div>
                 <div className="text-base">{jobProduct.product.name}</div>
                 <div className="text-sm">{`${formatAsReadableNumber(jobProduct.number_of_units)} ${jobProduct.product.unit} * ${formatAsCurrency(
-                  jobProduct.unit_price,
+                  Number(jobProduct.unit_price) +
+                    Number(includeLeadPrice && jobProduct.lead_price),
                 )}`}</div>
               </div>
             </Table.Cell>
@@ -63,13 +64,7 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
               )}
             </Table.Cell>
             <Table.Cell className="px-2 text-right sm:px-4 sm:text-base">
-              {formatAsCurrency(
-                Number(jobProduct.number_of_units) *
-                  (Number(jobProduct.unit_price) +
-                    (includeLeadPrice
-                      ? Number(jobProduct.product.lead_price)
-                      : 0)),
-              )}
+              {formatAsCurrency(Number(jobProduct.total_price))}
             </Table.Cell>
           </Table.Row>
         ))}
