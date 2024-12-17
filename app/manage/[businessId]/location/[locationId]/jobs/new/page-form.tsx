@@ -332,6 +332,7 @@ const FormFields = ({
   const { businessId, locationId } = useParams();
   const { user } = useUserContext();
   const { pending } = useFormStatus();
+  const [leadType, setLeadType] = useState<string | null>(null);
 
   return (
     <>
@@ -402,6 +403,7 @@ const FormFields = ({
               key={data.lead_type}
               id="lead_type"
               name="lead_type"
+              onChange={(e) => setLeadType(e.target.value)}
               required
             >
               <option value="" disabled>
@@ -481,9 +483,10 @@ const FormFields = ({
         </h2>
         <fieldset disabled={pending} className="grid gap-2 md:mt-2 md:gap-6">
           <JobProductsFormFields
-            key={data.products?.toString()}
             defaultCommission={Number(data.commission)}
             defaultJobProducts={data.products}
+            key={data.products?.toString()}
+            leadType={leadType}
             products={products}
           />
         </fieldset>

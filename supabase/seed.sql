@@ -57,7 +57,7 @@ VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '7e15d5cf-952c-4416-85e1-465849358402', 'base'::location_profile_roles),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::location_profile_roles);
 
-INSERT INTO business_products (id, business_id, name, measurement, price_per_measurement)
+INSERT INTO business_products (id, business_id, name, unit, unit_price)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'Avid Olive 73', 'sq ft', 11.00),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'Avid Olive 85', 'sq ft', 11.00),
@@ -70,16 +70,16 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status)
+INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status, lead_type)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '200 E 1600 N', 'St George', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'new'::location_job_status),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '1234 Fake St', 'Washington', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'scheduled'::location_job_status),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 'Jarren Benton', '1234 Fake St', 'Ogden', 'UT', '84242', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'new'::location_job_status),
-  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Patiently Waiting', '1234 Fake St', 'LaVerkin', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'pending'::location_job_status),
-  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nephi LaVerkin', '1234 Fake St', 'Hurricane', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'approved'::location_job_status),
-  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Darnell Wright', '1234 Fake St', 'Ivins', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'billed'::location_job_status),
-  (7, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ryan Jyan', '1234 Fake St', 'Santa Clara', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'canceled'::location_job_status),
-  (8, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Drew Walker', '1234 Fake St', 'Leeds', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'complete'::location_job_status);
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '200 E 1600 N', 'St George', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'new'::location_job_status,'self'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '1234 Fake St', 'Washington', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'scheduled'::location_job_status,'self'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 'Jarren Benton', '1234 Fake St', 'Ogden', 'UT', '84242', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'new'::location_job_status,'self'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Patiently Waiting', '1234 Fake St', 'LaVerkin', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'pending'::location_job_status,'self'),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nephi LaVerkin', '1234 Fake St', 'Hurricane', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'approved'::location_job_status,'self'),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Darnell Wright', '1234 Fake St', 'Ivins', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'billed'::location_job_status,'self'),
+  (7, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ryan Jyan', '1234 Fake St', 'Santa Clara', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'canceled'::location_job_status,'self'),
+  (8, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Drew Walker', '1234 Fake St', 'Leeds', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'complete'::location_job_status,'self');
 
 ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 9;
 
@@ -96,11 +96,11 @@ VALUES
 
 ALTER SEQUENCE business_location_job_profiles_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_job_products (id, business_id, location_id, job_id, product_id, number_of_units,lead_price_addon)
+INSERT INTO business_location_job_products (id, business_id, location_id, job_id, product_id, number_of_units,unit_price,lead_price,total_price)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1, 2250,0.00),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 7, 2,0.00),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 8, 10,0.00);
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1, 2250, 10.00, 0.00, 2250.00),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 7, 2, 500.00, 0.00, 1000.00),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 8, 10, 5.00, 0.00, 50.00);
 
 ALTER SEQUENCE business_location_job_products_id_seq RESTART WITH 4;
 

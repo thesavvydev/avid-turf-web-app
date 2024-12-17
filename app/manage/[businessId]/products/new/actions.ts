@@ -15,8 +15,8 @@ export async function AddProduct<T>(...args: ServerActionWithState<T>) {
   const insert = {
     business_id: fields.business_id as string,
     name: fields.name as string,
-    measurement: fields.measurement as string,
-    price_per_measurement: Number(fields.price_per_measurement),
+    unit: fields.unit as string,
+    unit_price: Number(fields.unit_price),
     units_in_stock: Number(fields.units_in_stock),
   };
 

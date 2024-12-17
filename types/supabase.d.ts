@@ -307,30 +307,36 @@ export type Database = {
           created_at: string
           id: number
           job_id: number
-          lead_price_addon: number | null
+          lead_price: number | null
           location_id: number
           number_of_units: number
           product_id: number
+          total_price: number
+          unit_price: number
         }
         Insert: {
           business_id: string
           created_at?: string
           id?: number
           job_id: number
-          lead_price_addon?: number | null
+          lead_price?: number | null
           location_id: number
           number_of_units?: number
           product_id: number
+          total_price?: number
+          unit_price?: number
         }
         Update: {
           business_id?: string
           created_at?: string
           id?: number
           job_id?: number
-          lead_price_addon?: number | null
+          lead_price?: number | null
           location_id?: number
           number_of_units?: number
           product_id?: number
+          total_price?: number
+          unit_price?: number
         }
         Relationships: [
           {
@@ -751,9 +757,9 @@ export type Database = {
           id: number
           image: string | null
           lead_price: number
-          measurement: string
           name: string
-          price_per_measurement: number
+          unit: string
+          unit_price: number
           units_in_stock: number | null
         }
         Insert: {
@@ -762,9 +768,9 @@ export type Database = {
           id?: number
           image?: string | null
           lead_price?: number
-          measurement?: string
           name: string
-          price_per_measurement: number
+          unit?: string
+          unit_price: number
           units_in_stock?: number | null
         }
         Update: {
@@ -773,9 +779,9 @@ export type Database = {
           id?: number
           image?: string | null
           lead_price?: number
-          measurement?: string
           name?: string
-          price_per_measurement?: number
+          unit?: string
+          unit_price?: number
           units_in_stock?: number | null
         }
         Relationships: [

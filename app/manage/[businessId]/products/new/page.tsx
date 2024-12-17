@@ -40,25 +40,25 @@ function FormFields() {
             />
           </div>
           <div>
-            <Label htmlFor="measurement" className="mb-2 block">
-              Measurement
+            <Label htmlFor="unit" className="mb-2 block">
+              Unit
             </Label>
             <TextInput
               autoComplete="off"
-              id="measurement"
-              name="measurement"
+              id="unit"
+              name="unit"
               placeholder="sq ft"
               required
             />
           </div>
           <div>
-            <Label htmlFor="price_per_measurement" className="mb-2 block">
-              Price Per Measurement
+            <Label htmlFor="unit_price" className="mb-2 block">
+              Unit Price
             </Label>
             <TextInput
               autoComplete="off"
-              id="price_per_measurement"
-              name="price_per_measurement"
+              id="unit_price"
+              name="unit_price"
               placeholder="10.00"
               required
             />

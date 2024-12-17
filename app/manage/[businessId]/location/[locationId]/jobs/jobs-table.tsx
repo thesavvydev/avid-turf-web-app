@@ -699,8 +699,7 @@ function Content() {
         const productsTotal = row.products?.reduce((dictionary, product) => {
           dictionary +=
             Number(product.number_of_units) *
-            (Number(product.product.price_per_measurement) +
-              Number(product.lead_price_addon));
+            (Number(product.product.unit_price) + Number(product.lead_price));
 
           return dictionary;
         }, 0);

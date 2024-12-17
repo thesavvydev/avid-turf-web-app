@@ -16,12 +16,9 @@ import { useActionState, useEffect, useState } from "react";
 import { UpdateJobProducts } from "./actions";
 
 const JobLineitemsTable = ({ job }: { job: IJob }) => {
+  const includeLeadPrice = ["paid", "setter"].includes(job.lead_type);
   const productsTotal = job.products?.reduce((dictionary, product) => {
-    dictionary +=
-      Number(product.number_of_units) *
-      (Number(product.product.price_per_measurement) +
-        Number(product.lead_price_addon));
-
+    dictionary += Number(product.total_price);
     return dictionary;
   }, 0);
 
@@ -35,9 +32,6 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
         <Table.HeadCell className="hidden text-right sm:table-cell">
           Per Unit
         </Table.HeadCell>
-        <Table.HeadCell className="hidden w-0 whitespace-nowrap text-right sm:table-cell">
-          Lead Price
-        </Table.HeadCell>
         <Table.HeadCell className="px-2 text-right sm:px-6">
           Total
         </Table.HeadCell>
@@ -48,14 +42,14 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
             <Table.Cell className="hidden px-2 sm:table-cell sm:px-6">
               <div>
                 <div className="text-lg">{jobProduct.product.name}</div>
-                <div className="text-sm">{`per ${jobProduct.product.measurement}`}</div>
+                <div className="text-sm">{`per ${jobProduct.product.unit}`}</div>
               </div>
             </Table.Cell>
             <Table.Cell className="px-2 sm:hidden sm:px-6">
               <div>
                 <div className="text-base">{jobProduct.product.name}</div>
-                <div className="text-sm">{`${formatAsReadableNumber(jobProduct.number_of_units)} ${jobProduct.product.measurement} * ${formatAsCurrency(
-                  jobProduct.product.price_per_measurement,
+                <div className="text-sm">{`${formatAsReadableNumber(jobProduct.number_of_units)} ${jobProduct.product.unit} * ${formatAsCurrency(
+                  jobProduct.unit_price,
                 )}`}</div>
               </div>
             </Table.Cell>
@@ -63,16 +57,18 @@ const JobLineitemsTable = ({ job }: { job: IJob }) => {
               {formatAsReadableNumber(jobProduct.number_of_units)}
             </Table.Cell>
             <Table.Cell className="hidden text-right sm:table-cell sm:text-base">
-              {formatAsReadableNumber(jobProduct.product.price_per_measurement)}
-            </Table.Cell>
-            <Table.Cell className="hidden text-right sm:table-cell sm:text-base">
-              {formatAsCurrency(Number(jobProduct.lead_price_addon))}
+              {formatAsCurrency(
+                Number(jobProduct.unit_price) +
+                  Number(includeLeadPrice && jobProduct.lead_price),
+              )}
             </Table.Cell>
             <Table.Cell className="px-2 text-right sm:px-4 sm:text-base">
               {formatAsCurrency(
                 Number(jobProduct.number_of_units) *
-                  (Number(jobProduct.product.price_per_measurement) +
-                    Number(jobProduct.lead_price_addon)),
+                  (Number(jobProduct.unit_price) +
+                    (includeLeadPrice
+                      ? Number(jobProduct.product.lead_price)
+                      : 0)),
               )}
             </Table.Cell>
           </Table.Row>
@@ -154,6 +150,7 @@ const ManageLineitemsForm = ({
         <JobProductsFormFields
           defaultCommission={job.commission}
           defaultJobProducts={job.products}
+          leadType={job.lead_type}
           products={products}
         />
         <div className="flex items-center gap-2">

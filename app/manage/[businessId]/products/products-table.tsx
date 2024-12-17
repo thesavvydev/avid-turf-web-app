@@ -101,22 +101,22 @@ export default function ProductsTable({
           <span className="hidden sm:table-cell">{row.name}</span>
           <span className="grid gap-2 sm:hidden">
             <div>{row.name}</div>
-            <div>{`${formatAsCurrency(row.price_per_measurement)} per ${row.measurement}`}</div>
+            <div>{`${formatAsCurrency(row.unit_price)} per ${row.unit}`}</div>
           </span>
         </>
       ),
     },
     {
       cellClassNames: "hidden sm:table-cell",
-      field: "measurement",
-      header: "Measurement",
-      render: (row) => row.measurement,
+      field: "unit",
+      header: "Unit",
+      render: (row) => row.unit,
     },
     {
       cellClassNames: "text-right hidden sm:table-cell",
-      field: "price_per_measurement",
+      field: "unit_price",
       header: "Price Per",
-      render: (row) => formatAsCurrency(row.price_per_measurement),
+      render: (row) => formatAsCurrency(row.unit_price),
     },
     {
       cellClassNames: "text-right hidden sm:table-cell",
