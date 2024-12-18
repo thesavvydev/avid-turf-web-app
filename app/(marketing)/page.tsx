@@ -15,7 +15,7 @@ export default function Page() {
             </span>
             &nbsp;
             <span className="text-sm font-medium">
-              HOM is out! See what's new
+              HOM is out! See what&apos;s new
             </span>
             <svg
               className="ml-2 h-5 w-5"
@@ -81,7 +81,7 @@ export default function Page() {
         <div className="mx-auto max-w-screen-xl items-center gap-16 px-4 py-8 lg:grid lg:grid-cols-2 lg:px-6 lg:py-16">
           <div className="text-gray-500 dark:text-gray-400 sm:text-lg">
             <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-              We didn't reinvent the wheel
+              We didn&apos;t reinvent the wheel
             </h2>
             <p className="mb-4">
               We are strategists, designers and developers. Innovators and
@@ -114,7 +114,7 @@ export default function Page() {
         <div className="mx-auto max-w-screen-xl items-center gap-8 px-4 py-8 sm:py-16 md:grid md:grid-cols-2 lg:px-6 xl:gap-16">
           <div>
             <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-              Let's create more tools and ideas that brings us together.
+              Let&apos;s create more tools and ideas that brings us together.
             </h2>
             <p className="mb-6 text-gray-500 dark:text-gray-400 md:text-lg">
               HOM helps you connect with friends and communities of people who
@@ -764,9 +764,9 @@ export default function Page() {
                     Solid foundation for any project
                   </h3>
                   <p className="my-4">
-                    "This is a very complex and beautiful set of elements. Under
-                    the hood it comes with the best things from 2 different
-                    worlds: Figma and Tailwind.”
+                    &quot;This is a very complex and beautiful set of elements.
+                    Under the hood it comes with the best things from 2
+                    different worlds: Figma and Tailwind.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -790,9 +790,9 @@ export default function Page() {
                     A must-have for designers
                   </h3>
                   <p className="my-4">
-                    "This is a very complex and beautiful set of elements. Under
-                    the hood it comes with the best things from 2 different
-                    worlds: Figma and Tailwind.”
+                    &quot;This is a very complex and beautiful set of elements.
+                    Under the hood it comes with the best things from 2
+                    different worlds: Figma and Tailwind.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -816,10 +816,10 @@ export default function Page() {
                     Speechless with how easy this was to integrate
                   </h3>
                   <p className="my-4">
-                    "I recently got my hands on HOM Pro, and holy crap, I'm
-                    speechless with how easy this was to integrate within my
-                    application. Most templates are a pain, code is scattered,
-                    and near impossible to theme."
+                    &quot;I recently got my hands on HOM Pro, and holy crap,
+                    I&apos;m speechless with how easy this was to integrate
+                    within my application. Most templates are a pain, code is
+                    scattered, and near impossible to theme.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -845,9 +845,10 @@ export default function Page() {
                     Efficient Collaborating
                   </h3>
                   <p className="my-4">
-                    "HOM is just awesome. It contains tons of predesigned
+                    &quot;HOM is just awesome. It contains tons of predesigned
                     components and pages starting from login screen to complex
-                    dashboard. Perfect choice for your next SaaS application.”
+                    dashboard. Perfect choice for your next SaaS
+                    application.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -871,14 +872,14 @@ export default function Page() {
                     Mindblowing workflow and variants
                   </h3>
                   <p className="my-4">
-                    "HOM provides a robust set of design tokens and components
-                    based on the popular Tailwind CSS framework.
+                    &quot;HOM provides a robust set of design tokens and
+                    components based on the popular Tailwind CSS framework.
                   </p>
                   <p className="my-4">
                     From the most used UI components like forms and navigation
                     bars to the whole app screens designed both for desktop and
                     mobile, this UI kit provides a solid foundation for any
-                    project.”
+                    project.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -902,14 +903,14 @@ export default function Page() {
                     Perfect choice for a SaaS application
                   </h3>
                   <p className="my-4">
-                    "HOM provides a robust set of design tokens and components
-                    based on the popular Tailwind CSS framework.
+                    &quot;HOM provides a robust set of design tokens and
+                    components based on the popular Tailwind CSS framework.
                   </p>
                   <p className="my-4">
                     From the most used UI components like forms and navigation
                     bars to the whole app screens designed both for desktop and
                     mobile, this UI kit provides a solid foundation for any
-                    project.”
+                    project.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -935,10 +936,10 @@ export default function Page() {
                     Solid foundation for any project
                   </h3>
                   <p className="my-4">
-                    "I recently got my hands on HOM Pro, and holy crap, I'm
-                    speechless with how easy this was to integrate within my
-                    application. Most templates are a pain, code is scattered,
-                    and near impossible to theme."
+                    &quot;I recently got my hands on HOM Pro, and holy crap,
+                    I&apos;m speechless with how easy this was to integrate
+                    within my application. Most templates are a pain, code is
+                    scattered, and near impossible to theme.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -962,9 +963,10 @@ export default function Page() {
                     Mindblowing workflow and variants
                   </h3>
                   <p className="my-4">
-                    "HOM is just awesome. It contains tons of predesigned
+                    &quot;HOM is just awesome. It contains tons of predesigned
                     components and pages starting from login screen to complex
-                    dashboard. Perfect choice for your next SaaS application.”
+                    dashboard. Perfect choice for your next SaaS
+                    application.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
@@ -988,9 +990,9 @@ export default function Page() {
                     Speechless with how easy this was to integrate
                   </h3>
                   <p className="my-4">
-                    "This is a very complex and beautiful set of elements. Under
-                    the hood it comes with the best things from 2 different
-                    worlds: Figma and Tailwind.”
+                    &quot;This is a very complex and beautiful set of elements.
+                    Under the hood it comes with the best things from 2
+                    different worlds: Figma and Tailwind.&quot;
                   </p>
                 </blockquote>
                 <figcaption className="flex items-center space-x-3">
