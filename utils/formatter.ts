@@ -41,7 +41,7 @@ export function formatAsCompactCurrency(
 }
 
 export function formatAsCurrency(
-  value: number,
+  value: number | null,
   options?: Intl.NumberFormatOptions,
 ) {
   return Number(value).toLocaleString(undefined, {

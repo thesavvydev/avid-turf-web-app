@@ -50,7 +50,7 @@ export default function JobProductsFormFields({
   };
 
   const productsTotal = jobProducts?.reduce((dictionary, product) => {
-    dictionary += product.total_price;
+    dictionary += Number(product.total_price);
     return dictionary;
   }, 0);
 
@@ -229,7 +229,7 @@ export default function JobProductsFormFields({
                 <input
                   name={`product__${index}__total_price`}
                   type="hidden"
-                  value={jobProduct.total_price}
+                  value={Number(jobProduct.total_price)}
                 />
                 {formatAsCurrency(Number(jobProduct.total_price))}
               </Table.Cell>
