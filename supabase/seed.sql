@@ -76,7 +76,7 @@ VALUES
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', ''),
   (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '');
 
-ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 4;
+ALTER SEQUENCE business_location_customers_id_seq RESTART WITH 4;
 
 INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status, lead_type)
 VALUES
