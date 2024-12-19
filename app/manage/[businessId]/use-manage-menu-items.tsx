@@ -9,6 +9,7 @@ import {
   SettingsIcon,
   UserCircle2,
   UserIcon,
+  UsersRoundIcon,
   WorkflowIcon,
 } from "lucide-react";
 
@@ -79,6 +80,14 @@ export default function useManageMenuItems() {
       icon: HomeIcon,
       isActive: pathname === `/manage/${businessId}/location/${locationId}`,
       name: "Dashboard",
+    },
+    {
+      href: generateLocationLink("customers"),
+      icon: UsersRoundIcon,
+      isActive: pathname.startsWith(
+        `/manage/${businessId}/location/${locationId}/customers`,
+      ),
+      name: "Customers",
     },
     {
       href: generateLocationLink("jobs"),

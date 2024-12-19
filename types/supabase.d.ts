@@ -69,6 +69,51 @@ export type Database = {
           },
         ]
       }
+      business_location_customers: {
+        Row: {
+          business_id: string
+          created_at: string
+          email: string
+          full_name: string
+          id: number
+          location_id: number
+          phone: string | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: number
+          location_id: number
+          phone?: string | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: number
+          location_id?: number
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_location_customers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_customers_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_location_job_appointment_profiles: {
         Row: {
           appointment_id: number
@@ -311,8 +356,8 @@ export type Database = {
           location_id: number
           number_of_units: number
           product_id: number
-          total_price: number
-          unit_price: number
+          total_price: number | null
+          unit_price: number | null
         }
         Insert: {
           business_id: string
@@ -323,8 +368,8 @@ export type Database = {
           location_id: number
           number_of_units?: number
           product_id: number
-          total_price?: number
-          unit_price?: number
+          total_price?: number | null
+          unit_price?: number | null
         }
         Update: {
           business_id?: string
@@ -335,8 +380,8 @@ export type Database = {
           location_id?: number
           number_of_units?: number
           product_id?: number
-          total_price?: number
-          unit_price?: number
+          total_price?: number | null
+          unit_price?: number | null
         }
         Relationships: [
           {
@@ -758,8 +803,8 @@ export type Database = {
           image: string | null
           lead_price: number
           name: string
-          unit: string
-          unit_price: number
+          unit: string | null
+          unit_price: number | null
           units_in_stock: number | null
         }
         Insert: {
@@ -769,8 +814,8 @@ export type Database = {
           image?: string | null
           lead_price?: number
           name: string
-          unit?: string
-          unit_price: number
+          unit?: string | null
+          unit_price?: number | null
           units_in_stock?: number | null
         }
         Update: {
@@ -780,8 +825,8 @@ export type Database = {
           image?: string | null
           lead_price?: number
           name?: string
-          unit?: string
-          unit_price?: number
+          unit?: string | null
+          unit_price?: number | null
           units_in_stock?: number | null
         }
         Relationships: [
