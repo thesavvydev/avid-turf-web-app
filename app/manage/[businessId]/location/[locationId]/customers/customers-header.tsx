@@ -1,8 +1,6 @@
 "use client";
 import PageHeaderWithActions from "@/components/page-header-with-actions";
-import { useUserContext } from "@/contexts/user";
 import { Button } from "flowbite-react";
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import ManageCustomerDrawer from "./manage-customer-drawer";
 

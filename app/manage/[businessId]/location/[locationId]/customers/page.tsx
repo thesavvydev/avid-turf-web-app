@@ -11,7 +11,7 @@ type TPageProps = {
 export default async function Page(props: TPageProps) {
   const searchParams = await props.searchParams;
 
-  const { page = 0, per_page = 10, role = "" } = searchParams;
+  const { page = 0, per_page = 10 } = searchParams;
 
   const params = await props.params;
 
