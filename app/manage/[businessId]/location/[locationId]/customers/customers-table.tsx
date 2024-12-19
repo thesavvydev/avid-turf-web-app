@@ -2,7 +2,7 @@
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import { LOCATION_PROFILE_ROLES } from "@/constants/location_profile_roles";
-import { Database, Tables } from "@/types/supabase";
+import { Tables } from "@/types/supabase";
 import { formatAsCompactNumber } from "@/utils/formatter";
 import {
   Alert,
@@ -41,9 +41,8 @@ import {
   useState,
 } from "react";
 import { twMerge } from "tailwind-merge";
-import { BUSINESS_PROFILE_ROLES } from "@/constants/business-profile-roles";
-import ManageCustomerDrawer from "./manage-customer-drawer";
 import { DeleteLocationCustomer } from "./actions";
+import ManageCustomerDrawer from "./manage-customer-drawer";
 
 const customersTableContext = createContext<{
   customers: Tables<"business_location_customers">[];
@@ -193,7 +192,6 @@ function RoleTabFilter() {
     useEmployeesTableContext();
 
   const searchParams = useSearchParams();
-  const hasRoleParam = searchParams.has("role");
   const roleParamValue = searchParams.get("role");
 
   return (
