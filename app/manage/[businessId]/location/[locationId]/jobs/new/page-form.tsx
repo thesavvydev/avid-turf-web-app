@@ -3,26 +3,18 @@
 import SubmitButton from "@/components/submit-button";
 
 import { useUserContext } from "@/contexts/user";
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Label,
-  Radio,
-  Select,
-  TextInput,
-} from "flowbite-react";
-import { ChevronLeftIcon, Trash2Icon, WorkflowIcon } from "lucide-react";
+import { Button, Card, Label, Radio, Select, TextInput } from "flowbite-react";
+import { HardHatIcon, Trash2Icon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useFormStatus } from "react-dom";
 
 import { ConfirmModal } from "@/components/confirm-modal";
 import ErrorAlert from "@/components/error-alert";
 import JobProductsFormFields from "@/components/job-products-form-fields";
-import PageHeaderWithActions from "@/components/page-header-with-actions";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { JOB_LEAD_TYPES } from "@/constants/job-lead-types";
 import { JOB_PAYMENT_TYPES } from "@/constants/job-payment-types";
 import { JOB_PROFILE_ROLES } from "@/constants/job-profile-roles";
 import { US_STATES } from "@/constants/us-states";
@@ -31,7 +23,6 @@ import { ILocationEmployee } from "@/types/location";
 import { Database, Tables } from "@/types/supabase";
 import { useActionState, useEffect, useState } from "react";
 import { AddJob } from "./action";
-import { JOB_LEAD_TYPES } from "@/constants/job-lead-types";
 
 interface IEmployee {
   profile_id: string;
@@ -614,31 +605,17 @@ export default function PageForm({ profiles, products }: TPageForm) {
   }, [state.error]);
 
   return (
-    <div className="mx-auto grid w-full max-w-screen-md gap-4">
-      <PageHeaderWithActions
-        title="New Job"
-        subtitle="Add a new job"
-        renderBreadcrumbs={() => (
-          <Breadcrumb aria-label="Back to jobs">
-            <Breadcrumb.Item
-              href={`/manage/${businessId}/location/${locationId}/jobs`}
-              icon={() => <ChevronLeftIcon className="mr-2" />}
-            >
-              Back to Jobs
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        )}
-      />
+    <>
       {state.error && <ErrorAlert message={state.error} />}
       <form action={action} className="grid gap-4 sm:gap-6">
         <FormFields data={state.data} profiles={profiles} products={products} />
         <div>
           <SubmitButton pendingText="Creating Job">
-            <WorkflowIcon className="mr-2" />
+            <HardHatIcon className="mr-2" />
             Create Job
           </SubmitButton>
         </div>
       </form>
-    </div>
+    </>
   );
 }
