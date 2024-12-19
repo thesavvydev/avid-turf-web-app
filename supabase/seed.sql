@@ -70,6 +70,14 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
+INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone)
+VALUES
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', ''),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', ''),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '');
+
+ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 4;
+
 INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status, lead_type)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '200 E 1600 N', 'St George', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'new'::location_job_status,'self'),
