@@ -10,7 +10,7 @@ import {
   UserCircle2,
   UserIcon,
   UsersRoundIcon,
-  WorkflowIcon,
+  HardHatIcon,
 } from "lucide-react";
 
 import { useParams, usePathname } from "next/navigation";
@@ -91,7 +91,7 @@ export default function useManageMenuItems() {
     },
     {
       href: generateLocationLink("jobs"),
-      icon: WorkflowIcon,
+      icon: HardHatIcon,
       isActive: pathname.startsWith(
         `/manage/${businessId}/location/${locationId}/job`,
       ),
