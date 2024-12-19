@@ -1,6 +1,9 @@
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 import PageForm from "./page-form";
 import { ILocationEmployee } from "@/types/location";
+import { Breadcrumb, BreadcrumbItem, TextInput } from "flowbite-react";
+import PageHeaderWithActions from "@/components/page-header-with-actions";
+import { ChevronLeftIcon } from "lucide-react";
 
 type TPage = {
   params: Promise<{ locationId: string; businessId: string }>;
@@ -29,5 +32,23 @@ export default async function Page(props: TPage) {
   if (error) throw error;
   if (fetchProductsError) throw fetchProductsError;
 
-  return <PageForm profiles={profiles ?? []} products={products ?? []} />;
+  return (
+    <>
+      <PageHeaderWithActions
+        title="New Job"
+        subtitle="Add a new job"
+        renderBreadcrumbs={() => (
+          <Breadcrumb aria-label="Back to jobs">
+            <BreadcrumbItem
+              href={`/manage/${businessId}/location/${locationId}/jobs`}
+              icon={() => <ChevronLeftIcon className="mr-2" />}
+            >
+              Back to Jobs
+            </BreadcrumbItem>
+          </Breadcrumb>
+        )}
+      />
+      <PageForm profiles={profiles ?? []} products={products ?? []} />
+    </>
+  );
 }
