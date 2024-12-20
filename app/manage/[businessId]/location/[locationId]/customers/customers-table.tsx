@@ -6,7 +6,6 @@ import { Tables } from "@/types/supabase";
 import { formatAsCompactNumber } from "@/utils/formatter";
 import {
   Alert,
-  Avatar,
   Badge,
   Button,
   Dropdown,
