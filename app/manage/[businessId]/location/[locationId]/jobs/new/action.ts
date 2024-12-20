@@ -63,6 +63,28 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     });
   }
 
+  const customerId =
+    fields.customer_id ||
+    (await supabase
+      .from("business_location_customers")
+      .insert({
+        business_id: fields.business_id as string,
+        email: fields.email as string,
+        full_name: fields.full_name as string,
+        location_id: Number(fields.business_location_id),
+        phone: fields.phone as string,
+      })
+      .select("id")
+      .single()
+      .then(({ data }) => data?.id));
+
+  if (!customerId) {
+    return formStateResponse({
+      ...newState,
+      error: "Unable to create a new customer. Contact an admin for help.",
+    });
+  }
+
   const insert = {
     address: fields.address as string,
     business_id: fields.business_id as string,
@@ -70,6 +92,7 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     city: fields.city as string,
     commission: Number(fields.commission),
     creator_id: fields.creator_id as string,
+    customer_id: Number(customerId),
     down_payment_collected: Number(fields.down_payment_collected),
     email: fields.email as string,
     estimated_start_date: fields.estimated_start_date

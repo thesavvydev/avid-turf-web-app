@@ -97,6 +97,7 @@ export default function JobProductsFormFields({
               <Table.Row key={jobProduct.product_id}>
                 <Table.Cell>
                   <Select
+                    autoFocus
                     defaultValue={jobProduct.product_id?.toString()}
                     id={`product__${index}__product_id`}
                     name={`product__${index}__product_id`}
