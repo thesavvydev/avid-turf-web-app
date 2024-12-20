@@ -57,6 +57,7 @@ interface IFormFields {
 }
 
 type TPageForm = {
+  customer: Tables<"business_location_customers"> | null;
   profiles: ILocationEmployee[];
   products: Tables<"business_products">[];
 };
@@ -316,6 +317,7 @@ const WaterRebateInformationFields = ({
 };
 
 const FormFields = ({
+  customer,
   data,
   profiles,
   products,
@@ -334,48 +336,61 @@ const FormFields = ({
         <h2 className="text-xl font-medium text-gray-400">
           Customer Information
         </h2>
-        <fieldset
-          disabled={pending}
-          className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
-        >
+        {customer ? (
           <div>
-            <Label htmlFor="full_name" className="mb-2 block">
-              Full Name
-            </Label>
-            <TextInput
-              autoComplete="off"
-              defaultValue={data.full_name}
-              id="full_name"
-              name="full_name"
-              required
-            />
+            <input type="hidden" name="customer_id" value={customer.id} />
+            <input type="hidden" name="full_name" value={customer.full_name} />
+            <input type="hidden" name="email" value={customer.email} />
+            <input type="hidden" name="phone" value={customer.phone ?? ""} />
+            <p>
+              <b>{customer.full_name}</b>
+            </p>
+            <p>{customer.email}</p>
           </div>
-          <div>
-            <Label htmlFor="phone" className="mb-2 block">
-              Phone
-            </Label>
-            <TextInput
-              autoComplete="off"
-              defaultValue={data.phone}
-              id="phone"
-              name="phone"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email" className="mb-2 block">
-              Email
-            </Label>
-            <TextInput
-              autoComplete="off"
-              defaultValue={data.email}
-              id="email"
-              name="email"
-              required
-              type="email"
-            />
-          </div>
-        </fieldset>
+        ) : (
+          <fieldset
+            disabled={pending}
+            className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
+          >
+            <div>
+              <Label htmlFor="full_name" className="mb-2 block">
+                Full Name
+              </Label>
+              <TextInput
+                autoComplete="off"
+                defaultValue={data.full_name}
+                id="full_name"
+                name="full_name"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="phone" className="mb-2 block">
+                Phone
+              </Label>
+              <TextInput
+                autoComplete="off"
+                defaultValue={data.phone}
+                id="phone"
+                name="phone"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="email" className="mb-2 block">
+                Email
+              </Label>
+              <TextInput
+                autoComplete="off"
+                defaultValue={data.email}
+                id="email"
+                name="email"
+                required
+                type="email"
+              />
+            </div>
+          </fieldset>
+        )}
       </Card>
       <Card>
         <h2 className="text-xl font-medium text-gray-400">
@@ -570,8 +585,7 @@ const FormFields = ({
   );
 };
 
-export default function PageForm({ profiles, products }: TPageForm) {
-  const { businessId, locationId } = useParams();
+export default function PageForm({ customer, profiles, products }: TPageForm) {
   const { location } = useLocationContext();
   const [state, action] = useActionState(AddJob<TInitialFormState>, {
     ...initialFormState,
@@ -608,7 +622,12 @@ export default function PageForm({ profiles, products }: TPageForm) {
     <>
       {state.error && <ErrorAlert message={state.error} />}
       <form action={action} className="grid gap-4 sm:gap-6">
-        <FormFields data={state.data} profiles={profiles} products={products} />
+        <FormFields
+          customer={customer}
+          data={state.data}
+          profiles={profiles}
+          products={products}
+        />
         <div>
           <SubmitButton pendingText="Creating Job">
             <HardHatIcon className="mr-2" />
