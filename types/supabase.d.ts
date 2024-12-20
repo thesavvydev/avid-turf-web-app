@@ -547,6 +547,7 @@ export type Database = {
           commission: number
           created_at: string
           creator_id: string
+          customer_id: number | null
           down_payment_collected: number | null
           email: string | null
           estimated_end_date: string | null
@@ -574,6 +575,7 @@ export type Database = {
           commission?: number
           created_at?: string
           creator_id: string
+          customer_id?: number | null
           down_payment_collected?: number | null
           email?: string | null
           estimated_end_date?: string | null
@@ -601,6 +603,7 @@ export type Database = {
           commission?: number
           created_at?: string
           creator_id?: string
+          customer_id?: number | null
           down_payment_collected?: number | null
           email?: string | null
           estimated_end_date?: string | null
@@ -633,6 +636,13 @@ export type Database = {
             columns: ["creator_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_jobs_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_customers"
             referencedColumns: ["id"]
           },
           {
