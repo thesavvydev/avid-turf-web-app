@@ -418,15 +418,7 @@ function Content() {
     {
       field: "name",
       header: "Name",
-      render: (row) => (
-        <Avatar
-          theme={{
-            root: { base: twMerge(theme.avatar.root.base, "justify-start") },
-          }}
-        >
-          {row.full_name ?? "John Doe"}
-        </Avatar>
-      ),
+      render: (row) => row.full_name,
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
