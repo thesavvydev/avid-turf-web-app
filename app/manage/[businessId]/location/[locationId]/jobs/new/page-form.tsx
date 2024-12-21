@@ -595,7 +595,16 @@ export default function PageForm({ customer, profiles, products }: TPageForm) {
       commission: "",
       down_payment_collected: 500,
       email: "",
-      employees: [],
+      employees: [
+        ...(customer?.creator_id
+          ? [
+              {
+                profile_id: customer.creator_id,
+                role: "setter",
+              },
+            ]
+          : []),
+      ],
       estimated_end_date: null,
       estimated_start_date: null,
       full_name: "",
@@ -604,7 +613,7 @@ export default function PageForm({ customer, profiles, products }: TPageForm) {
       hoa_contact_email: "",
       hoa_contact_name: "",
       hoa_contact_phone: "",
-      lead_type: "",
+      lead_type: customer?.creator_id ? "setter" : "",
       payment_type: "",
       phone: "",
       postal_code: "",
