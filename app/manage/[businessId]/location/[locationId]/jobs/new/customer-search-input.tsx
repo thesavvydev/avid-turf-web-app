@@ -19,7 +19,7 @@ export default function CustomerSearchInput() {
           rightIcon={SearchIcon}
         />
       </div>
-      <Button type="submit" className="mt-2">
+      <Button type="submit" color="primary" className="mt-2">
         Search
       </Button>
     </form>

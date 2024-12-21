@@ -42,7 +42,7 @@ export default async function Page(props: TPage) {
       .limit(5),
     supabase
       .from("business_location_customers")
-      .select("*")
+      .select("*, creator: creator_id(*)")
       .eq("id", Number(searchParams.customerId))
       .maybeSingle(),
   ]);

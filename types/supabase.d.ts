@@ -73,6 +73,7 @@ export type Database = {
         Row: {
           business_id: string
           created_at: string
+          creator_id: string | null
           email: string
           full_name: string
           id: number
@@ -82,6 +83,7 @@ export type Database = {
         Insert: {
           business_id: string
           created_at?: string
+          creator_id?: string | null
           email: string
           full_name: string
           id?: number
@@ -91,6 +93,7 @@ export type Database = {
         Update: {
           business_id?: string
           created_at?: string
+          creator_id?: string | null
           email?: string
           full_name?: string
           id?: number
@@ -103,6 +106,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_customers_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

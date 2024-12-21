@@ -14,6 +14,7 @@ export async function AddLocationCustomer<T>(
 
   const insert = {
     business_id: fields.business_id as string,
+    creator_id: fields.profile_id as string,
     email: fields.email as string,
     full_name: fields.full_name as string,
     location_id: Number(fields.location_id),
