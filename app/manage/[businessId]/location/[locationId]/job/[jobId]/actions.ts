@@ -297,17 +297,14 @@ export async function UpdateJobMedia<T>(...args: ServerActionWithState<T>) {
 
   if (error) return formStateResponse({ ...state, error: error.message });
 
-  await supabase
-    .from("business_logs")
-    .insert({
-      snapshot: JSON.stringify(updates),
-      message: `Updated media`,
-      record_id: fields.job_id as string,
-      record_table_name: "business_location_jobs",
-      business_id: fields.business_id as string,
-      profile_id: fields.profile_id as string,
-    })
-    .then(console.log);
+  await supabase.from("business_logs").insert({
+    snapshot: JSON.stringify(updates),
+    message: `Updated media`,
+    record_id: fields.job_id as string,
+    record_table_name: "business_location_jobs",
+    business_id: fields.business_id as string,
+    profile_id: fields.profile_id as string,
+  });
 
   return formStateResponse({ ...state, success: true, dismiss: true });
 }
