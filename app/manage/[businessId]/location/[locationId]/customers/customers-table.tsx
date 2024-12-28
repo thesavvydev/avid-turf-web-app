@@ -1,9 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
-import { LOCATION_PROFILE_ROLES } from "@/constants/location_profile_roles";
-import { Tables } from "@/types/supabase";
-import { formatAsCompactNumber } from "@/utils/formatter";
+import { ILocationCustomer } from "@/types/location";
 import {
   Alert,
   Badge,
@@ -11,7 +9,6 @@ import {
   Dropdown,
   Pagination,
   Table,
-  Tabs,
   TextInput,
   theme,
   Tooltip,
@@ -44,7 +41,7 @@ import { DeleteLocationCustomer } from "./actions";
 import ManageCustomerDrawer from "./manage-customer-drawer";
 
 const customersTableContext = createContext<{
-  customers: Tables<"business_location_customers">[];
+  customers: ILocationCustomer[];
   customersCount: number | null;
   handleUpdateSearchParam: (param: string, value: string) => void;
   handleRemoveSearchParam: (param: string, value: string) => void;
@@ -59,11 +56,11 @@ const customersTableContext = createContext<{
   paginatedTotal: 0,
 });
 
-function useEmployeesTableContext() {
+function useCustomersTableContext() {
   const context = useContext(customersTableContext);
   if (context === undefined)
     throw new Error(
-      "useEmployeesTableContext needs to used be in customersTableContextProvider",
+      "useCustomersTableContext needs to used be in customersTableContextProvider",
     );
 
   return context;
@@ -72,7 +69,7 @@ function useEmployeesTableContext() {
 type TEmployeesTableProviderProps = PropsWithChildren & {
   customersCount: number | null;
   paginatedTotal: number;
-  customers: Tables<"business_location_customers">[];
+  customers: ILocationCustomer[];
 };
 
 function EmployeesTableProvider({
@@ -147,7 +144,7 @@ function EmployeesTableProvider({
 function TableSearchFilter() {
   const [value, setValue] = useState("");
   const { handleUpdateSearchParam, handleRemoveSearchParam, isProcessing } =
-    useEmployeesTableContext();
+    useCustomersTableContext();
 
   return (
     <div className="relative">
@@ -186,90 +183,13 @@ function TableSearchFilter() {
   );
 }
 
-function RoleTabFilter() {
-  const { handleUpdateSearchParam, handleRemoveSearchParam, customersCount } =
-    useEmployeesTableContext();
-
-  const searchParams = useSearchParams();
-  const roleParamValue = searchParams.get("role");
-
-  return (
-    <Tabs
-      onActiveTabChange={(tab) => {
-        if (tab === 0) {
-          handleRemoveSearchParam("role", roleParamValue ?? "");
-        } else {
-          handleUpdateSearchParam(
-            "role",
-            Object.keys(LOCATION_PROFILE_ROLES)[tab - 1],
-          );
-        }
-      }}
-      variant="underline"
-      theme={{
-        tablist: {
-          base: twMerge(theme.tabs.tablist.base, "pt-1 pl-1 text-nowrap"),
-          tabitem: {
-            variant: {
-              underline: {
-                base: "font-light",
-                active: {
-                  on: twMerge(
-                    theme.tabs.tablist.tabitem.variant.underline.active.on,
-                    "text-primary-600 dark:text-primary-400 border-primary-600 dark:border-primary-400 focus:ring-primary-400 focus:ring-1 rounded-none",
-                  ),
-                },
-              },
-            },
-          },
-        },
-        tabpanel: "hidden",
-      }}
-    >
-      <Tabs.Item
-        title={
-          <div className="flex items-center gap-2">
-            All{" "}
-            <Badge color="lime">
-              {formatAsCompactNumber(customersCount ?? 0)}
-            </Badge>
-          </div>
-        }
-        active={!searchParams.has("role")}
-      />
-      <Tabs.Item
-        title={
-          <div className="flex items-center gap-2">
-            Active{" "}
-            <Badge color="green">
-              {formatAsCompactNumber(customersCount ?? 0)}
-            </Badge>
-          </div>
-        }
-        active
-      />
-      <Tabs.Item
-        title={
-          <div className="flex items-center gap-2">
-            Inactive{" "}
-            <Badge color="red">
-              {formatAsCompactNumber(customersCount ?? 0)}
-            </Badge>
-          </div>
-        }
-        active
-      />
-    </Tabs>
-  );
-}
-
 function TablePagination() {
   const {
     handleUpdateSearchParam,
     handleRemoveSearchParam,
     paginatedTotal,
     customersCount,
-  } = useEmployeesTableContext();
+  } = useCustomersTableContext();
   const searchParams = useSearchParams();
   const perPage = Number(searchParams.get("per_page") ?? 10);
   const page = Number(searchParams.get("page") ?? 1);
@@ -337,7 +257,7 @@ function TablePagination() {
   );
 }
 
-function ActionsCell({ row }: { row: Tables<"business_location_customers"> }) {
+function ActionsCell({ row }: { row: ILocationCustomer }) {
   const [isManageCustomerDrawerOpen, setIsManageCustomerDrawerOpen] =
     useState(false);
   const router = useRouter();
@@ -411,7 +331,7 @@ interface IColumn<RowData> {
 }
 
 function Content() {
-  const { customers } = useEmployeesTableContext();
+  const { customers } = useCustomersTableContext();
 
   const columns: IColumn<(typeof customers)[0]>[] = [
     {
@@ -424,6 +344,18 @@ function Content() {
       field: "email",
       header: "Email",
       render: (row) => row.email,
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "creator",
+      header: "Creator",
+      render: (row) => row.creator?.full_name,
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "jobs",
+      header: "Job Count",
+      render: (row) => row.jobs?.length,
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
@@ -487,7 +419,7 @@ function Content() {
 
 function TableActiveFilters() {
   const { handleRemoveSearchParam, paginatedTotal } =
-    useEmployeesTableContext();
+    useCustomersTableContext();
   const { locationId, businessId } = useParams();
   const searchParams = useSearchParams();
   const { search, role, page, per_page } = Object.fromEntries(searchParams);
@@ -585,7 +517,7 @@ export default function CustomersTable({
   paginatedTotal,
 }: {
   customersCount: number | null;
-  customers: Tables<"business_location_customers">[];
+  customers: ILocationCustomer[];
   paginatedTotal: number;
 }) {
   return (
@@ -598,10 +530,7 @@ export default function CustomersTable({
         id="customers-table"
         className="grid gap-4 overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-lg shadow-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:shadow-gray-900"
       >
-        <div className="overflow-x-auto">
-          <RoleTabFilter />
-        </div>
-        <div className="track grid gap-4 px-4 md:grid-cols-5 lg:px-6">
+        <div className="p-2">
           <TableSearchFilter />
         </div>
         <TableActiveFilters />
