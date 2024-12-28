@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 import CustomersHeader from "./customers-header";
 import CustomersTable from "./customers-table";
+import { ILocationCustomer } from "@/types/location";
 
 type TPageProps = {
   searchParams: Promise<{ page?: number; per_page?: number; role?: string }>;
@@ -25,14 +26,17 @@ export default async function Page(props: TPageProps) {
 
   const endRange = page > 1 ? startRange + Number(per_page) : per_page;
 
-  const fetchFilteredLocationCustomers = await supabase
+  const fetchFilteredLocationCustomers = supabase
     .from("business_location_customers")
-    .select("*", { count: "exact" })
+    .select("*, creator: creator_id(*), jobs: business_location_jobs(id)", {
+      count: "exact",
+    })
     .match({
       location_id: Number(locationId),
     })
     .range(startRange, endRange)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .returns<ILocationCustomer[]>();
 
   const fetchAllLocationEmployees = supabase
     .from("business_location_customers")
