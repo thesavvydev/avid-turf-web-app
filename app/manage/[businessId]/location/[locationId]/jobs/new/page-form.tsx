@@ -587,6 +587,7 @@ const FormFields = ({
 
 export default function PageForm({ customer, profiles, products }: TPageForm) {
   const { location } = useLocationContext();
+  const { user } = useUserContext();
   const [state, action] = useActionState(AddJob<TInitialFormState>, {
     ...initialFormState,
     data: {
@@ -596,6 +597,7 @@ export default function PageForm({ customer, profiles, products }: TPageForm) {
       down_payment_collected: 500,
       email: "",
       employees: [
+        { profile_id: user.id, role: "closer" },
         ...(customer?.creator_id
           ? [
               {
