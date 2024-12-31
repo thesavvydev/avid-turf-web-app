@@ -16,7 +16,7 @@ export default function ManageSidebar() {
         root: {
           base: twMerge(
             theme.sidebar.root.base,
-            "h-[calc(100vh-4rem)] hidden lg:block top-16 border-r dark:border-gray-700 relative sticky z-30",
+            "h-[calc(100vh-4rem)] hidden lg:block top-16 border-r dark:border-gray-700 relative sticky z-20",
           ),
           inner: twMerge(theme.sidebar.root.inner, "bg-white"),
         },
