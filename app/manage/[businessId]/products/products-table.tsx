@@ -9,6 +9,7 @@ import { ReactNode, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import UpdateProductDrawer from "./update-product-drawer";
 import { DeleteProduct } from "./actions";
+import { useUserContext } from "@/contexts/user";
 
 type TTableColumnConfig = {
   field: string;
@@ -91,6 +92,8 @@ export default function ProductsTable({
 }: {
   products: Tables<"business_products">[];
 }) {
+  const { user } = useUserContext();
+
   const columns: TTableColumnConfig[] = [
     {
       cellClassNames: "",
@@ -128,7 +131,12 @@ export default function ProductsTable({
       cellClassNames: "w-0",
       field: "actions",
       header: "",
-      render: (row) => <ActionsCell row={row} />,
+      render: (row) =>
+        ["admin", "manager"].includes(user?.business?.role || "base") ? (
+          <ActionsCell row={row} />
+        ) : (
+          ""
+        ),
     },
   ];
 
