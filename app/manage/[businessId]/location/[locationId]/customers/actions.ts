@@ -13,12 +13,19 @@ export async function AddLocationCustomer<T>(
   const fields = Object.fromEntries(formData);
 
   const insert = {
+    address: fields.address as string,
     business_id: fields.business_id as string,
+    city: fields.city as string,
     creator_id: fields.profile_id as string,
+    disposition_status: fields.disposition_status as string,
     email: fields.email as string,
     full_name: fields.full_name as string,
+    lead_source: fields.lead_source as string,
     location_id: Number(fields.location_id),
+    notes: fields.notes as string,
     phone: fields.phone as string,
+    postal_code: fields.postal_code as string,
+    state: fields.state as string,
   };
 
   const { error } = await supabase
@@ -52,9 +59,16 @@ export async function UpdateLocationCustomer<T>(
   const fields = Object.fromEntries(formData);
 
   const updates = {
+    address: fields.address as string,
+    city: fields.city as string,
+    disposition_status: fields.disposition_status as string,
     email: fields.email as string,
     full_name: fields.full_name as string,
+    lead_source: fields.lead_source as string,
+    notes: fields.notes as string,
     phone: fields.phone as string,
+    postal_code: fields.postal_code as string,
+    state: fields.state as string,
   };
 
   const { error } = await supabase

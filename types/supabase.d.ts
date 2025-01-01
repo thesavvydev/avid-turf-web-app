@@ -182,34 +182,58 @@ export type Database = {
       }
       business_location_customers: {
         Row: {
+          address: string | null
           business_id: string
+          city: string | null
+          closer_id: string | null
           created_at: string
           creator_id: string | null
+          disposition_status: string | null
           email: string
           full_name: string
           id: number
+          lead_source: string | null
           location_id: number
+          notes: string | null
           phone: string | null
+          postal_code: string | null
+          state: string | null
         }
         Insert: {
+          address?: string | null
           business_id: string
+          city?: string | null
+          closer_id?: string | null
           created_at?: string
           creator_id?: string | null
+          disposition_status?: string | null
           email: string
           full_name: string
           id?: number
+          lead_source?: string | null
           location_id: number
+          notes?: string | null
           phone?: string | null
+          postal_code?: string | null
+          state?: string | null
         }
         Update: {
+          address?: string | null
           business_id?: string
+          city?: string | null
+          closer_id?: string | null
           created_at?: string
           creator_id?: string | null
+          disposition_status?: string | null
           email?: string
           full_name?: string
           id?: number
+          lead_source?: string | null
           location_id?: number
+          notes?: string | null
           phone?: string | null
+          postal_code?: string | null
+          state?: string | null
         }
         Relationships: [
           {
@@ -217,6 +241,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_location_customers_closer_id_fkey"
+            columns: ["closer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

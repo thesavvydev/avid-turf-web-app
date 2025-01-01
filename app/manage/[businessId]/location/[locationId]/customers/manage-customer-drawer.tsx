@@ -8,18 +8,33 @@ import {
 } from "@/constants/initial-form-state";
 import { useUserContext } from "@/contexts/user";
 
-import { Drawer, Label, TextInput } from "flowbite-react";
-import { UserPlusIcon } from "lucide-react";
+import { Tables } from "@/types/supabase";
+import {
+  Drawer,
+  Label,
+  Select,
+  Textarea,
+  TextInput,
+  theme,
+} from "flowbite-react";
+import { UserCogIcon, UserPlusIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
+import { twMerge } from "tailwind-merge";
 import { AddLocationCustomer, UpdateLocationCustomer } from "./actions";
-import { Tables } from "@/types/supabase";
 
 interface IFormData {
+  address: string;
+  city: string;
+  disposition_status: string;
   email: string;
   full_name: string;
+  lead_source: string;
+  notes: string;
   phone: string;
+  postal_code: string;
+  state: string;
 }
 
 const FormFields = ({ data }: { data: IFormData }) => {
@@ -71,10 +86,97 @@ const FormFields = ({ data }: { data: IFormData }) => {
           type="phone"
         />
       </div>
-      <SubmitButton pendingText="Creating customer">
-        <UserPlusIcon className="mr-2" />
-        Add Customer
-      </SubmitButton>
+      <div>
+        <Label htmlFor="address" className="mb-2 block">
+          Address
+        </Label>
+        <TextInput
+          autoComplete="off"
+          defaultValue={data.address}
+          id="address"
+          name="address"
+        />
+      </div>
+      <div>
+        <Label htmlFor="city" className="mb-2 block">
+          City
+        </Label>
+        <TextInput
+          autoComplete="off"
+          defaultValue={data.city}
+          id="city"
+          name="city"
+        />
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="state" className="mb-2 block">
+            State
+          </Label>
+          <TextInput
+            autoComplete="off"
+            defaultValue={data.state}
+            id="state"
+            name="state"
+          />
+        </div>
+        <div>
+          <Label htmlFor="postal_code" className="mb-2 block">
+            Postal Code
+          </Label>
+          <TextInput
+            autoComplete="off"
+            defaultValue={data.postal_code}
+            id="postal_code"
+            name="postal_code"
+          />
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="lead_source" className="mb-2 block">
+          Lead Source
+        </Label>
+        <Select
+          defaultValue={data.lead_source}
+          id="lead_source"
+          key={data.lead_source}
+          name="lead_source"
+          required
+        >
+          <option value="">Select a source</option>
+          <option value="setter">Setter Generated</option>
+          <option value="self">Self Generated</option>
+          <option value="paid">Paid</option>
+          <option value="referral">Referral</option>
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="disposition_status" className="mb-2 block">
+          Status
+        </Label>
+        <Select
+          defaultValue={data.disposition_status}
+          id="disposition_status"
+          key={data.disposition_status}
+          name="disposition_status"
+          required
+        >
+          <option value="">Select a status</option>
+          <option value="new">New</option>
+          <option value="no_show">No Show</option>
+          <option value="cancelled_at_door">Cancelled At Door</option>
+          <option value="no_sale">No Close</option>
+          <option value="pending">Pending</option>
+          <option value="sold">Sold</option>
+          <option value="follow_up">Follow Up</option>
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="notes" className="mb-2 block">
+          Notes
+        </Label>
+        <Textarea id="notes" name="notes" defaultValue={data.notes} />
+      </div>
     </fieldset>
   );
 };
@@ -99,9 +201,16 @@ export default function ManageCustomerDrawer({
     {
       ...initialFormState,
       data: {
+        address: customer?.address ?? "",
+        city: customer?.city ?? "",
+        disposition_status: customer?.disposition_status ?? "new",
         email: customer?.email ?? "",
         full_name: customer?.full_name ?? "",
+        lead_source: customer?.lead_source ?? "setter",
+        notes: customer?.notes ?? "",
         phone: customer?.phone ?? "",
+        postal_code: customer?.postal_code ?? "",
+        state: customer?.state ?? "",
       },
     },
   );
@@ -114,10 +223,27 @@ export default function ManageCustomerDrawer({
   }, [state.success, state.dismiss, router, setIsOpen]);
 
   return (
-    <Drawer open={isOpen} onClose={handleClose} position="right">
+    <Drawer
+      open={isOpen}
+      onClose={handleClose}
+      position="right"
+      theme={{
+        root: {
+          position: {
+            right: { on: twMerge(theme.drawer.root.position.right.on, "w-96") },
+          },
+        },
+      }}
+    >
       <Drawer.Header
-        title="Add customer"
-        titleIcon={() => <UserPlusIcon className="mr-2" />}
+        title={`${customer ? "Update" : "Add"} Customer`}
+        titleIcon={() =>
+          customer ? (
+            <UserCogIcon className="mr-2" />
+          ) : (
+            <UserPlusIcon className="mr-2" />
+          )
+        }
       />
       <Drawer.Items>
         {state.error && (
@@ -128,6 +254,18 @@ export default function ManageCustomerDrawer({
         <form action={action}>
           {customer && <input name="id" type="hidden" value={customer.id} />}
           <FormFields data={state.data} />
+          <div className="mt-4">
+            <SubmitButton
+              pendingText={`${customer ? "Updating" : "Creating"} customer...`}
+            >
+              {customer ? (
+                <UserCogIcon className="mr-2" />
+              ) : (
+                <UserPlusIcon className="mr-2" />
+              )}
+              {`${customer ? "Update" : "Add"} Customer`}
+            </SubmitButton>
+          </div>
         </form>
       </Drawer.Items>
     </Drawer>
