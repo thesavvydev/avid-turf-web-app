@@ -811,6 +811,8 @@ export type Database = {
           business_id: string
           commission_rate: number | null
           created_at: string
+          is_closer: boolean
+          is_setter: boolean
           location_id: number
           profile_id: string
           referrer_profile_id: string | null
@@ -820,6 +822,8 @@ export type Database = {
           business_id: string
           commission_rate?: number | null
           created_at?: string
+          is_closer?: boolean
+          is_setter?: boolean
           location_id: number
           profile_id: string
           referrer_profile_id?: string | null
@@ -829,6 +833,8 @@ export type Database = {
           business_id?: string
           commission_rate?: number | null
           created_at?: string
+          is_closer?: boolean
+          is_setter?: boolean
           location_id?: number
           profile_id?: string
           referrer_profile_id?: string | null
