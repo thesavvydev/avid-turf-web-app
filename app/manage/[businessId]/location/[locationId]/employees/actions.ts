@@ -19,7 +19,11 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       .maybeSingle();
 
     if (getUserIdByEmailError) {
-      return formStateResponse({ error: getUserIdByEmailError.message });
+      return formStateResponse({
+        ...state,
+        data: fields,
+        error: getUserIdByEmailError.message,
+      });
     }
 
     if (foundUser) {
@@ -30,10 +34,18 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
         .limit(1)
         .single();
 
-      return formStateResponse({ data: foundUserProfile });
+      if (foundUserProfile) {
+        return formStateResponse({
+          ...state,
+          data: { ...fields, ...foundUserProfile },
+        });
+      }
     }
 
-    return formStateResponse({ data: "confirm-invite" });
+    return formStateResponse({
+      ...state,
+      data: { ...fields, id: "confirm-invite" },
+    });
   }
 
   if (fields.profile_id) {
@@ -48,6 +60,7 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
     if (businessProfileUpsertError) {
       return formStateResponse({
         ...state,
+        data: fields,
         error: businessProfileUpsertError.message,
       });
     }
@@ -73,7 +86,11 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
       });
 
     if (inviteError) {
-      return formStateResponse({ ...state, error: inviteError.message });
+      return formStateResponse({
+        ...state,
+        data: fields,
+        error: inviteError.message,
+      });
     }
 
     const { error: businessProfileUpsertError } = await supabase
@@ -87,6 +104,7 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
     if (businessProfileUpsertError) {
       return formStateResponse({
         ...state,
+        data: fields,
         error: businessProfileUpsertError.message,
       });
     }
@@ -99,11 +117,15 @@ export async function SearchOrInviteUser<T>(...args: ServerActionWithState<T>) {
     });
 
     if (error) {
-      return formStateResponse({ ...state, error: error.message });
+      return formStateResponse({
+        ...state,
+        data: fields,
+        error: error.message,
+      });
     }
   }
 
-  return formStateResponse({ success: true, dismiss: true });
+  return formStateResponse({ success: true, data: fields, dismiss: true });
 }
 
 export async function UpdateEmployee<T>(...args: ServerActionWithState<T>) {

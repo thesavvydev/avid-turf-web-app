@@ -34,6 +34,117 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_appointment_profiles: {
+        Row: {
+          appointment_id: number
+          business_id: string
+          created_at: string
+          id: number
+          profile_id: string
+        }
+        Insert: {
+          appointment_id: number
+          business_id: string
+          created_at?: string
+          id?: number
+          profile_id: string
+        }
+        Update: {
+          appointment_id?: number
+          business_id?: string
+          created_at?: string
+          id?: number
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_appointment_profiles_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "business_appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_appointment_profiles_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_appointment_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_appointments: {
+        Row: {
+          business_id: string
+          created_at: string
+          customer_id: number | null
+          end_datetime: string
+          id: number
+          job_id: number | null
+          location_id: number | null
+          name: string | null
+          start_datetime: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          customer_id?: number | null
+          end_datetime: string
+          id?: number
+          job_id?: number | null
+          location_id?: number | null
+          name?: string | null
+          start_datetime: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          customer_id?: number | null
+          end_datetime?: string
+          id?: number
+          job_id?: number | null
+          location_id?: number | null
+          name?: string | null
+          start_datetime?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_appointments_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_appointments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_appointments_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "business_location_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_appointments_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_custom_fields: {
         Row: {
           business_id: string
@@ -1083,6 +1194,16 @@ export type Database = {
           r: string
         }
         Returns: boolean
+      }
+      ordered_employees: {
+        Args: {
+          lid: number
+        }
+        Returns: {
+          profile_id: string
+          full_name: string
+          latest_appointment: string
+        }[]
       }
     }
     Enums: {
