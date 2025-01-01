@@ -38,8 +38,21 @@ export default function SearchOrInviteUserDrawer({
   const { locationId, businessId } = useParams();
   const [state, action] = useActionState(
     SearchOrInviteUser<TInitialFormState>,
-    initialFormState,
+    {
+      ...initialFormState,
+      data: {
+        avatar_url: "",
+        business_id: businessId,
+        email: "",
+        full_name: "",
+        id: "",
+        inviting_new: false,
+        location_id: locationId,
+        role: "",
+      },
+    },
   );
+  console.log({ state });
 
   const handleClose = useCallback(() => setIsOpen(false), [setIsOpen]);
 
@@ -70,56 +83,74 @@ export default function SearchOrInviteUserDrawer({
         <form action={action} className="grid gap-4">
           <input type="hidden" name="location_id" value={locationId} />
           <input type="hidden" name="business_id" value={businessId} />
+          <input type="hidden" name="id" value={state.data.id ?? ""} />
           <div>
             <Label htmlFor="email" className="mb-2 block">
               Email
             </Label>
             <TextInput
+              defaultValue={state.data.email}
+              disabled={state.data?.id}
               id="email"
               name="email"
-              type="email"
               placeholder="name@example.com"
               required
-              disabled={state.data?.id}
+              type="email"
             />
           </div>
-          {state.data?.id && (
-            <div className="flex items-center gap-2 rounded border border-gray-100 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-700">
-              <Avatar>{state.data.full_name}</Avatar>
-              <input type="hidden" name="profile_id" value={state.data.id} />
-            </div>
-          )}
-          {state.data === "confirm-invite" && (
+          {Boolean(state.data?.id) && (
             <>
-              <input type="hidden" name="inviting_new" value="yes" />
-              <Alert>
-                An invite will be sent to this email so they can join the
-                system.
-              </Alert>
+              {state.data.id === "confirm-invite" ? (
+                <>
+                  <input type="hidden" name="inviting_new" value="yes" />
+                  <input type="hidden" name="email" value={state.data.email} />
+                  <Alert>
+                    An invite will be sent to this email so they can join the
+                    system.
+                  </Alert>
+                  <div>
+                    <Label htmlFor="full_name" className="mb-2 block">
+                      Full Name
+                    </Label>
+                    <TextInput
+                      defaultValue={state.data.full_name}
+                      id="full_name"
+                      name="full_name"
+                      required
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center gap-2 rounded border border-gray-100 bg-gray-50 p-4 dark:border-gray-500 dark:bg-gray-700">
+                  <Avatar>{state.data.full_name}</Avatar>
+                  <input
+                    type="hidden"
+                    name="profile_id"
+                    value={state.data.id}
+                  />
+                </div>
+              )}
               <div>
-                <Label htmlFor="full_name" className="mb-2 block">
-                  Full Name
+                <Label htmlFor="role" className="mb-2 block">
+                  Role
                 </Label>
-                <TextInput id="full_name" name="full_name" required />
+                <Select
+                  defaultValue={state.data.role}
+                  key={state.data.role}
+                  name="role"
+                  required
+                >
+                  <option value="">Select a role</option>
+                  {Object.entries(LOCATION_PROFILE_ROLES).map(
+                    ([roleKey, role]) => (
+                      <option key={roleKey} value={roleKey}>
+                        {role.name}
+                      </option>
+                    ),
+                  )}
+                </Select>
               </div>
             </>
-          )}
-          {(state.data?.id || state.data === "confirm-invite") && (
-            <div>
-              <Label htmlFor="role" className="mb-2 block">
-                Role
-              </Label>
-              <Select name="role" required>
-                <option value="">Select a role</option>
-                {Object.entries(LOCATION_PROFILE_ROLES).map(
-                  ([roleKey, role]) => (
-                    <option key={roleKey} value={roleKey}>
-                      {role.name}
-                    </option>
-                  ),
-                )}
-              </Select>
-            </div>
           )}
           <div>
             <SubmitButton

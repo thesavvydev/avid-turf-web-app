@@ -11,6 +11,7 @@ import {
   UserIcon,
   UsersRoundIcon,
   HardHatIcon,
+  CalendarDaysIcon,
 } from "lucide-react";
 
 import { useParams, usePathname } from "next/navigation";
@@ -96,6 +97,14 @@ export default function useManageMenuItems() {
         `/manage/${businessId}/location/${locationId}/job`,
       ),
       name: "Jobs",
+    },
+    {
+      href: generateLocationLink("queue"),
+      icon: CalendarDaysIcon,
+      isActive: pathname.startsWith(
+        `/manage/${businessId}/location/${locationId}/queue`,
+      ),
+      name: "Queue",
     },
     ...(isLocationManagement
       ? [
