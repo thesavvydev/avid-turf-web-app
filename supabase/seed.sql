@@ -60,14 +60,14 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone)
+INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', ''),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', ''),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', ''),
-  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', ''),
-  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', ''),
-  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '');
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','new','This is just an example note.'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','new','Another example for nicole.'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','new','Bring a shovel.'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','new','Going to need a bigger shovel.'),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','new','This is just an example note.'),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','new','This is just an example note.');
 
 ALTER SEQUENCE business_location_customers_id_seq RESTART WITH 7;
 

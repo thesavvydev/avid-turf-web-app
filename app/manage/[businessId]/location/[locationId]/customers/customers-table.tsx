@@ -337,7 +337,12 @@ function Content() {
     {
       field: "name",
       header: "Name",
-      render: (row) => row.full_name,
+      render: (row) => (
+        <div>
+          <p>{row.full_name}</p>
+          <p>{`${row.address ?? ""} ${row.city ?? ""} ${row.state ?? ""} ${row.postal_code ?? ""}`}</p>
+        </div>
+      ),
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
@@ -347,21 +352,27 @@ function Content() {
     },
     {
       cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
-      field: "creator",
-      header: "Creator",
-      render: (row) => row.creator?.full_name,
-    },
-    {
-      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
-      field: "jobs",
-      header: "Job Count",
-      render: (row) => row.jobs?.length,
-    },
-    {
-      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
       field: "phone",
       header: "Phone",
       render: (row) => row.phone,
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "lead_source",
+      header: "Lead Source",
+      render: (row) => row.lead_source,
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "disposition_status",
+      header: "Status",
+      render: (row) => row.disposition_status,
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "closer_id",
+      header: "Closer",
+      render: (row) => (row.closer_id ? "Closer Name" : "No Closer"),
     },
     {
       cellClassNames: "w-0",
