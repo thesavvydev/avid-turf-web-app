@@ -34,7 +34,12 @@ const FormFields = ({ defaultValues }: { defaultValues: IEmployee }) => {
         <Label htmlFor="role" className="mb-2 block">
           Role
         </Label>
-        <Select name="role" required defaultValue={defaultValues.role}>
+        <Select
+          id="role"
+          name="role"
+          required
+          defaultValue={defaultValues.role}
+        >
           <option value="" disabled>
             Select a role
           </option>
@@ -43,6 +48,38 @@ const FormFields = ({ defaultValues }: { defaultValues: IEmployee }) => {
               {role.name}
             </option>
           ))}
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="is_setter" className="mb-2 block">
+          Setter
+        </Label>
+        <Select
+          defaultValue={defaultValues.is_setter ? "yes" : "no"}
+          id="is_setter"
+          key={defaultValues.is_setter ? "yes" : "no"}
+          name="is_setter"
+          required
+        >
+          <option value="">Select a option</option>
+          <option value="no">Not a setter</option>
+          <option value="yes">Is a setter</option>
+        </Select>
+      </div>
+      <div>
+        <Label htmlFor="is_closer" className="mb-2 block">
+          Closer
+        </Label>
+        <Select
+          defaultValue={defaultValues.is_closer ? "yes" : "no"}
+          id="is_closer"
+          key={defaultValues.is_closer ? "yes" : "no"}
+          name="is_closer"
+          required
+        >
+          <option value="">Select a option</option>
+          <option value="no">Not a closer</option>
+          <option value="yes">Is a closer</option>
         </Select>
       </div>
       <SubmitButton pendingText="Creating User">

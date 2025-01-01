@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/components/confirm-modal";
+import { BUSINESS_PROFILE_ROLES } from "@/constants/business-profile-roles";
 import { LOCATION_PROFILE_ROLES } from "@/constants/location_profile_roles";
 import { Database } from "@/types/supabase";
 import { formatAsCompactNumber } from "@/utils/formatter";
@@ -18,6 +19,7 @@ import {
   Tooltip,
 } from "flowbite-react";
 import {
+  CheckCircle2Icon,
   CircleXIcon,
   EllipsisVertical,
   InfoIcon,
@@ -44,7 +46,6 @@ import { twMerge } from "tailwind-merge";
 import { DeleteLocationEmployee } from "./actions";
 import { IEmployee } from "./page";
 import UpdateEmployeeDrawer from "./update-employee-drawer";
-import { BUSINESS_PROFILE_ROLES } from "@/constants/business-profile-roles";
 
 const employeesTableContext = createContext<{
   employees: IEmployee[];
@@ -456,6 +457,18 @@ function Content() {
           </Badge>
         </div>
       ),
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "is_setter",
+      header: "Setter",
+      render: (row) => (row.is_setter ? <CheckCircle2Icon /> : null),
+    },
+    {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "is_closer",
+      header: "Closer",
+      render: (row) => (row.is_closer ? <CheckCircle2Icon /> : null),
     },
     {
       cellClassNames: "w-0",

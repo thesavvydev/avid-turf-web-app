@@ -47,12 +47,13 @@ export default function SearchOrInviteUserDrawer({
         full_name: "",
         id: "",
         inviting_new: false,
+        is_closer: false,
+        is_setter: false,
         location_id: locationId,
         role: "",
       },
     },
   );
-  console.log({ state });
 
   const handleClose = useCallback(() => setIsOpen(false), [setIsOpen]);
 
@@ -89,6 +90,7 @@ export default function SearchOrInviteUserDrawer({
               Email
             </Label>
             <TextInput
+              autoComplete="off"
               defaultValue={state.data.email}
               disabled={state.data?.id}
               id="email"
@@ -113,6 +115,7 @@ export default function SearchOrInviteUserDrawer({
                       Full Name
                     </Label>
                     <TextInput
+                      autoComplete="off"
                       defaultValue={state.data.full_name}
                       id="full_name"
                       name="full_name"
@@ -148,6 +151,36 @@ export default function SearchOrInviteUserDrawer({
                       </option>
                     ),
                   )}
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="is_setter" className="mb-2 block">
+                  Setter
+                </Label>
+                <Select
+                  defaultValue={state.data.is_setter}
+                  key={state.data.is_setter}
+                  name="is_setter"
+                  required
+                >
+                  <option value="">Select a option</option>
+                  <option value="no">Not a setter</option>
+                  <option value="yes">Is a setter</option>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="is_closer" className="mb-2 block">
+                  Closer
+                </Label>
+                <Select
+                  defaultValue={state.data.is_closer}
+                  key={state.data.is_closer}
+                  name="is_closer"
+                  required
+                >
+                  <option value="">Select a option</option>
+                  <option value="no">Not a closer</option>
+                  <option value="yes">Is a closer</option>
                 </Select>
               </div>
             </>
