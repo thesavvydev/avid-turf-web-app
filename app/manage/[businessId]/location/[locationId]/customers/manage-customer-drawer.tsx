@@ -70,7 +70,6 @@ const FormFields = ({ data }: { data: IFormData }) => {
           id="email"
           name="email"
           placeholder="name@example.com"
-          required
           type="email"
         />
       </div>
@@ -131,24 +130,6 @@ const FormFields = ({ data }: { data: IFormData }) => {
             name="postal_code"
           />
         </div>
-      </div>
-      <div>
-        <Label htmlFor="lead_source" className="mb-2 block">
-          Lead Source
-        </Label>
-        <Select
-          defaultValue={data.lead_source}
-          id="lead_source"
-          key={data.lead_source}
-          name="lead_source"
-          required
-        >
-          <option value="">Select a source</option>
-          <option value="setter">Setter Generated</option>
-          <option value="self">Self Generated</option>
-          <option value="paid">Paid</option>
-          <option value="referral">Referral</option>
-        </Select>
       </div>
       <div>
         <Label htmlFor="disposition_status" className="mb-2 block">
