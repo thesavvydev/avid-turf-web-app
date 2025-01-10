@@ -6,7 +6,9 @@ VALUES
   ('00000000-0000-0000-0000-000000000000', 'f4acd8da-1f66-4c88-b285-4d2adba08c44', 'authenticated', 'authenticated', 'ladmin@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location Admin" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL),
   ('00000000-0000-0000-0000-000000000000', '4106c32c-18bc-48dd-9714-729ab1168b44', 'authenticated', 'authenticated', 'lmanager@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location Manager" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL),
   ('00000000-0000-0000-0000-000000000000', '7e15d5cf-952c-4416-85e1-465849358402', 'authenticated', 'authenticated', 'lbase@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location Base" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL),
-  ('00000000-0000-0000-0000-000000000000', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'authenticated', 'authenticated', 'l2base@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location 2 Base" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL);
+  ('00000000-0000-0000-0000-000000000000', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'authenticated', 'authenticated', 'l2base@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location 2 Base" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL),
+  ('00000000-0000-0000-0000-000000000000', '45bb863d-b7ed-4eb4-913e-18a0bf7d4390', 'authenticated', 'authenticated', 'lcloser@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location Closer" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL),
+  ('00000000-0000-0000-0000-000000000000', '16814a2b-08dd-4083-a946-38680aa613b3', 'authenticated', 'authenticated', 'lsetter@example.com', '$2a$10$IQj8Ojfomgy9WlupdeYGruCG9N0YrFjsE52iit8obKE/fvWXHKZUS', '2022-10-04 03:41:27.39308+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{ "full_name": "Location Setter" }', NULL, '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL);
 
 INSERT INTO auth.identities (provider_id, id,user_id,identity_data,provider,last_sign_in_at,created_at,updated_at)
 VALUES
@@ -16,7 +18,9 @@ VALUES
   ('4','f4acd8da-1f66-4c88-b285-4d2adba08c44', 'f4acd8da-1f66-4c88-b285-4d2adba08c44'::uuid, '{"sub": "f4acd8da-1f66-4c88-b285-4d2adba08c44"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00'),
   ('5','4106c32c-18bc-48dd-9714-729ab1168b44', '4106c32c-18bc-48dd-9714-729ab1168b44'::uuid, '{"sub": "4106c32c-18bc-48dd-9714-729ab1168b44"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00'),
   ('6','7e15d5cf-952c-4416-85e1-465849358402', '7e15d5cf-952c-4416-85e1-465849358402'::uuid, '{"sub": "7e15d5cf-952c-4416-85e1-465849358402"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00'),
-  ('7','1480e0d8-a3ea-4e03-b370-fab96a6be4ef', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef'::uuid, '{"sub": "1480e0d8-a3ea-4e03-b370-fab96a6be4ef"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00');
+  ('7','1480e0d8-a3ea-4e03-b370-fab96a6be4ef', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef'::uuid, '{"sub": "1480e0d8-a3ea-4e03-b370-fab96a6be4ef"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00'),
+  ('8','45bb863d-b7ed-4eb4-913e-18a0bf7d4390', '45bb863d-b7ed-4eb4-913e-18a0bf7d4390'::uuid, '{"sub": "45bb863d-b7ed-4eb4-913e-18a0bf7d4390"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00'),
+  ('9','16814a2b-08dd-4083-a946-38680aa613b3', '16814a2b-08dd-4083-a946-38680aa613b3'::uuid, '{"sub": "16814a2b-08dd-4083-a946-38680aa613b3"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00');
 
 INSERT INTO businesses (id, name)
 VALUES
@@ -30,7 +34,9 @@ VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '4106c32c-18bc-48dd-9714-729ab1168b44', 'base'::business_roles),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'f4acd8da-1f66-4c88-b285-4d2adba08c44', 'base'::business_roles),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '7e15d5cf-952c-4416-85e1-465849358402', 'base'::business_roles),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::business_roles);
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::business_roles),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '16814a2b-08dd-4083-a946-38680aa613b3', 'base'::business_roles),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '45bb863d-b7ed-4eb4-913e-18a0bf7d4390', 'base'::business_roles);
 
 INSERT INTO business_locations (id, name, business_id)
 VALUES
@@ -45,6 +51,8 @@ VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'f4acd8da-1f66-4c88-b285-4d2adba08c44', 'manager'::location_profile_roles, FALSE, TRUE),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '4106c32c-18bc-48dd-9714-729ab1168b44', 'manager'::location_profile_roles, TRUE, TRUE),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '7e15d5cf-952c-4416-85e1-465849358402', 'base'::location_profile_roles, FALSE, TRUE),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '45bb863d-b7ed-4eb4-913e-18a0bf7d4390', 'base'::location_profile_roles, TRUE, FALSE),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '16814a2b-08dd-4083-a946-38680aa613b3', 'base'::location_profile_roles, FALSE, TRUE),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::location_profile_roles, TRUE, FALSE);
 
 INSERT INTO business_products (id, business_id, name, unit, unit_price)
@@ -60,26 +68,26 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes)
+INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes, creator_id, closer_id)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','new','This is just an example note.'),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','new','Another example for nicole.'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','new','Bring a shovel.'),
-  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','new','Going to need a bigger shovel.'),
-  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','new','This is just an example note.'),
-  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','new','This is just an example note.');
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','new','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','new','Another example for nicole.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','new','Bring a shovel.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','new','Going to need a bigger shovel.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','new','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','new','This is just an example note.', '16814a2b-08dd-4083-a946-38680aa613b3',NULL);
 
 ALTER SEQUENCE business_location_customers_id_seq RESTART WITH 7;
 
 INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status, lead_type)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '200 E 1600 N', 'St George', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'new'::location_job_status,'self'),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '1234 Fake St', 'Washington', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'scheduled'::location_job_status,'self'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 'Jarren Benton', '1234 Fake St', 'Ogden', 'UT', '84242', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'new'::location_job_status,'self'),
-  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Patiently Waiting', '1234 Fake St', 'LaVerkin', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'pending'::location_job_status,'self'),
-  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nephi LaVerkin', '1234 Fake St', 'Hurricane', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'approved'::location_job_status,'self'),
-  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Darnell Wright', '1234 Fake St', 'Ivins', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'billed'::location_job_status,'self'),
-  (7, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ryan Jyan', '1234 Fake St', 'Santa Clara', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'canceled'::location_job_status,'self'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '872 Bluff St', 'Washington', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'scheduled'::location_job_status,'self'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, 'Jarren Benton', '11230 Mall Dr', 'Ogden', 'UT', '84242', '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'new'::location_job_status,'self'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Patiently Waiting', '5220 Sunset Ave', 'LaVerkin', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'pending'::location_job_status,'self'),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nephi LaVerkin', '900 S 200 E', 'Hurricane', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'approved'::location_job_status,'self'),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Darnell Wright', '1300 S 500 E', 'Ivins', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'billed'::location_job_status,'self'),
+  (7, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ryan Jyan', '2100 N 700 W', 'Santa Clara', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'canceled'::location_job_status,'self'),
   (8, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Drew Walker', '1234 Fake St', 'Leeds', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'complete'::location_job_status,'self');
 
 ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 9;
