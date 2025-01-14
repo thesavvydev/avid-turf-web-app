@@ -70,12 +70,12 @@ ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
 INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes, creator_id, closer_id)
 VALUES
-  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','new','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','new','Another example for nicole.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','new','Bring a shovel.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
-  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','new','Going to need a bigger shovel.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
-  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','new','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
-  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','new','This is just an example note.', '16814a2b-08dd-4083-a946-38680aa613b3',NULL);
+  (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','NEW','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','NEW','Another example for nicole.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','NEW','Bring a shovel.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','NEW','Going to need a bigger shovel.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','NEW','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','NEW','This is just an example note.', '16814a2b-08dd-4083-a946-38680aa613b3',NULL);
 
 ALTER SEQUENCE business_location_customers_id_seq RESTART WITH 7;
 
