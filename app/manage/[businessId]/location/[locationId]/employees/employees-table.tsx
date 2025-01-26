@@ -471,6 +471,12 @@ function Content() {
       render: (row) => (row.is_closer ? <CheckCircle2Icon /> : null),
     },
     {
+      cellClassNames: "w-0 text-nowrap hidden sm:table-cell",
+      field: "closer_priority",
+      header: "Priority",
+      render: (row) => row.closer_priority,
+    },
+    {
       cellClassNames: "w-0",
       field: "actions",
       header: "",

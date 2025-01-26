@@ -8,7 +8,7 @@ import {
 } from "@/constants/initial-form-state";
 import { LOCATION_PROFILE_ROLES } from "@/constants/location_profile_roles";
 
-import { Avatar, Drawer, Label, Select } from "flowbite-react";
+import { Avatar, Drawer, Label, Select, TextInput } from "flowbite-react";
 import { UserCogIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
@@ -81,6 +81,20 @@ const FormFields = ({ defaultValues }: { defaultValues: IEmployee }) => {
           <option value="no">Not a closer</option>
           <option value="yes">Is a closer</option>
         </Select>
+      </div>
+      <div>
+        <Label htmlFor="closer_priority" className="mb-2 block">
+          Closer Priority
+        </Label>
+        <TextInput
+          autoComplete="off"
+          defaultValue={defaultValues.closer_priority}
+          id="closer_priority"
+          name="closer_priority"
+          placeholder="name@example.com"
+          required
+          type="closer_priority"
+        />
       </div>
       <SubmitButton pendingText="Creating User">
         <UserCogIcon className="mr-2" />
