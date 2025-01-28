@@ -31,8 +31,11 @@ export default async function Page(props: TPage) {
       .returns<ILocationEmployee[]>(),
     supabase
       .from("business_products")
-      .select("*")
-      .eq("business_id", businessId),
+      .select("*, business_product_locations!inner(*)")
+      .match({
+        business_id: businessId,
+        "business_product_locations.status": 1,
+      }),
     supabase
       .from("business_location_customers")
       .select("*")
@@ -49,7 +52,6 @@ export default async function Page(props: TPage) {
 
   if (error) throw error;
   if (fetchProductsError) throw fetchProductsError;
-
   return (
     <>
       <PageHeaderWithActions

@@ -21,7 +21,6 @@ export default async function Layout(
     .eq("id", locationId)
     .limit(1)
     .maybeSingle();
-
   if (error) throw error;
   if (!data) notFound();
 

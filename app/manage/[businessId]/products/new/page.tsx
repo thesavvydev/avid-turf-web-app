@@ -6,16 +6,43 @@ import SubmitButton from "@/components/submit-button";
 import initialFormState, {
   TInitialFormState,
 } from "@/constants/initial-form-state";
-import { Breadcrumb, Card, Label, TextInput } from "flowbite-react";
+import { useBusinessContext } from "@/contexts/business";
+import {
+  Breadcrumb,
+  Card,
+  Label,
+  TextInput,
+  ToggleSwitch,
+} from "flowbite-react";
 import { BoxIcon, ChevronLeftIcon } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AddProduct } from "./actions";
 
-function FormFields() {
+function FormFields({
+  defaultValues,
+}: {
+  defaultValues: {
+    name: string;
+    unit: string;
+    unit_price: string;
+    lead_price: string;
+    units_in_stock: string;
+  };
+}) {
   const { businessId } = useParams();
   const { pending } = useFormStatus();
+  const { business } = useBusinessContext();
+  const [enabledLocations, setEnabledLocations] = useState<number[]>([]);
+
+  const toggleLocation = (location: number) => () =>
+    setEnabledLocations((prevState) =>
+      prevState.includes(location)
+        ? prevState.filter((l) => l !== location)
+        : [...prevState, location],
+    );
+
   return (
     <>
       <Card>
@@ -33,6 +60,7 @@ function FormFields() {
             </Label>
             <TextInput
               autoComplete="off"
+              defaultValue={defaultValues.name}
               id="name"
               name="name"
               placeholder="Premium Turf"
@@ -45,6 +73,7 @@ function FormFields() {
             </Label>
             <TextInput
               autoComplete="off"
+              defaultValue={defaultValues.unit}
               id="unit"
               name="unit"
               placeholder="sq ft"
@@ -57,6 +86,7 @@ function FormFields() {
             </Label>
             <TextInput
               autoComplete="off"
+              defaultValue={defaultValues.unit_price}
               id="unit_price"
               name="unit_price"
               placeholder="10.00"
@@ -69,6 +99,7 @@ function FormFields() {
             </Label>
             <TextInput
               autoComplete="off"
+              defaultValue={defaultValues.lead_price}
               helperText={
                 <>
                   Pricing applied to products when job has certain lead types
@@ -96,6 +127,7 @@ function FormFields() {
             </Label>
             <TextInput
               autoComplete="off"
+              defaultValue={defaultValues.units_in_stock}
               id="units_in_stock"
               name="units_in_stock"
               placeholder="10000"
@@ -104,12 +136,26 @@ function FormFields() {
         </fieldset>
       </Card>
       <Card>
-        <h2 className="text-xl font-medium text-gray-400">Photos</h2>
+        <h2 className="text-xl font-medium text-gray-400">Locations</h2>
         <fieldset
           disabled={pending}
           className="grid gap-2 pb-2 sm:grid-cols-2 md:gap-6 md:pb-6"
         >
-          Coming soon...
+          {business.locations.map((location) => (
+            <div className="flex items-center gap-2" key={location.id}>
+              <ToggleSwitch
+                checked={enabledLocations.includes(Number(location.id))}
+                onChange={toggleLocation(Number(location.id))}
+                id={`location__${location.id}`}
+                label={location.name}
+              />
+              <input
+                name={`location__${location.id}__status`}
+                type="hidden"
+                value={enabledLocations.includes(Number(location.id)) ? 1 : 0}
+              />
+            </div>
+          ))}
         </fieldset>
       </Card>
     </>
@@ -118,10 +164,17 @@ function FormFields() {
 
 export default function Page() {
   const { businessId } = useParams();
-  const [state, action] = useActionState(
-    AddProduct<TInitialFormState>,
-    initialFormState,
-  );
+  const [state, action] = useActionState(AddProduct<TInitialFormState>, {
+    ...initialFormState,
+    data: {
+      name: "",
+      unit: "",
+      unit_price: "",
+      lead_price: "",
+      units_in_stock: "",
+    },
+  });
+
   return (
     <div className="mx-auto grid w-full max-w-screen-md gap-4">
       <PageHeaderWithActions
@@ -139,7 +192,7 @@ export default function Page() {
       />
       {state.error && <ErrorAlert message={state.error} />}
       <form action={action} className="grid gap-4 sm:gap-6">
-        <FormFields />
+        <FormFields defaultValues={state.data} />
         <div>
           <SubmitButton pendingText="Creating product">
             <BoxIcon className="mr-2" />

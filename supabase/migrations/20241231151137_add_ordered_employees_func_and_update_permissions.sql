@@ -11,7 +11,7 @@ using (location_profile_has_role(location_id, 'manager'::text));
 set check_function_bodies = off;
 
 CREATE OR REPLACE FUNCTION public.ordered_employees(lid integer)
- RETURNS TABLE(profile_id uuid, full_name text, latest_appointment timestamp with time zone)
+ RETURNS TABLE(profile_id uuid, full_name text, latest_appointment timestamp)
  LANGUAGE plpgsql
  SECURITY DEFINER
 AS $function$BEGIN

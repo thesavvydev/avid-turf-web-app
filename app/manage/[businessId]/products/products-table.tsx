@@ -1,24 +1,24 @@
 "use client";
 import { ConfirmModal } from "@/components/confirm-modal";
-import { Tables } from "@/types/supabase";
+import { useUserContext } from "@/contexts/user";
 import { formatAsCurrency } from "@/utils/formatter";
 import { Dropdown, Table, theme, Tooltip } from "flowbite-react";
 import { EllipsisVertical, SettingsIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import UpdateProductDrawer from "./update-product-drawer";
 import { DeleteProduct } from "./actions";
-import { useUserContext } from "@/contexts/user";
+import { IBusinessProductWithLocation } from "./page";
+import UpdateProductDrawer from "./update-product-drawer";
 
 type TTableColumnConfig = {
   field: string;
   header: string;
   cellClassNames?: string;
-  render: (r: Tables<"business_products">) => ReactNode;
+  render: (r: IBusinessProductWithLocation) => ReactNode;
 };
 
-function ActionsCell({ row }: { row: Tables<"business_products"> }) {
+function ActionsCell({ row }: { row: IBusinessProductWithLocation }) {
   const [isUpdateProductDrawerOpen, setIsUpdateProductDrawerOpen] =
     useState(false);
 
@@ -90,7 +90,7 @@ function ActionsCell({ row }: { row: Tables<"business_products"> }) {
 export default function ProductsTable({
   products,
 }: {
-  products: Tables<"business_products">[];
+  products: IBusinessProductWithLocation[];
 }) {
   const { user } = useUserContext();
 

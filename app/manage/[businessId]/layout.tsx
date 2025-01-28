@@ -21,7 +21,12 @@ export default async function Layout(
   const { data, error } = await supabase
     .from("businesses")
     .select(
-      "*, profiles: business_profiles(*, profile: profile_id(*)), locations: business_locations(*), products: business_products(*)",
+      `
+      *,
+      profiles: business_profiles(*, profile: profile_id(*)),
+      locations: business_locations!business_locations_business_id_fkey(*),
+      products: business_products!business_products_business_id_fkey(*)
+      `,
     )
     .eq("id", businessId)
     .limit(1)

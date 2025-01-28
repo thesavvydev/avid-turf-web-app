@@ -2,12 +2,17 @@
 
 import { formStateResponse } from "@/constants/initial-form-state";
 import { ServerActionWithState } from "@/types/server-actions";
+import { formatArrayFormFieldsIntoDictionary } from "@/utils/format-array-form-fields-into-dictionary";
 import { createSupabaseServerClient } from "@/utils/supabase/server";
 
 export async function UpdateProduct<T>(...args: ServerActionWithState<T>) {
   const supabase = await createSupabaseServerClient();
   const [state, formData] = args;
   const fields = Object.fromEntries(formData);
+  const newState = {
+    ...state,
+    data: fields,
+  };
 
   const updates = {
     name: fields.name as string,
@@ -17,14 +22,40 @@ export async function UpdateProduct<T>(...args: ServerActionWithState<T>) {
     units_in_stock: Number(fields.units_in_stock),
   };
 
-  const { error } = await supabase
+  const { data: product, error } = await supabase
     .from("business_products")
     .update(updates)
-    .eq("id", fields.id as string);
+    .eq("id", fields.id as string)
+    .select("id")
+    .single();
 
   if (error) {
-    return formStateResponse({ ...state, error: error.message });
+    return formStateResponse({ ...newState, error: error.message });
   }
+
+  const locationsDictionary = formatArrayFormFieldsIntoDictionary(
+    "location",
+    fields,
+  );
+
+  const locationsInsert = Object.entries(locationsDictionary).map(
+    ([key, entry]) => ({
+      location_id: Number(key),
+      status: Number(entry.status),
+      product_id: Number(product.id),
+      business_id: fields.business_id as string,
+    }),
+  );
+
+  const { error: productLocationInsertError } = await supabase
+    .from("business_product_locations")
+    .upsert(locationsInsert);
+
+  if (productLocationInsertError)
+    return formStateResponse({
+      ...newState,
+      error: productLocationInsertError?.message,
+    });
 
   await supabase.from("business_logs").insert({
     snapshot: JSON.stringify(updates),

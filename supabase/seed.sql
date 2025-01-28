@@ -45,15 +45,15 @@ VALUES
 
 ALTER SEQUENCE business_locations_id_seq RESTART WITH 3;
 
-INSERT INTO business_location_profiles ( business_id, location_id, profile_id, role, is_closer, is_setter)
+INSERT INTO business_location_profiles ( business_id, location_id, profile_id, role, is_closer, is_setter, closer_priority)
 VALUES
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '48af521c-89dd-4c7b-9737-6e7f37c9af9a', 'admin'::location_profile_roles, TRUE, FALSE),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'f4acd8da-1f66-4c88-b285-4d2adba08c44', 'manager'::location_profile_roles, FALSE, TRUE),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '4106c32c-18bc-48dd-9714-729ab1168b44', 'manager'::location_profile_roles, TRUE, TRUE),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '7e15d5cf-952c-4416-85e1-465849358402', 'base'::location_profile_roles, FALSE, TRUE),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '45bb863d-b7ed-4eb4-913e-18a0bf7d4390', 'base'::location_profile_roles, TRUE, FALSE),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '16814a2b-08dd-4083-a946-38680aa613b3', 'base'::location_profile_roles, FALSE, TRUE),
-  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::location_profile_roles, TRUE, FALSE);
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '48af521c-89dd-4c7b-9737-6e7f37c9af9a', 'admin'::location_profile_roles, TRUE, FALSE, 10),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'f4acd8da-1f66-4c88-b285-4d2adba08c44', 'manager'::location_profile_roles, FALSE, TRUE, DEFAULT),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '4106c32c-18bc-48dd-9714-729ab1168b44', 'manager'::location_profile_roles, TRUE, TRUE, 9),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '7e15d5cf-952c-4416-85e1-465849358402', 'base'::location_profile_roles, FALSE, TRUE, DEFAULT),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '45bb863d-b7ed-4eb4-913e-18a0bf7d4390', 'base'::location_profile_roles, TRUE, FALSE, 1),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '16814a2b-08dd-4083-a946-38680aa613b3', 'base'::location_profile_roles, FALSE, TRUE, DEFAULT),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::location_profile_roles, TRUE, FALSE, 5);
 
 INSERT INTO business_products (id, business_id, name, unit, unit_price)
 VALUES
@@ -68,14 +68,25 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
+INSERT INTO business_product_locations (business_id, location_id, product_id, status)
+VALUES
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 2, 1),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 3, 0),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 4, 0),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 5, 0),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 6, 1),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 7, 1),
+  ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 8, 1);
+
 INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes, creator_id, closer_id)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','NEW','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
-  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','NEW','Another example for nicole.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
-  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','NEW','Bring a shovel.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
-  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','NEW','Going to need a bigger shovel.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
-  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','NEW','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
-  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','NEW','This is just an example note.', '16814a2b-08dd-4083-a946-38680aa613b3',NULL);
+  (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','PITCHED_NOT_CLOSED','Another example for nicole.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (3, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Martin Donovan', 'martin@testing.com', '','1234 Fake St', 'Ogden', 'UT', '84242','setter','CANCELLED_AT_DOOR','Bring a shovel.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
+  (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Matthew Brody', 'mbrody@testing.com', '','1234 Fake St', 'LaVerkin', 'UT', '84242','setter','NO_SHOW','Going to need a bigger shovel.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
+  (5, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicholas Sethi', 'nsethi@testing.com', '','1234 Fake St', 'Hurricane', 'UT', '84242','setter','PITCHED_CLOSED','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3',NULL),
+  (6, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Ramit Bernsetin', 'nsethi@testing.com', '','1234 Fake St', 'Ivins', 'UT', '84242','setter','PITCHED_FOLLOW_UP','This is just an example note.', '16814a2b-08dd-4083-a946-38680aa613b3',NULL);
 
 ALTER SEQUENCE business_location_customers_id_seq RESTART WITH 7;
 

@@ -340,7 +340,7 @@ const FormFields = ({
           <div>
             <input type="hidden" name="customer_id" value={customer.id} />
             <input type="hidden" name="full_name" value={customer.full_name} />
-            <input type="hidden" name="email" value={customer.email} />
+            <input type="hidden" name="email" value={customer.email ?? ""} />
             <input type="hidden" name="phone" value={customer.phone ?? ""} />
             <p>
               <b>{customer.full_name}</b>

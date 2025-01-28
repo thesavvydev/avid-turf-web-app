@@ -85,6 +85,7 @@ export type Database = {
           business_id: string
           created_at: string
           customer_id: number | null
+          duration: number | null
           end_datetime: string
           id: number
           job_id: number | null
@@ -96,6 +97,7 @@ export type Database = {
           business_id: string
           created_at?: string
           customer_id?: number | null
+          duration?: number | null
           end_datetime: string
           id?: number
           job_id?: number | null
@@ -107,6 +109,7 @@ export type Database = {
           business_id?: string
           created_at?: string
           customer_id?: number | null
+          duration?: number | null
           end_datetime?: string
           id?: number
           job_id?: number | null
@@ -182,58 +185,58 @@ export type Database = {
       }
       business_location_customers: {
         Row: {
-          address: string | null
+          address: string
           business_id: string
-          city: string | null
+          city: string
           closer_id: string | null
           created_at: string
           creator_id: string | null
           disposition_status: string | null
-          email: string
+          email: string | null
           full_name: string
           id: number
           lead_source: string | null
           location_id: number
           notes: string | null
           phone: string | null
-          postal_code: string | null
-          state: string | null
+          postal_code: string
+          state: string
         }
         Insert: {
-          address?: string | null
+          address: string
           business_id: string
-          city?: string | null
+          city: string
           closer_id?: string | null
           created_at?: string
           creator_id?: string | null
           disposition_status?: string | null
-          email: string
+          email?: string | null
           full_name: string
           id?: number
           lead_source?: string | null
           location_id: number
           notes?: string | null
           phone?: string | null
-          postal_code?: string | null
-          state?: string | null
+          postal_code: string
+          state: string
         }
         Update: {
-          address?: string | null
+          address?: string
           business_id?: string
-          city?: string | null
+          city?: string
           closer_id?: string | null
           created_at?: string
           creator_id?: string | null
           disposition_status?: string | null
-          email?: string
+          email?: string | null
           full_name?: string
           id?: number
           lead_source?: string | null
           location_id?: number
           notes?: string | null
           phone?: string | null
-          postal_code?: string | null
-          state?: string | null
+          postal_code?: string
+          state?: string
         }
         Relationships: [
           {
@@ -809,6 +812,7 @@ export type Database = {
       business_location_profiles: {
         Row: {
           business_id: string
+          closer_priority: number
           commission_rate: number | null
           created_at: string
           is_closer: boolean
@@ -820,6 +824,7 @@ export type Database = {
         }
         Insert: {
           business_id: string
+          closer_priority?: number
           commission_rate?: number | null
           created_at?: string
           is_closer?: boolean
@@ -831,6 +836,7 @@ export type Database = {
         }
         Update: {
           business_id?: string
+          closer_priority?: number
           commission_rate?: number | null
           created_at?: string
           is_closer?: boolean
@@ -959,6 +965,52 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_product_locations: {
+        Row: {
+          business_id: string
+          created_at: string
+          location_id: number
+          product_id: number
+          status: number
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          location_id: number
+          product_id: number
+          status?: number
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          location_id?: number
+          product_id?: number
+          status?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_product_locations_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_product_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "business_locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_product_locations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "business_products"
             referencedColumns: ["id"]
           },
         ]
@@ -1225,12 +1277,40 @@ export type Database = {
         }
         Returns: boolean
       }
+      location_business_appointments_with_closers: {
+        Args: {
+          lid: number
+          start_timestamp: string
+        }
+        Returns: {
+          id: number
+          start_datetime: string
+          end_datetime: string
+          name: string
+          profile_id: string
+          full_name: string
+          location_id: number
+          closer_priority: number
+        }[]
+      }
       location_profile_has_role: {
         Args: {
           lid: number
           r: string
         }
         Returns: boolean
+      }
+      next_priority_closer: {
+        Args: {
+          lid: number
+          start_timestamp: string
+          end_timestamp: string
+        }
+        Returns: {
+          profile_id: string
+          full_name: string
+          closer_priority: number
+        }[]
       }
       ordered_employees: {
         Args: {

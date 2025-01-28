@@ -14,7 +14,9 @@ export default async function Page() {
 
   const { data, error: fetchLocationError } = await supabase
     .from("businesses")
-    .select("*,business_profiles(profile_id), business_locations(*)")
+    .select(
+      "*,business_profiles(profile_id), business_locations!business_id(*)",
+    )
     .eq("business_profiles.profile_id", user.id)
     .limit(1)
     .maybeSingle();

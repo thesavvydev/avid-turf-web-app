@@ -6,22 +6,43 @@ import {
   initialFormState,
   TInitialFormState,
 } from "@/constants/initial-form-state";
+import { useBusinessContext } from "@/contexts/business";
 import { useUserContext } from "@/contexts/user";
-import { Tables } from "@/types/supabase";
-import { Drawer, Label, TextInput } from "flowbite-react";
+import { Drawer, Label, TextInput, ToggleSwitch } from "flowbite-react";
 import { UserPlus2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import { useFormStatus } from "react-dom";
 import { UpdateProduct } from "./actions";
+import { IBusinessProductWithLocation } from "./page";
 
 const FormFields = ({
   defaultValues,
 }: {
-  defaultValues: Tables<"business_products">;
+  defaultValues: IBusinessProductWithLocation;
 }) => {
+  const { business } = useBusinessContext();
   const { pending } = useFormStatus();
   const { user } = useUserContext();
+  const [enabledLocations, setEnabledLocations] = useState<number[]>(
+    defaultValues.locations.flatMap((location) =>
+      location.status === 1 ? Number(location.location_id) : [],
+    ),
+  );
+
+  const toggleLocation = (location: number) => () =>
+    setEnabledLocations((prevState) =>
+      prevState.includes(location)
+        ? prevState.filter((l) => l !== location)
+        : [...prevState, location],
+    );
+
   return (
     <fieldset disabled={pending} className="grid gap-2 lg:gap-6">
       <input type="hidden" name="id" value={defaultValues.id} />
@@ -81,6 +102,24 @@ const FormFields = ({
           defaultValue={defaultValues.units_in_stock ?? ""}
         />
       </div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-medium text-gray-400">Locations</h2>
+        {business.locations.map((location) => (
+          <div className="flex items-center gap-2" key={location.id}>
+            <ToggleSwitch
+              checked={enabledLocations.includes(Number(location.id))}
+              onChange={toggleLocation(Number(location.id))}
+              id={`location__${location.id}`}
+              label={location.name}
+            />
+            <input
+              name={`location__${location.id}__status`}
+              type="hidden"
+              value={enabledLocations.includes(Number(location.id)) ? 1 : 0}
+            />
+          </div>
+        ))}
+      </div>
 
       <SubmitButton pendingText="Updating product">
         <UserPlus2Icon className="mr-2" />
@@ -93,7 +132,7 @@ const FormFields = ({
 type TUpdateProductDrawer = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  product: Tables<"business_products">;
+  product: IBusinessProductWithLocation;
 };
 
 export default function UpdateProductDrawer({
