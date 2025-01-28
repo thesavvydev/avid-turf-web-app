@@ -68,11 +68,18 @@ export async function AddJob<T>(...args: ServerActionWithState<T>) {
     (await supabase
       .from("business_location_customers")
       .insert({
+        address: fields.address as string,
         business_id: fields.business_id as string,
+        city: fields.city as string,
+        creator_id: fields.creator_id as string,
+        disposition_status: "NEW",
         email: fields.email as string,
         full_name: fields.full_name as string,
+        lead_source: fields.lead_source as string,
         location_id: Number(fields.business_location_id),
         phone: fields.phone as string,
+        postal_code: fields.postal_code as string,
+        state: fields.state as string,
       })
       .select("id")
       .single()
