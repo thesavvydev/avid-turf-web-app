@@ -34,6 +34,7 @@ export default async function Page(props: TPage) {
       .select("*, business_product_locations!inner(*)")
       .match({
         business_id: businessId,
+        "business_product_locations.location_id": locationId,
         "business_product_locations.status": 1,
       }),
     supabase
