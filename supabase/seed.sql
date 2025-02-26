@@ -22,11 +22,11 @@ VALUES
   ('8','45bb863d-b7ed-4eb4-913e-18a0bf7d4390', '45bb863d-b7ed-4eb4-913e-18a0bf7d4390'::uuid, '{"sub": "45bb863d-b7ed-4eb4-913e-18a0bf7d4390"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00'),
   ('9','16814a2b-08dd-4083-a946-38680aa613b3', '16814a2b-08dd-4083-a946-38680aa613b3'::uuid, '{"sub": "16814a2b-08dd-4083-a946-38680aa613b3"}', 'email', '2022-10-04 04:45:00.000+00', '2022-10-04 03:41:27.391146+00', '2022-10-04 03:41:27.39308+00');
 
-INSERT INTO businesses (id, name)
+INSERT INTO public.businesses (id, name)
 VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'Demo Business');
 
-INSERT INTO business_profiles (business_id, profile_id, role)
+INSERT INTO public.business_profiles (business_id, profile_id, role)
 VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '48af521c-89dd-4c7b-9737-6e7f37c9af9a', 'admin'::business_roles),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'b2cef185-9ff8-4b71-b36b-e8b9c373e648', 'admin'::business_roles),
@@ -38,14 +38,14 @@ VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '16814a2b-08dd-4083-a946-38680aa613b3', 'base'::business_roles),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', '45bb863d-b7ed-4eb4-913e-18a0bf7d4390', 'base'::business_roles);
 
-INSERT INTO business_locations (id, name, business_id)
+INSERT INTO public.business_locations (id, name, business_id)
 VALUES
   (1, 'Southern Utah', 'a9d3edf9-4ef7-4dc3-9943-938d10f357be'),
   (2, 'Northern Utah', 'a9d3edf9-4ef7-4dc3-9943-938d10f357be');
 
 ALTER SEQUENCE business_locations_id_seq RESTART WITH 3;
 
-INSERT INTO business_location_profiles ( business_id, location_id, profile_id, role, is_closer, is_setter, closer_priority)
+INSERT INTO public.business_location_profiles ( business_id, location_id, profile_id, role, is_closer, is_setter, closer_priority)
 VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '48af521c-89dd-4c7b-9737-6e7f37c9af9a', 'admin'::location_profile_roles, TRUE, FALSE, 10),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'f4acd8da-1f66-4c88-b285-4d2adba08c44', 'manager'::location_profile_roles, FALSE, TRUE, DEFAULT),
@@ -55,7 +55,7 @@ VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '16814a2b-08dd-4083-a946-38680aa613b3', 'base'::location_profile_roles, FALSE, TRUE, DEFAULT),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 2, '1480e0d8-a3ea-4e03-b370-fab96a6be4ef', 'base'::location_profile_roles, TRUE, FALSE, 5);
 
-INSERT INTO business_products (id, business_id, name, unit, unit_price)
+INSERT INTO public.business_products (id, business_id, name, unit, unit_price)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'Avid Olive 73', 'sq ft', 11.00),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 'Avid Olive 85', 'sq ft', 11.00),
@@ -68,7 +68,7 @@ VALUES
 
 ALTER SEQUENCE business_products_id_seq RESTART WITH 9;
 
-INSERT INTO business_product_locations (business_id, location_id, product_id, status)
+INSERT INTO public.business_product_locations (business_id, location_id, product_id, status)
 VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 2, 1),
@@ -79,7 +79,7 @@ VALUES
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 7, 1),
   ('a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 8, 1);
 
-INSERT INTO business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes, creator_id, closer_id)
+INSERT INTO public.business_location_customers (id, business_id, location_id, full_name, email, phone, address, city, state, postal_code, lead_source, disposition_status,notes, creator_id, closer_id)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Abigail Adid', 'abigail@testing.com', '','200 E 1600 N', 'St George', 'UT', '84242','setter','NEW','This is just an example note.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Nicole Kidman', 'nicole@testing.com', '','1234 Fake St', 'Washington', 'UT', '84242','setter','PITCHED_NOT_CLOSED','Another example for nicole.','16814a2b-08dd-4083-a946-38680aa613b3','45bb863d-b7ed-4eb4-913e-18a0bf7d4390'),
@@ -90,7 +90,7 @@ VALUES
 
 ALTER SEQUENCE business_location_customers_id_seq RESTART WITH 7;
 
-INSERT INTO business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status, lead_type)
+INSERT INTO public.business_location_jobs (id, business_id, business_location_id, full_name, address, city, state, postal_code, creator_id, status, lead_type)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Shawn Lucid', '200 E 1600 N', 'St George', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'new'::location_job_status,'self'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 'Elon Harris', '872 Bluff St', 'Washington', 'UT', '84242', '7e15d5cf-952c-4416-85e1-465849358402', 'scheduled'::location_job_status,'self'),
@@ -103,7 +103,7 @@ VALUES
 
 ALTER SEQUENCE business_location_jobs_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_job_profiles (id, business_id, location_id, job_id, profile_id)
+INSERT INTO public.business_location_job_profiles (id, business_id, location_id, job_id, profile_id)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, '7e15d5cf-952c-4416-85e1-465849358402'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 2, '7e15d5cf-952c-4416-85e1-465849358402'),
@@ -116,7 +116,7 @@ VALUES
 
 ALTER SEQUENCE business_location_job_profiles_id_seq RESTART WITH 9;
 
-INSERT INTO business_location_job_products (id, business_id, location_id, job_id, product_id, number_of_units,unit_price,lead_price,total_price)
+INSERT INTO public.business_location_job_products (id, business_id, location_id, job_id, product_id, number_of_units,unit_price,lead_price,total_price)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1, 2250, 10.00, 0.00, 2250.00),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 7, 2, 500.00, 0.00, 1000.00),
@@ -124,7 +124,7 @@ VALUES
 
 ALTER SEQUENCE business_location_job_products_id_seq RESTART WITH 4;
 
-INSERT INTO business_location_job_messages (id, business_id, location_id, job_id, author_id, message)
+INSERT INTO public.business_location_job_messages (id, business_id, location_id, job_id, author_id, message)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'7e15d5cf-952c-4416-85e1-465849358402', 'We may have some issues removing the old stone.'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'4106c32c-18bc-48dd-9714-729ab1168b44', 'Should we get the bigger excavator for this one?'),
@@ -132,7 +132,7 @@ VALUES
 
 ALTER SEQUENCE business_location_job_messages_id_seq RESTART WITH 4;
 
-INSERT INTO business_location_job_timesheets (id, business_id, location_id, job_id, profile_id, start_datetime, end_datetime)
+INSERT INTO public.business_location_job_timesheets (id, business_id, location_id, job_id, profile_id, start_datetime, end_datetime)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'7e15d5cf-952c-4416-85e1-465849358402', '2024-11-01 07:00:00','2024-11-01 12:00:00'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1,'4106c32c-18bc-48dd-9714-729ab1168b44', '2024-11-02 07:00:00','2024-11-02 15:00:00'),
@@ -140,7 +140,7 @@ VALUES
 
 ALTER SEQUENCE business_location_job_timesheets_id_seq RESTART WITH 4;
 
-INSERT INTO business_appointments (id, business_id, location_id, job_id, customer_id, start_datetime, end_datetime)
+INSERT INTO public.business_appointments (id, business_id, location_id, job_id, customer_id, start_datetime, end_datetime)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 1, '2024-11-01 07:00:00','2024-11-01 12:00:00'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, 1, 2, '2024-11-02 07:00:00','2024-11-02 15:00:00'),
@@ -148,7 +148,7 @@ VALUES
 
 ALTER SEQUENCE business_appointments_id_seq RESTART WITH 4;
 
-INSERT INTO business_appointment_profiles (id, business_id, appointment_id, profile_id)
+INSERT INTO public.business_appointment_profiles (id, business_id, appointment_id, profile_id)
 VALUES
   (1, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '7e15d5cf-952c-4416-85e1-465849358402'),
   (2, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 1, '4106c32c-18bc-48dd-9714-729ab1168b44'),
@@ -156,3 +156,7 @@ VALUES
   (4, 'a9d3edf9-4ef7-4dc3-9943-938d10f357be', 3, '4106c32c-18bc-48dd-9714-729ab1168b44');
 
 ALTER SEQUENCE business_appointment_profiles_id_seq RESTART WITH 5;
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES
+  ('business', 'business', FALSE);
